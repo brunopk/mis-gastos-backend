@@ -10,7 +10,6 @@ Node.js backend for Mis gastos project. It's based on [Node JS Server](https://g
 yarn dev
 ```
 
-
 ## Links
 
 - [Express](https://expressjs.com).
