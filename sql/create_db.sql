@@ -1,51 +1,60 @@
+DROP DATABASE IF EXISTS `misgastos`;
+
+CREATE DATABASE `misgastos`;
+
 USE `misgastos`;
 
 DROP TABLE IF EXISTS `spend`;
 
 DROP TABLE IF EXISTS `group`;
 
-DROP TABLE IF EXISTS `sub_category`;
+DROP TABLE IF EXISTS `subcategory`;
 
 DROP TABLE IF EXISTS `category`;
 
 DROP TABLE IF EXISTS `account`;
 
 CREATE TABLE `account` (
-	`name` VARCHAR(256) NOT NULL PRIMARY KEY
+	`id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+	`name` VARCHAR(256)
 );
 
 CREATE TABLE `category` (
-	`name` VARCHAR(256) NOT NULL PRIMARY KEY
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+	`name` VARCHAR(256)
 );
 
-CREATE TABLE `sub_category` (
-    `name` VARCHAR(256) NOT NULL,
-    `category` VARCHAR(256) NOT NULL,
-    CONSTRAINT PRIMARY KEY (`name`, `category`),
-    CONSTRAINT `fk_category_name` FOREIGN KEY `sub_category`(`category`) REFERENCES `category`(`name`)
+CREATE TABLE `subcategory` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+	`name` VARCHAR(256),
+    `category_id` INT UNSIGNED NOT NULL,
+    CONSTRAINT `fk_subcategory_category` FOREIGN KEY `subcategory`(`category_id`) REFERENCES `category`(`id`)
 );
 
 CREATE TABLE `group` (
-    `name` VARCHAR(256) NOT NULL,
-    `category` VARCHAR(256) NOT NULL,
-    `sub_category` VARCHAR(256) NOT NULL,
-    CONSTRAINT PRIMARY KEY (`name`, `category`, `sub_category`),
-    CONSTRAINT `fk_sub_category_category_name` 
-    	FOREIGN KEY `group`(`category`, `sub_category`) REFERENCES `sub_category`(`category`, `name`)
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
+	`name` VARCHAR(256),
+	`category_id` INT UNSIGNED NOT NULL,
+    `subcategory_id` INT UNSIGNED NOT NULL,
+    CONSTRAINT `uq_id_subcategory_id_category_id` UNIQUE (`id`, `subcategory_id`, `category_id`),
+    CONSTRAINT `fk_group_category` FOREIGN KEY `group`(`category_id`) REFERENCES `subcategory`(`category_id`),
+    CONSTRAINT `fk_group_subcategory` FOREIGN KEY `group`(`subcategory_id`) REFERENCES `subcategory`(`id`)
 );
 
 CREATE TABLE `spend` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
 	`date` DATE NOT NULL,
-    `category` VARCHAR(256) NOT NULL,
-    `sub_category` VARCHAR(256) NOT NULL,
-    `group` VARCHAR(256) NOT NULL,
-    `account` VARCHAR(256) NOT NULL,
+    `category_id` INT UNSIGNED,
+    `subcategory_id` INT UNSIGNED,
+    `group_id` INT UNSIGNED,
+    `account_id` INT UNSIGNED NOT NULL,
     `value` BIGINT UNSIGNED NOT NULL,
     `description` TEXT,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP, 
     CONSTRAINT PRIMARY KEY (`id`),
-    CONSTRAINT `fk_spend_group_name` FOREIGN KEY `spend`(`category`, `sub_category`, `group`) REFERENCES `group`(`category`, `sub_category`, `name`),
-    CONSTRAINT `fk_spend_account_name` FOREIGN KEY `spend`(`account`) REFERENCES `account`(`name`)
+    CONSTRAINT `fk_spend_account` FOREIGN KEY `spend`(`account_id`) REFERENCES `account`(`id`),
+    CONSTRAINT `fk_spend_group` 
+    	FOREIGN KEY `spend`(`group_id`, `subcategory_id`, `category_id`) 
+    	REFERENCES `group`(`id`, `subcategory_id`, `category_id`)
 );
 
