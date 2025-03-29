@@ -4,6 +4,7 @@ import { HttpError } from 'http-errors';
 import morgan from 'morgan';
 import loggerFactory from './logging';
 import router from './router';
+import getConfig from './config';
 
 /**************************************************************************************************
  **************************************************************************************************/
@@ -64,8 +65,14 @@ function onListening() {
     return;
   }
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  logger.warn('Listening on ' + bind);
+  logger.info('Listening on ' + bind);
 }
+
+/**************************************************************************************************
+ *                                      CONFIGURATIONS                                            *
+ **************************************************************************************************/
+
+const config = getConfig()
 
 /**************************************************************************************************
  *                                          LOGGING                                               *
@@ -77,7 +84,7 @@ const logger = loggerFactory('express');
  *                                          EXPRESS                                               *
  **************************************************************************************************/
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(config.port);
 
 const app = express();
 

@@ -21,11 +21,13 @@
     "watch": [
       "src"
     ],
-    "exec": "tsc && node ./dist/app.js",
+    "exec": "tsc && NODE_ENV=development node ./dist/app.js",
     "ext": "ts,js,json"
   },
   "dependencies": {
     "@ladjs/graceful": "^4.2.0",
+    "dotenv": "^16.4.7",
+    "dotenv-flow": "^4.1.0",
     "express": "^4.21.2",
     "morgan": "^1.10.0",
     "winston": "^3.17.0"
