@@ -11,7 +11,7 @@
   },
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "./build.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prettier": "prettier --check --ignore-path .gitignore \"./src/**/*.+(js|ts|json)\"",
