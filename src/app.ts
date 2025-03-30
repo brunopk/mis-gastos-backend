@@ -2,9 +2,9 @@ import express from 'express';
 import http from 'http';
 import { HttpError } from 'http-errors';
 import morgan from 'morgan';
+import getConfig from './config';
 import loggerFactory from './logging';
 import router from './router';
-import getConfig from './config';
 
 /**************************************************************************************************
  **************************************************************************************************/
@@ -72,7 +72,7 @@ function onListening() {
  *                                      CONFIGURATIONS                                            *
  **************************************************************************************************/
 
-const config = getConfig()
+const config = getConfig();
 
 /**************************************************************************************************
  *                                          LOGGING                                               *

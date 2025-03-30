@@ -11,7 +11,8 @@ function defaultAlignColorsAndTime(label: Label) {
       format: 'YYYY-MM-DD HH:mm:ssZ'
     }),
     winston.format.printf(
-      (info) => `${info.label} [${info.timestamp}] [${info.level}] ${info.message}`
+      (info) =>
+        `${info.label} [${info.timestamp}] [${info.level}] ${info.message} ${info.stack ? '\n' + info.stack : ''}`
     )
   );
 }
