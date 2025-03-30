@@ -1,6 +1,6 @@
 # Mis gastos backend
 
-Node.js backend for Mis gastos project. It's based on [Node JS Server](https://github.com/brunopk/nodejs-server) to run as a Home Assistant add-on.
+Node.js backend for Mis gastos project. Based on [Node JS Server](https://github.com/brunopk/nodejs-server). Provides a REST API for [mis-gastos-web](https://github.com/brunopk/mis-gastos-web).
 
 ## Building
 
@@ -18,11 +18,20 @@ Node.js backend for Mis gastos project. It's based on [Node JS Server](https://g
 
 ## Development
 
+### Requirements
+
+- MariaDB 10.11 (see `doc/db.md`).
+- Node.js (recommended to install with NVM).
+
 ### Development with HMR (hot module reloading)
 
-```bash
-yarn dev
-```
+1. Create the database (see `doc/db.md`).
+2. Configure database in `.env.development`
+3. Start the server :
+
+    ```bash
+    yarn dev
+    ```
 
 ## Links
 
