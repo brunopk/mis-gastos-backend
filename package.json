@@ -14,7 +14,7 @@
     "build": "./build.sh",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "prettier": "prettier --check --ignore-path .gitignore \"./src/**/*.+(js|ts|json)\"",
+    "prettier": "prettier --ignore-path .gitignore --check \"./src/**/*.+(js|ts|json)\"",
     "prettier:fix": "prettier --write \"./src/**/*.+(js|ts|json)\""
   },
   "nodemonConfig": {
