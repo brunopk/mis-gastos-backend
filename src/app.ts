@@ -102,7 +102,7 @@ app.use(
 
 // Router
 
-app.use('*', router);
+app.use('/', router);
 
 // Customization of HTTP server (http module provided by Node.js standard library)
 
