@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import http from 'http';
 import { HttpError } from 'http-errors';
@@ -89,6 +90,8 @@ const port = normalizePort(config.port);
 const app = express();
 
 app.set('port', port);
+
+if (config.enableCORS) app.use(cors());
 
 // Morgan Middleware using Winston to log requests
 

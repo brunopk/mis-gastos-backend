@@ -3,6 +3,7 @@ import loggerFactory from './logging';
 
 type Config = {
   port: string;
+  enableCORS: boolean
   db: {
     host: string;
     database: string;
@@ -28,6 +29,7 @@ export default function getConfig() {
 
     config = {
       port: process.env.PORT!,
+      enableCORS: process.env.NODE_ENV !== 'production',
       db: {
         host: process.env.DB_HOST,
         database: process.env.DB_DATABASE,
