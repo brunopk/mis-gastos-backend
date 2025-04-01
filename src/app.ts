@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { ErrorRequestHandler } from 'express-serve-static-core';
 import http from 'http';
 import { HttpError } from 'http-errors';
 import morgan from 'morgan';
@@ -69,6 +70,21 @@ function onListening() {
   logger.info('Listening on ' + bind);
 }
 
+/**
+ * Error middleware
+ *
+ * Important: set status before sending data (https://bit.ly/3Rww26S)
+ * @param err
+ * @param req
+ * @param res
+ * @param next
+ */
+const onHandlerError: ErrorRequestHandler = async (err, _, res, next) => {
+  logger.error('', err)
+  res.status(400).send(err)
+  next();
+}
+
 /**************************************************************************************************
  *                                      CONFIGURATIONS                                            *
  **************************************************************************************************/
@@ -91,6 +107,8 @@ const app = express();
 
 app.set('port', port);
 
+// CORS middleware
+
 if (config.enableCORS) app.use(cors());
 
 // Morgan Middleware using Winston to log requests
@@ -106,6 +124,15 @@ app.use(
 // Router
 
 app.use('/', router);
+
+// Error middleware
+
+/**
+ * The error handler is placed after routes if it were above it would not receive errors
+ * from app.get() etc
+ */
+
+app.use('/', onHandlerError);
 
 // Customization of HTTP server (http module provided by Node.js standard library)
 

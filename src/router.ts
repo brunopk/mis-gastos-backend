@@ -1,4 +1,5 @@
 import express from 'express';
+import 'express-async-errors';
 import { getCategories, getSubCategories, getGroups, getAccounts } from './handlers';
 
 const app = express();
