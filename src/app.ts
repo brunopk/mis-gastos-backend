@@ -81,7 +81,7 @@ function onListening() {
  */
 const onHandlerError: ErrorRequestHandler = async (err, _, res, next) => {
   logger.error('', err)
-  res.status(400).send(err)
+  res.status(500).send(err)
   next();
 }
 
@@ -126,11 +126,6 @@ app.use(
 app.use('/', router);
 
 // Error middleware
-
-/**
- * The error handler is placed after routes if it were above it would not receive errors
- * from app.get() etc
- */
 
 app.use('/', onHandlerError);
 
