@@ -116,7 +116,19 @@ if (config.enableCORS) app.use(cors());
 app.use(
   morgan('combined', {
     stream: {
-      write: (message) => logger.info(message.trim()) // Trim to remove newlines
+      write: (message) => { 
+        const statusMatch = message.match(/" (\d{3}) /);
+        const status = statusMatch ? parseInt(statusMatch[1], 10) : 200;
+
+        // Determine log level based on status code
+        const logLevel: 'debug' | 'info' | 'warn' | 'error' =
+          status >= 500 ? 'error' :
+          status >= 400 ? 'warn'  :
+          status >= 300 ? 'info'  :
+          'debug';
+
+        logger.log(logLevel, message.trim());
+      }
     }
   })
 );
