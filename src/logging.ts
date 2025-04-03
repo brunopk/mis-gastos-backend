@@ -1,4 +1,6 @@
-import winston from 'winston';
+import morgan from 'morgan';
+import winston, { Logger } from 'winston';
+import getConfig from './config';
 
 type Label = 'express' | null;
 
@@ -17,9 +19,9 @@ function defaultAlignColorsAndTime(label: Label) {
   );
 }
 
-function defaultLoggerFactory(label: Label) {
+function defaultLoggerFactory(logLevel: string, label: Label) {
   return winston.createLogger({
-    level: 'debug',
+    level: logLevel,
     transports: [
       new winston.transports.Console({
         format: winston.format.combine(winston.format.colorize(), defaultAlignColorsAndTime(label))
@@ -28,8 +30,32 @@ function defaultLoggerFactory(label: Label) {
   });
 }
 
-function loggerFactory(label: Label) {
-  return defaultLoggerFactory(label);
+export function loggerFactory(label: Label) {
+  const config = getConfig();
+  return defaultLoggerFactory(config.logLevel, label);
 }
 
-export default loggerFactory;
+export function morganMiddleware(logger: Logger) {
+  return morgan(logger.level == 'debug' ? 'combined' : 'short', {
+    stream: {
+      write: (message) => {
+        const statusMatch = message.match(/\s(\d{3})\s/);
+        const status = statusMatch ? parseInt(statusMatch[1], 10) : 200;
+
+        // Determine log level based on status code
+        const logLevel: 'debug' | 'info' | 'warn' | 'error' =
+          status >= 500
+            ? 'error'
+            : status >= 400
+              ? 'warn'
+              : status >= 300
+                ? 'warn'
+                : status >= 200
+                  ? 'info'
+                  : 'info';
+
+        logger.log(logLevel, message.trim());
+      }
+    }
+  });
+}

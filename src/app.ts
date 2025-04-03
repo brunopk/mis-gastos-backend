@@ -3,9 +3,8 @@ import express from 'express';
 import { ErrorRequestHandler } from 'express-serve-static-core';
 import http from 'http';
 import { HttpError } from 'http-errors';
-import morgan from 'morgan';
 import getConfig from './config';
-import loggerFactory from './logging';
+import { loggerFactory, morganMiddleware } from './logging';
 import router from './router';
 
 /**************************************************************************************************
@@ -80,10 +79,10 @@ function onListening() {
  * @param next
  */
 const onHandlerError: ErrorRequestHandler = async (err, _, res, next) => {
-  logger.error('', err)
-  res.status(500).send(err)
+  logger.error('', err);
+  res.status(500).send(err);
   next();
-}
+};
 
 /**************************************************************************************************
  *                                      CONFIGURATIONS                                            *
@@ -113,25 +112,7 @@ if (config.enableCORS) app.use(cors());
 
 // Morgan Middleware using Winston to log requests
 
-app.use(
-  morgan('combined', {
-    stream: {
-      write: (message) => { 
-        const statusMatch = message.match(/" (\d{3}) /);
-        const status = statusMatch ? parseInt(statusMatch[1], 10) : 200;
-
-        // Determine log level based on status code
-        const logLevel: 'debug' | 'info' | 'warn' | 'error' =
-          status >= 500 ? 'error' :
-          status >= 400 ? 'warn'  :
-          status >= 300 ? 'info'  :
-          'debug';
-
-        logger.log(logLevel, message.trim());
-      }
-    }
-  })
-);
+app.use(morganMiddleware(logger));
 
 // Router
 

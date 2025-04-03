@@ -1,9 +1,9 @@
 import dotenv from 'dotenv-flow';
-import loggerFactory from './logging';
 
 type Config = {
   port: string;
-  enableCORS: boolean
+  enableCORS: boolean;
+  logLevel: string;
   db: {
     host: string;
     database: string;
@@ -14,14 +14,12 @@ type Config = {
 
 let config: Config | null = null;
 
-const logger = loggerFactory('express');
-
 export default function getConfig() {
   if (!config) {
-    logger.info('Loading configurations from environment variables');
-
     dotenv.config();
 
+    if (!process.env.PORT) throw new Error('PORT not defined');
+    if (!process.env.LOG_LEVEL) throw new Error('LOG_LEVEL not defined');
     if (!process.env.DB_HOST) throw new Error('DB_HOST not defined');
     if (!process.env.DB_DATABASE) throw new Error('DB_DATABASE not defined');
     if (!process.env.DB_USER) throw new Error('DB_USER not defined');
@@ -29,6 +27,7 @@ export default function getConfig() {
 
     config = {
       port: process.env.PORT!,
+      logLevel: process.env.LOG_LEVEL!,
       enableCORS: process.env.NODE_ENV !== 'production',
       db: {
         host: process.env.DB_HOST,

@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import pool from './db/pool';
 import { GET_ACCOUNTS, GET_CATEGORIES, GET_GROUPS, GET_SUB_CATEGORIES } from './db/query';
-import loggerFactory from './logging';
+import {loggerFactory} from './logging';
 
 const logger = loggerFactory('express');
 
