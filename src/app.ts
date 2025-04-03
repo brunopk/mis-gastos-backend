@@ -1,8 +1,10 @@
+import cors from 'cors';
 import express from 'express';
+import { ErrorRequestHandler } from 'express-serve-static-core';
 import http from 'http';
 import { HttpError } from 'http-errors';
-import morgan from 'morgan';
-import loggerFactory from './logging';
+import getConfig from './config';
+import { loggerFactory, morganMiddleware } from './logging';
 import router from './router';
 
 /**************************************************************************************************
@@ -64,8 +66,29 @@ function onListening() {
     return;
   }
   const bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
-  logger.warn('Listening on ' + bind);
+  logger.info('Listening on ' + bind);
 }
+
+/**
+ * Error middleware
+ *
+ * Important: set status before sending data (https://bit.ly/3Rww26S)
+ * @param err
+ * @param req
+ * @param res
+ * @param next
+ */
+const onHandlerError: ErrorRequestHandler = async (err, _, res, next) => {
+  logger.error('', err);
+  res.status(500).send(err);
+  next();
+};
+
+/**************************************************************************************************
+ *                                      CONFIGURATIONS                                            *
+ **************************************************************************************************/
+
+const config = getConfig();
 
 /**************************************************************************************************
  *                                          LOGGING                                               *
@@ -77,25 +100,27 @@ const logger = loggerFactory('express');
  *                                          EXPRESS                                               *
  **************************************************************************************************/
 
-const port = normalizePort(process.env.PORT || '3000');
+const port = normalizePort(config.port);
 
 const app = express();
 
 app.set('port', port);
 
+// CORS middleware
+
+if (config.enableCORS) app.use(cors());
+
 // Morgan Middleware using Winston to log requests
 
-app.use(
-  morgan('combined', {
-    stream: {
-      write: (message) => logger.info(message.trim()) // Trim to remove newlines
-    }
-  })
-);
+app.use(morganMiddleware(logger));
 
 // Router
 
-app.use('*', router);
+app.use('/', router);
+
+// Error middleware
+
+app.use('/', onHandlerError);
 
 // Customization of HTTP server (http module provided by Node.js standard library)
 
