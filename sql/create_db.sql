@@ -48,11 +48,13 @@ CREATE TABLE `spend` (
     `subcategory_id` INT UNSIGNED,
     `group_id` INT UNSIGNED,
     `account_id` INT UNSIGNED NOT NULL,
-    `value` BIGINT UNSIGNED NOT NULL,
     `description` TEXT,
+    `value` BIGINT UNSIGNED NOT NULL,
     `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP, 
     CONSTRAINT PRIMARY KEY (`id`),
-    CONSTRAINT `fk_spend_account` FOREIGN KEY `spend`(`account_id`) REFERENCES `account`(`id`),
+    CONSTRAINT `fk_spend_account` 
+        FOREIGN KEY `spend`(`account_id`) 
+        REFERENCES `account`(`id`),
     CONSTRAINT `fk_spend_group` 
     	FOREIGN KEY `spend`(`group_id`, `subcategory_id`, `category_id`) 
     	REFERENCES `group`(`id`, `subcategory_id`, `category_id`)
