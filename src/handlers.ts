@@ -33,7 +33,6 @@ export const getAccounts: RequestHandler = async (_, res) => {
 export const getSpends: RequestHandler = async (_, res) => {
   const conn = await pool.getConnection();
   const [results] = await conn.execute(queries.GET_SPENDS);
-  console.log(queries.GET_SPENDS)
   conn.release();
   res.json(results);
 };
