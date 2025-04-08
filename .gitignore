@@ -1,23 +1,29 @@
-# Dependency directories
-node_modules/
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# Nuxt.js build / generate output
-.nuxt
-dist
+### IntelliJ IDEA ###
+.idea
 
-# vitepress build output
-**/.vitepress/dist
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
 
-# vitepress cache directory
-**/.vitepress/cache
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-.vscode
-
-# yarn v2
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
+### Mac OS ###
+.DS_Store

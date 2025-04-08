@@ -1,51 +1,38 @@
 # Mis gastos backend
 
-Node.js backend for Mis gastos project. Based on [Node JS Server](https://github.com/brunopk/nodejs-server). Provides a REST API for [mis-gastos-web](https://github.com/brunopk/mis-gastos-web).
-
-## Configurations
-
-In order to run application correctly some environment variables must be defined:
-
-- For production: `.env.production`
-- For development: `.env.development`
-
-Also they can be defined as usual with `export ENV_VAR=value` before running.
-
-> To change [logging level](https://github.com/winstonjs/winston?tab=readme-ov-file#logging-levels), set `LOG_LEVEL`
-
-## Building
-
-1. Give permission for build script:
-
-    ```bash
-    chmod u+x build.sh
-    ```
-
-2. Build :
-
-   ```bash
-   yarn build
-   ```
+Spring Boot backend for Mis gastos project. Provides a REST API for [mis-gastos-web](https://github.com/brunopk/mis-gastos-web).
 
 ## Development
 
 ### Requirements
 
-- MariaDB 10.11 (see `doc/db.md`).
-- Node.js (recommended to install with NVM).
+- MariaDB 10.11 (see `doc/db.md`)
+- Java 21 (it can be installed with [SdkMan](https://sdkman.io/))
+- Maven (it can be installed with [SdkMan](https://sdkman.io/))
 
-### Development with HMR (hot module reloading)
+### Steps to run
 
-1. Create the database (see `doc/db.md`).
-2. Configure database in `.env.development`
+1. Create database (see `doc/db.md`).
+2. Configure database
 3. Start the server :
 
     ```bash
-    yarn dev
+    mvn spring-boot:run
     ```
+
+Database configuration is defined in `spring.datasource` within `src/main/resources/application.yaml`.
+
+## Configuration
+
+To set log-level change `logging.level.org.springframework.web` on `src/main/resources/application.yaml`. Install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.
+
+## Building
+
+```bash
+mvn package
+```
 
 ## Links
 
-- [Express](https://expressjs.com).
-- [Node JS Server](https://github.com/brunopk/nodejs-server).
+- [SdkMan](https://sdkman.io/)
 - [Developing an add-on](https://developers.home-assistant.io/docs/add-ons).
