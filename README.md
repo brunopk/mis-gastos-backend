@@ -24,7 +24,7 @@ Database configuration is defined in `spring.datasource` within `src/main/resour
 
 ## Configuration
 
-To set log-level change `logging.level.org.springframework.web` on `src/main/resources/application.yaml`. Install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.
+To change log-level set `logging.level.<PACKAGE-NAME>: <LEVEL>` on `src/main/resources/application.yaml`. Install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.
 
 ## Building
 
