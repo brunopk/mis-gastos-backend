@@ -19,15 +19,18 @@ In order to use Google Tasks API, OAuth2 credentials for authorization code flow
     - Click **Create**.
 7. In the left sidebar, select **Audience**:
     - Under **Publishing status > Testing**, select **Publish app**.
-        > Otherwise, your credentials will expire every 7 days.
+        
+       > Otherwise, your credentials will expire every 7 days.
 8. In the left sidebar, select **Clients**:
     - Click **+ Create Client**.
     - For Application type, choose **Web Application** and give this client ID a name (like “Mis gastos Client”).
     - Add http://localhost:8081/redirect/oauth to **Authorized redirect URIs** then select **Create** (**only valid for development**).
-      > Note: This is not a placeholder. It is the URI that must be used.
+      
+       > Note: This is not a placeholder. It is the URI that must be used.
     - Click **Create**.
 9. Find the client you just created. Under the Actions column, choose **Download OAuth client** (download icon), save this as `client_secret.json` into `src/main/resources`.
-    > Do not commit `client_secret.json`
+    
+     > Do not commit `client_secret.json`
 
 
 Instead of setting **External** for Audience as described in step 6, another option is to set **Internal** and then under **Test users** adding the same Google account that will be used for Google Tasks (Google email address). This will allow the account as a testing user (not for real production environment).
