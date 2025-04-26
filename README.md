@@ -1,13 +1,24 @@
 # Mis gastos backend
 
-Spring Boot backend for Mis gastos project. Provides a REST API for [mis-gastos-web](https://github.com/brunopk/mis-gastos-web).
+Home Assistant add-on which provides a REST API for [mis-gastos-web](https://github.com/brunopk/mis-gastos-web).
+
+## Running Mis gastos with Home Assistant
+
+### Requirements
+
+- MariaDB Home Assistant add-on
+- [TODO]
+
+
+1. [Configure Google credentials](doc/google.md) 
+2. [TODO]
 
 ## Development
 
 ### Requirements
 
 - MariaDB 10.11 (see `doc/db.md`)
-- Java 21 (it can be installed with [SdkMan](https://sdkman.io/))
+- Java 21 (it can be installed with [SdkMan!](https://sdkman.io/))
 - Maven (it can be installed with [SdkMan](https://sdkman.io/))
 
 ### Steps to run
@@ -20,7 +31,7 @@ Spring Boot backend for Mis gastos project. Provides a REST API for [mis-gastos-
     mvn spring-boot:run
     ```
 
-Database configuration is defined in `spring.datasource` within `src/main/resources/application.yaml`.
+Database configuration is defined in `spring.datasource` within `src/main/resources/application.yaml`. Optionally, to run some Spring tasks that uses Google Tasks, for instance to create tasks to notify about spending, it is necessary to configure credentials as described in [this](doc/google.md) documentation.
 
 ## Configuration
 
@@ -34,5 +45,6 @@ mvn package
 
 ## Links
 
-- [SdkMan](https://sdkman.io/)
-- [Developing an add-on](https://developers.home-assistant.io/docs/add-ons).
+- [SdkMan!](https://sdkman.io/)
+- [Tutorial: Making your first add-on](https://developers.home-assistant.io/docs/add-ons/tutorial)
+- [Google credentials configuration](/doc/google.md)

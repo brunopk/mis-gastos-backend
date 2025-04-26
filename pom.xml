@@ -65,6 +65,24 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
         </dependency>
+
+        <!-- Google -->
+
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-tasks</artifactId>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>
@@ -101,6 +119,27 @@
                 <artifactId>mariadb-java-client</artifactId>
                 <version>3.5.2</version>
             </dependency>
+
+            <!-- Google -->
+
+            <dependency>
+                <groupId>com.google.api-client</groupId>
+                <artifactId>google-api-client</artifactId>
+                <version>2.7.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.oauth-client</groupId>
+                <artifactId>google-oauth-client-jetty</artifactId>
+                <version>1.39.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.apis</groupId>
+                <artifactId>google-api-services-tasks</artifactId>
+                <version>v1-rev20250415-2.0.0</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
