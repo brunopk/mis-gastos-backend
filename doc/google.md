@@ -31,7 +31,7 @@ In order to use Google Tasks API, OAuth2 credentials for authorization code flow
     - Click **Create**.
 9. Find the client you just created. Under the Actions column, choose **Download OAuth client** (download icon), save this as `client_secret.json` into `src/main/resources`.
     
-     > Do not commit `client_secret.json`
+     > **Do not commit `client_secret.json`**
 
 <br>
 
