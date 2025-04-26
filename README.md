@@ -31,11 +31,17 @@ Home Assistant add-on which provides a REST API for [mis-gastos-web](https://git
     mvn spring-boot:run
     ```
 
-Database configuration is defined in `spring.datasource` within `src/main/resources/application.yaml`. Optionally, to run some Spring tasks that use Google Tasks, for instance to create tasks on Google to notify about spending, it is necessary to configure credentials as described in [this](doc/google.md) documentation.
+Optionally, to run some Spring tasks that use Google Tasks, for instance to create tasks on Google to notify about spending, it is necessary to configure credentials as described in [this](doc/google.md) documentation.
 
 ## Configuration
 
-To change log-level set `logging.level.<PACKAGE-NAME>: <LEVEL>` on `src/main/resources/application.yaml`. Install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.
+Configuration file (Spring properties) is `src/main/resources/application.yaml`.
+
+- To change log-level set `logging.level.<PACKAGE-NAME>: <LEVEL>`
+- Database configuration is defined in `spring.datasource`
+
+
+Install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.
 
 ## Building
 
