@@ -1,7 +1,8 @@
 # Google credentials configuration
 
-In order to use Google Tasks API, OAuth2 credentials for authorization code flow must be configured. One way to this is by following these steps based on the [steps to configure Home Assistant Google Tasks integration](https://www.home-assistant.io/integrations/google_tasks/):
+In order to use Google Tasks API, OAuth2 credentials for authorization code flow must be configured. One way to do this is by following these steps based on the [steps to configure Home Assistant Google Tasks integration](https://www.home-assistant.io/integrations/google_tasks/):
 
+<br><br>
 
 1. First, go to the [Google Developers Console](https://console.cloud.google.com/) to enable [Google Tasks API](https://console.cloud.google.com/apis/enableflow?apiid=tasks.googleapis.com).
 2. Select **Create project**, enter a project name and select **Create**.
@@ -32,6 +33,7 @@ In order to use Google Tasks API, OAuth2 credentials for authorization code flow
     
      > Do not commit `client_secret.json`
 
+<br><br>
 
 Instead of setting **External** for Audience as described in step 6, another option is to set **Internal** and then under **Test users** adding the same Google account that will be used for Google Tasks (Google email address). This will allow the account as a testing user (not for real production environment).
 
