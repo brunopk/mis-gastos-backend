@@ -9,6 +9,7 @@ Home Assistant add-on which provides a REST API for [mis-gastos-web](https://git
 - MariaDB Home Assistant add-on
 - [TODO]
 
+### Steps to install and run the add-on
 
 1. [Configure Google credentials](doc/google.md) 
 2. [TODO]
@@ -31,7 +32,7 @@ Home Assistant add-on which provides a REST API for [mis-gastos-web](https://git
     mvn spring-boot:run
     ```
 
-Database configuration is defined in `spring.datasource` within `src/main/resources/application.yaml`. Optionally, to run some Spring tasks that uses Google Tasks, for instance to create tasks to notify about spending, it is necessary to configure credentials as described in [this](doc/google.md) documentation.
+Database configuration is defined in `spring.datasource` within `src/main/resources/application.yaml`. Optionally, to run some Spring tasks that use Google Tasks, for instance to create tasks on Google to notify about spending, it is necessary to configure credentials as described in [this](doc/google.md) documentation.
 
 ## Configuration
 
