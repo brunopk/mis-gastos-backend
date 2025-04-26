@@ -27,7 +27,6 @@ Home Assistant add-on which provides a REST API for [mis-gastos-web](https://git
 1. Create database (see `doc/db.md`).
 2. Configure database
 3. Start the server :
-
     ```bash
     mvn spring-boot:run
     ```
