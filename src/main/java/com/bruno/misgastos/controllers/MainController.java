@@ -8,9 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.io.IOException;
 import java.util.List;
+
+// TODO: create a SpendController (and SpendService)
 
 @RestController
 public class MainController {
@@ -26,32 +27,32 @@ public class MainController {
     }
 
     @GetMapping("/categories")
-    public ResponseEntity<List<Category>> getCategories() {
-        List<Category> categories = mainService.getCategories();
+    public ResponseEntity<List<CategoryDTO>> getCategories() {
+        List<CategoryDTO> categories = mainService.getCategories();
         return new ResponseEntity<>(categories, HttpStatus.OK);
     }
 
     @GetMapping("/subcategories")
-    public ResponseEntity<List<Subcategory>> getSubcategories() {
-        List<Subcategory> subcategories = mainService.getSubcategories();
+    public ResponseEntity<List<SubcategoryDTO>> getSubcategories() {
+        List<SubcategoryDTO> subcategories = mainService.getSubcategories();
         return new ResponseEntity<>(subcategories, HttpStatus.OK);
     }
 
     @GetMapping("/groups")
-    public ResponseEntity<List<Group>> getGroups() {
-        List<Group> groups = mainService.getGroups();
+    public ResponseEntity<List<GroupDTO>> getGroups() {
+        List<GroupDTO> groups = mainService.getGroups();
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
 
     @GetMapping("/accounts")
-    public ResponseEntity<List<Account>> getAccounts() {
-        List<Account> groups = mainService.getAccounts();
+    public ResponseEntity<List<AccountDTO>> getAccounts() {
+        List<AccountDTO> groups = mainService.getAccounts();
         return new ResponseEntity<>(groups, HttpStatus.OK);
     }
 
     @GetMapping("/spends")
-    public ResponseEntity<List<Spend>> getSpends() {
-        List<Spend> spends = mainService.getSpends();
+    public ResponseEntity<List<SpendDTO>> getSpends() {
+        List<SpendDTO> spends = mainService.getSpends();
         return new ResponseEntity<>(spends, HttpStatus.OK);
     }
 
