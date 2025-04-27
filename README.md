@@ -33,6 +33,12 @@ Home Assistant add-on which provides a REST API for [mis-gastos-web](https://git
 
 Optionally, to run some Spring tasks that use Google Tasks, for instance to create tasks on Google to notify about spending, it is necessary to configure credentials as described in [this](doc/google.md) documentation.
 
+To use Checkstyle for linting: 
+
+```bash
+mvn checkstyle:check
+```
+
 ## Configuration
 
 Configuration file (Spring properties) is `src/main/resources/application.yaml`.
