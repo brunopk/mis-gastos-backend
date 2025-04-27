@@ -1,58 +1,81 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dao.*;
 import com.bruno.misgastos.dto.*;
-import org.springframework.stereotype.Service;
+import com.bruno.misgastos.respositories.*;
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 @Service
 public class MainServiceImpl implements MainService {
 
-  private final CategoryDAO categoryDAO;
+  private final CategorySpringDataRepository categoryRepository;
 
-  private final SubcategoryDAO subcategoryDAO;
+  private final SubcategorySpringDataRepository subcategoryRepository;
 
-  private final GroupDAO groupDAO;
+  private final GroupSpringDataRepository groupRepository;
 
-  private final AccountDAO accountDAO;
+  private final AccountSpringDataRepository accountRepository;
 
-  private final SpendDAO spendDAO;
+  private final SpendSpringDataRepository spendRepository;
 
   public MainServiceImpl(
-      CategoryDAO categoryDAO,
-      SubcategoryDAO subcategoryDAO,
-      GroupDAO groupDAO,
-      AccountDAO accountDAO,
-      SpendDAO spendDAO) {
-    this.categoryDAO = categoryDAO;
-    this.subcategoryDAO = subcategoryDAO;
-    this.groupDAO = groupDAO;
-    this.accountDAO = accountDAO;
-    this.spendDAO = spendDAO;
+      CategorySpringDataRepository categoryRepository,
+      SubcategorySpringDataRepository subcategoryRepository,
+      GroupSpringDataRepository groupRepository,
+      AccountSpringDataRepository accountRepository,
+      SpendSpringDataRepository spendRepository) {
+    this.categoryRepository = categoryRepository;
+    this.subcategoryRepository = subcategoryRepository;
+    this.groupRepository = groupRepository;
+    this.accountRepository = accountRepository;
+    this.spendRepository = spendRepository;
   }
 
   @Override
-  public List<Category> getCategories() {
-    return categoryDAO.list();
+  public List<CategoryDTO> getCategories() {
+    return categoryRepository.findAll().stream()
+        .map(category -> new CategoryDTO(category.getId(), category.getName()))
+        .toList();
   }
 
   @Override
-  public List<Subcategory> getSubcategories() {
-    return subcategoryDAO.list();
+  public List<SubcategoryDTO> getSubcategories() {
+    return subcategoryRepository.findAll().stream()
+        .map(
+            subcategory ->
+                new SubcategoryDTO(
+                    subcategory.getId(), subcategory.getName(), subcategory.getCategoryId()))
+        .toList();
   }
 
   @Override
-  public List<Group> getGroups() {
-    return groupDAO.list();
+  public List<GroupDTO> getGroups() {
+    return groupRepository.findAll().stream()
+        .map(group -> new GroupDTO(group.getId(), group.getName(), group.getSubcategoryId()))
+        .toList();
   }
 
   @Override
-  public List<Account> getAccounts() {
-    return accountDAO.list();
+  public List<AccountDTO> getAccounts() {
+    return accountRepository.findAll().stream()
+        .map(account -> new AccountDTO(account.getId(), account.getName()))
+        .toList();
   }
 
   @Override
-  public List<Spend> getSpends() {
-    return spendDAO.list();
+  public List<SpendDTO> getSpends() {
+    return spendRepository.findAll().stream()
+        .map(
+            spend ->
+                new SpendDTO(
+                    spend.getId(),
+                    spend.getDate(),
+                    spend.getCategoryId(),
+                    spend.getSubcategoryId(),
+                    spend.getSubcategoryId(),
+                    spend.getGroupId(),
+                    spend.getDescription(),
+                    spend.getValue()))
+        .toList();
   }
 }

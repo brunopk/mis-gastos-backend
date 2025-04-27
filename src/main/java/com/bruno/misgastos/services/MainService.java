@@ -6,13 +6,13 @@ import java.util.List;
 
 public interface MainService {
 
-    List<Category> getCategories();
+    List<CategoryDTO> getCategories();
 
-    List<Subcategory> getSubcategories();
+    List<SubcategoryDTO> getSubcategories();
 
-    List<Group> getGroups();
+    List<GroupDTO> getGroups();
 
-    List<Account> getAccounts();
+    List<AccountDTO> getAccounts();
 
-    List<Spend> getSpends();
+    List<SpendDTO> getSpends();
 }
