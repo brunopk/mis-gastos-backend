@@ -23,7 +23,7 @@ INSERT INTO `group`(category_id, subcategory_id, name) VALUES (1, 1, 'Gas'), (1,
 INSERT INTO `account`(name) VALUES ('My bank');
 
 /**
- * Note that this tuple won't be inserted because it fails '' constraint : 
+ * Note that this tuple won't be inserted because it fails 'fk_group_subcategory' constraint :
  * 
  * 	('2025-03-29', 1, 2, 1, 1, 10, 'Test 2')
  * 
