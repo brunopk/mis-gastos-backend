@@ -1,19 +1,19 @@
 package com.bruno.misgastos.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
 public class Spend {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private final Integer id;
 
+  @Column(nullable = false)
   private final Date date;
 
-  @Column(name = "category_id")
+  @Column(name = "category_id", nullable = false)
   private final Integer categoryId;
 
   @Column(name = "subcategory_id")
@@ -22,9 +22,31 @@ public class Spend {
   @Column(name = "group_id")
   private final Integer groupId;
 
+  @Column(name = "account_id", nullable = false)
+  private final Integer accountId;
+
   private final String description;
 
+  @Column(nullable = false)
   private final Double value;
+
+  public Spend(
+      Date date,
+      Integer categoryId,
+      Integer subcategoryId,
+      Integer groupId,
+      Integer accountId,
+      String description,
+      double value) {
+    this.id = null;
+    this.date = date;
+    this.categoryId = categoryId;
+    this.subcategoryId = subcategoryId;
+    this.groupId = groupId;
+    this.accountId = accountId;
+    this.description = description;
+    this.value = value;
+  }
 
   Spend() {
     this.id = null;
@@ -32,6 +54,7 @@ public class Spend {
     this.categoryId = null;
     this.subcategoryId = null;
     this.groupId = null;
+    this.accountId = null;
     this.description = null;
     this.value = null;
   }
@@ -54,6 +77,10 @@ public class Spend {
 
   public Integer getGroupId() {
     return groupId;
+  }
+
+  public Integer getAccountId() {
+    return accountId;
   }
 
   public String getDescription() {

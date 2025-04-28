@@ -3,15 +3,13 @@ package com.bruno.misgastos.controllers;
 import com.bruno.misgastos.dto.*;
 import com.bruno.misgastos.services.GoogleTasksService;
 import com.bruno.misgastos.services.MainService;
+import java.io.IOException;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.io.IOException;
-import java.util.List;
-
-// TODO: create a SpendController (and SpendService)
 
 @RestController
 public class MainController {
@@ -48,12 +46,6 @@ public class MainController {
     public ResponseEntity<List<AccountDTO>> getAccounts() {
         List<AccountDTO> groups = mainService.getAccounts();
         return new ResponseEntity<>(groups, HttpStatus.OK);
-    }
-
-    @GetMapping("/spends")
-    public ResponseEntity<List<SpendDTO>> getSpends() {
-        List<SpendDTO> spends = mainService.getSpends();
-        return new ResponseEntity<>(spends, HttpStatus.OK);
     }
 
     @GetMapping("/test-google-task")

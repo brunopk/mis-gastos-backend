@@ -61,21 +61,4 @@ public class MainServiceImpl implements MainService {
         .map(account -> new AccountDTO(account.getId(), account.getName()))
         .toList();
   }
-
-  @Override
-  public List<SpendDTO> getSpends() {
-    return spendRepository.findAll().stream()
-        .map(
-            spend ->
-                new SpendDTO(
-                    spend.getId(),
-                    spend.getDate(),
-                    spend.getCategoryId(),
-                    spend.getSubcategoryId(),
-                    spend.getSubcategoryId(),
-                    spend.getGroupId(),
-                    spend.getDescription(),
-                    spend.getValue()))
-        .toList();
-  }
 }
