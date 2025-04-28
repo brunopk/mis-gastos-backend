@@ -50,7 +50,7 @@ CREATE TABLE `spend` (
     `account_id` INT UNSIGNED NOT NULL,
     `description` TEXT,
     `value` BIGINT UNSIGNED NOT NULL,
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT PRIMARY KEY (`id`),
     CONSTRAINT `fk_spend_account` 
         FOREIGN KEY `spend`(`account_id`) 
