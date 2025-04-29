@@ -7,10 +7,10 @@ import java.time.OffsetDateTime;
 
 public record SpendDTO(
     int id,
-    @NotNull OffsetDateTime date,
-    @NotNull @JsonProperty("category_id") Integer categoryId,
+    @NotNull(message = "date cannot be null") OffsetDateTime date,
+    @NotNull(message = "category cannot be null") @JsonProperty("category_id") Integer categoryId,
     @JsonProperty("subcategory_id") Integer subcategoryId,
     @JsonProperty("group_id") Integer groupId,
-    @NotNull @JsonProperty("account_id") Integer accountId,
+    @NotNull(message = "account cannot be null") @JsonProperty("account_id") Integer accountId,
     String description,
     @Min(value = 1, message = "Spend value must be greater than 0") double value) {}
