@@ -1,18 +1,24 @@
 # Mis gastos backend
 
-Home Assistant add-on which provides a REST API for [mis-gastos-web](https://github.com/brunopk/mis-gastos-web).
+Home Assistant add-on that provides a backend [mis-gastos-web](https://github.com/brunopk/mis-gastos-web).
 
-## Running Mis gastos with Home Assistant
+## Requirements
 
-### Requirements
+- [Home Assistant Add-on: MariaDB](https://github.com/home-assistant/addons/tree/master/mariadb)
+- [Home Assistant Add-on: NGINX Home Assistant SSL proxy](https://github.com/home-assistant/addons/tree/master/nginx_proxy)
 
-- MariaDB Home Assistant add-on
-- [TODO]
+Optionally but not required: 
 
-### Steps to install and run the add-on
+- [Home Assistant Add-on: Samba share](https://github.com/home-assistant/addons/tree/master/samba)
+- [Home Assistant Community Add-on: phpMyAdmin](https://github.com/hassio-addons/addon-phpmyadmin)
 
-1. [Configure Google credentials](doc/google.md) 
-2. [TODO]
+## Installation
+
+1. [Configure Google credentials](https://github.com/brunopk/mis-gastos-backend/doc/google.md)
+2. [Build the add-on with `build.sh`](https://github.com/brunopk/mis-gastos-backend/doc/building.md)
+3. Copy the content of `build/` folder into `addons/` folder of Home Assistant (you can use [Home Assistant Add-on: Samba share](https://github.com/home-assistant/addons/tree/master/samba))
+4. [Configure the database](https://github.com/brunopk/mis-gastos-backend/doc/db.md)
+5. [Configure NGINX Home Assistant SSL proxy](https://github.com/brunopk/mis-gastos-backend/doc/nginx.md)
 
 ## Development
 
@@ -60,3 +66,11 @@ mvn package
 - [SdkMan!](https://sdkman.io/)
 - [Tutorial: Making your first add-on](https://developers.home-assistant.io/docs/add-ons/tutorial)
 - [Google credentials configuration](/doc/google.md)
+- [Building Mis gastos](https://github.com/brunopk/mis-gastos-backend/doc/building.md)
+- [MariaDB configurations](https://github.com/brunopk/mis-gastos-backend/doc/db.md)
+- [NGINX Home Assistant SSL proxy configuration](https://github.com/brunopk/mis-gastos-backend/doc/nginx.md)
+- [Home Assistant Add-on: MariaDB](https://github.com/home-assistant/addons/tree/master/mariadb)
+- [Home Assistant Add-on: NGINX Home Assistant SSL proxy](https://github.com/home-assistant/addons/tree/master/nginx_proxy)
+- [Home Assistant Add-on: Samba share](https://github.com/home-assistant/addons/tree/master/samba)
+- [Home Assistant Community Add-on: phpMyAdmin](https://github.com/hassio-addons/addon-phpmyadmin)
+- [Restricting Access with HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/)
