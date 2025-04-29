@@ -1,4 +1,4 @@
-# Home Assistant Add-on: NGINX Home Assistant SSL proxy configuration
+# NGINX configuration
 
 To configure NGINX :
 
@@ -9,7 +9,7 @@ To configure NGINX :
      servers: nginx/*.conf
      ```
 
-     This will change Nginx to load configurations from `nginx/default/*.conf` instead of from `nginx_proxy_default*.conf` as default.
+     This will change NGINX to load configurations from `nginx/default/*.conf` instead of from `nginx_proxy_default*.conf` as default.
 2. Create a file named `mis_gastos_backend.conf` into `/share/nginx/default/` with this content:
      ```
      location /server/mis-gastos/api/ {
@@ -25,7 +25,7 @@ To configure NGINX :
      }
      ```
    
-     For more information see the `etc/nginx.conf` file within the [NGINX Home Assistant SSL proxy](https://github.com/home-assistant/addons/tree/master/nginx_proxy) Docker container to understand how this location is inserted into the proxy configuration
+     For more information open `etc/nginx.conf` file within the [NGINX Home Assistant SSL proxy](https://github.com/home-assistant/addons/tree/master/nginx_proxy) Docker container to understand how this NGINX location is inserted into the proxy configuration
 3. Create the `.htpasswd` into `/share/nginx/` :
      ```bash
      sudo htpasswd -c /etc/apache2/.htpasswd user1

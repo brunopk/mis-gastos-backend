@@ -6,7 +6,7 @@ To upload a custom add-on you can use [Home Assistant Add-on: Samba share](https
 - `config.yaml`
 - `run.sh`
 
-In addition to these files, Mis gastos add-on must contain the following files:
+In addition to these files, Mis gastos add-on **must contain** the following files:
 
 - `application-prod.yaml`
 - `icon.png`

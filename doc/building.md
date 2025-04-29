@@ -12,7 +12,7 @@ where:
 - `DB_NAME` is the database name
 - `DB_USER` is the database username 
 
-This will generate all required files into `build/` folder. As described in [Tutorial: Making your first add-on](https://developers.home-assistant.io/docs/add-ons/tutorial) all add-ons *must contain* at least the following files:
+This will generate all required files into `build/` folder. As described in [Tutorial: Making your first add-on](https://developers.home-assistant.io/docs/add-ons/tutorial) all add-ons **must contain** at least the following files:
 
 - `Dockerfile`
 - `config.yaml`
