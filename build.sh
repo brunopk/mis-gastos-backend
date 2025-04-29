@@ -38,7 +38,7 @@ echo "🐳 Generating Dockerfile"
 [ -e Dockerfile ] && cp Dockerfile build/
 sed_replace "ARG DB_USER=your_user" "ARG DB_USER=$DB_USER" build/Dockerfile
 sed_replace "ARG DB_PASS=your_password" "ARG DB_PASS=$DB_PASS" build/Dockerfile
-sed_replace "ARG DB_URL=jdbc:mariadb://localhost:3306/db_name" "ARG DB_URL=jdbc:mariadb://$DB_HOSTNAME:3306/$DB_NAME" build/Dockerfile
+sed_replace "ARG DB_URL=jdbc:mariadb://localhost:3306/db_name" "ARG DB_URL=jdbc:mariadb://$DB_HOSTNAME:3306/$DB_NAME?serverTimezone=UTC" build/Dockerfile
 
 echo "🖼️ Copying icon.png"
 [ -e icon.png ] && cp icon.png build/

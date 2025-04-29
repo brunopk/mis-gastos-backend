@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:mariadb://localhost:3306/misgastos
+    url: jdbc:mariadb://localhost:3306/misgastos?serverTimezone=UTC
     username: root
     password: root
     driver-class-name: org.mariadb.jdbc.Driver
