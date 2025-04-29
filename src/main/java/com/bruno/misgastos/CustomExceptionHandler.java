@@ -42,7 +42,7 @@ public class CustomExceptionHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ErrorDTO> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
     String errorMessage = extractErrorMessage(ex);
-    ErrorDTO body = new ErrorDTO(ErrorCode.METHOD_ARGUMENT_NOT_VALIDATED.name(), errorMessage);
+    ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), errorMessage);
     logger.debug(GENERIC_ERROR_LOG_MESSAGE, ex);
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
