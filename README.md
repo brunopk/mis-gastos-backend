@@ -15,10 +15,10 @@ Optionally but not required:
 ## Installation
 
 1. [Configure Google credentials](https://github.com/brunopk/mis-gastos-backend/doc/google.md)
-2. [Build the add-on with `build.sh`](https://github.com/brunopk/mis-gastos-backend/doc/building.md)
-3. Copy the content of `build/` folder into `addons/` folder of Home Assistant (you can use [Home Assistant Add-on: Samba share](https://github.com/home-assistant/addons/tree/master/samba))
-4. [Configure the database](https://github.com/brunopk/mis-gastos-backend/doc/db.md)
-5. [Configure NGINX Home Assistant SSL proxy](https://github.com/brunopk/mis-gastos-backend/doc/nginx.md)
+2. [Build the add-on with `build.sh`](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/building.md)
+3. [Upload the add-on to Home Assistant](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/ha_add_ons_upload.md)
+4. [Configure the database](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/db.md)
+5. [Configure NGINX Home Assistant SSL proxy](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/nginx.md)
 
 ## Development
 
@@ -65,10 +65,11 @@ mvn package
 
 - [SdkMan!](https://sdkman.io/)
 - [Tutorial: Making your first add-on](https://developers.home-assistant.io/docs/add-ons/tutorial)
-- [Google credentials configuration](/doc/google.md)
-- [Building Mis gastos](https://github.com/brunopk/mis-gastos-backend/doc/building.md)
-- [MariaDB configurations](https://github.com/brunopk/mis-gastos-backend/doc/db.md)
-- [NGINX Home Assistant SSL proxy configuration](https://github.com/brunopk/mis-gastos-backend/doc/nginx.md)
+- [Google credentials configuration](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/google.md)
+- [Uploading custom Home Assistant add-ons](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/ha_add_ons_upload.md)
+- [Building Mis gastos](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/building.md)
+- [Database configuration for Mis gastos](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/db.md)
+- [NGINX Home Assistant SSL proxy configuration](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/nginx.md)
 - [Home Assistant Add-on: MariaDB](https://github.com/home-assistant/addons/tree/master/mariadb)
 - [Home Assistant Add-on: NGINX Home Assistant SSL proxy](https://github.com/home-assistant/addons/tree/master/nginx_proxy)
 - [Home Assistant Add-on: Samba share](https://github.com/home-assistant/addons/tree/master/samba)
