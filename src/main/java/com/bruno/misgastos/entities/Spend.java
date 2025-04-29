@@ -1,7 +1,7 @@
 package com.bruno.misgastos.entities;
 
 import jakarta.persistence.*;
-import java.util.Date;
+import java.time.OffsetDateTime;
 
 @Entity
 public class Spend {
@@ -11,7 +11,7 @@ public class Spend {
   private final Integer id;
 
   @Column(nullable = false)
-  private final Date date;
+  private final OffsetDateTime date;
 
   @Column(name = "category_id", nullable = false)
   private final Integer categoryId;
@@ -31,7 +31,7 @@ public class Spend {
   private final Double value;
 
   public Spend(
-      Date date,
+      OffsetDateTime date,
       Integer categoryId,
       Integer subcategoryId,
       Integer groupId,
@@ -63,7 +63,7 @@ public class Spend {
     return this.id;
   }
 
-  public Date getDate() {
+  public OffsetDateTime getDate() {
     return date;
   }
 
