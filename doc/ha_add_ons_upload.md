@@ -1,4 +1,4 @@
-# Uploading Home Assistant custom add-ons 
+# Uploading custom add-ons 
 
 To upload a custom add-on you can use [Home Assistant Add-on: Samba share](https://github.com/home-assistant/addons/tree/master/samba). As described in [Tutorial: Making your first add-on](https://developers.home-assistant.io/docs/add-ons/tutorial) all add-ons *must contain* at least the following files:
 

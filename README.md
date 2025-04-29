@@ -14,11 +14,11 @@ Optionally but not required:
 
 ## Installation
 
-1. [Configure Google credentials](https://github.com/brunopk/mis-gastos-backend/doc/google.md)
+1. [Configure Google credentials](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/google.md)
 2. [Build the add-on with `build.sh`](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/building.md)
 3. [Upload the add-on to Home Assistant](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/ha_add_ons_upload.md)
 4. [Configure the database](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/db.md)
-5. [Configure NGINX Home Assistant SSL proxy](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/nginx.md)
+5. [Configure NGINX](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/nginx.md)
 
 ## Development
 

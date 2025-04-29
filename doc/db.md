@@ -1,4 +1,4 @@
-# Database
+# Database configuration
 
 ## Using MariaDB in Home Assistant
 
