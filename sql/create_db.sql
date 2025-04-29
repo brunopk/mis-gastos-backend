@@ -43,7 +43,7 @@ CREATE TABLE `group` (
 
 CREATE TABLE `spend` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL,
-	`date` DATE NOT NULL,
+	`date` TIMESTAMP NOT NULL,
     `category_id` INT UNSIGNED,
     `subcategory_id` INT UNSIGNED,
     `group_id` INT UNSIGNED,
