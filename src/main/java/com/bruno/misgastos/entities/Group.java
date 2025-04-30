@@ -5,6 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+// TODO: set "accounts" for this entity
+
+
 @Entity
 @Table(name = "\"group\"")
 public class Group {
