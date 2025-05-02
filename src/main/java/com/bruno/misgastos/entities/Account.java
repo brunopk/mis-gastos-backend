@@ -3,6 +3,8 @@ package com.bruno.misgastos.entities;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+// TODO: create new entities (spend_task, income, etc)
+
 @Entity
 public class Account {
 
