@@ -1,26 +1,30 @@
 package com.bruno.misgastos.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-
-// TODO: set "accounts" for this entity
+import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 public class Subcategory {
 
-  @Id
-  private final Integer id;
+  @Id private final Integer id;
 
   private final String name;
 
-  @Column(name="category_id")
+  @Column(name = "category_id")
   private final Integer categoryId;
+
+  @ManyToMany
+  @JoinTable(
+      name = "subcategory_account",
+      joinColumns = @JoinColumn(name = "subcategory_id"),
+      inverseJoinColumns = @JoinColumn(name = "account_id"))
+  private final List<Account> accounts;
 
   Subcategory() {
     this.id = null;
     this.name = null;
     this.categoryId = null;
+    this.accounts = null;
   }
 
   public Integer getId() {
@@ -33,5 +37,9 @@ public class Subcategory {
 
   public Integer getCategoryId() {
     return categoryId;
+  }
+
+  public List<Account> getAccounts() {
+    return accounts;
   }
 }
