@@ -4,32 +4,6 @@ CREATE DATABASE `misgastos`;
 
 USE `misgastos`;
 
-DROP TABLE IF EXISTS `income`;
-
-DROP TABLE IF EXISTS `spend`;
-
-DROP TABLE IF EXISTS `task_config`;
-
-DROP TABLE IF EXISTS `task`;
-
-DROP TABLE IF EXISTS `income_type_account`;
-
-DROP TABLE IF EXISTS `group_account`;
-
-DROP TABLE IF EXISTS `subcategory_account`;
-
-DROP TABLE IF EXISTS `category_account`;
-
-DROP TABLE IF EXISTS `group`;
-
-DROP TABLE IF EXISTS `subcategory`;
-
-DROP TABLE IF EXISTS `category`;
-
-DROP TABLE IF EXISTS `account`;
-
-DROP TABLE IF EXISTS `income_type`;
-
 CREATE TABLE `income_type` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	`name` VARCHAR(256)
@@ -110,7 +84,7 @@ CREATE TABLE `income_type_account` (
         REFERENCES `account`(`id`)
 );
 
-CREATE TABLE `task_config` (
+CREATE TABLE `scheduled_task_config` (
 	`id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	`task_type` ENUM('Automatic', 'Manual') NOT NULL,
     `send_task` TINYINT(1) NOT NULL,
@@ -139,12 +113,12 @@ CREATE TABLE `task` (
 	`google_task_id` VARCHAR(128),
 	`completed` TINYINT(1) NOT NULL DEFAULT 0,
     `spend_value` BIGINT UNSIGNED NOT NULL,
-    `task_config_id` INT UNSIGNED NOT NULL,
+    `config_id` INT UNSIGNED NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_task_task_config`
-        FOREIGN KEY `task`(`task_config_id`)
-        REFERENCES `task_config`(`id`)
+    CONSTRAINT `fk_task_scheduled_task_config`
+        FOREIGN KEY `task`(`config_id`)
+        REFERENCES `scheduled_task_config`(`id`)
 );
 
 CREATE TABLE `spend` (
@@ -164,7 +138,7 @@ CREATE TABLE `spend` (
     CONSTRAINT `fk_spend_group` 
     	FOREIGN KEY `spend`(`group_id`, `subcategory_id`, `category_id`) 
     	REFERENCES `group`(`id`, `subcategory_id`, `category_id`),
-    CONSTRAINT `fk_task`
+    CONSTRAINT `fk_spend_task`
         FOREIGN KEY `spend`(`task_id`)
         REFERENCES `task`(`id`)
 );
