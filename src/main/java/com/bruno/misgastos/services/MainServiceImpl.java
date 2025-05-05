@@ -17,15 +17,19 @@ public class MainServiceImpl implements MainService {
 
   private final AccountSpringDataRepository accountRepository;
 
+  private final IncomeTypeSpringDataRepository incomeTypeRepository;
+
   public MainServiceImpl(
       CategorySpringDataRepository categoryRepository,
       SubcategorySpringDataRepository subcategoryRepository,
       GroupSpringDataRepository groupRepository,
-      AccountSpringDataRepository accountRepository) {
+      AccountSpringDataRepository accountRepository,
+      IncomeTypeSpringDataRepository incomeTypeRepository) {
     this.categoryRepository = categoryRepository;
     this.subcategoryRepository = subcategoryRepository;
     this.groupRepository = groupRepository;
     this.accountRepository = accountRepository;
+    this.incomeTypeRepository = incomeTypeRepository;
   }
 
   @Override
@@ -70,6 +74,18 @@ public class MainServiceImpl implements MainService {
   public List<AccountDTO> getAccounts() {
     return accountRepository.findAll().stream()
         .map(account -> new AccountDTO(account.getId(), account.getName()))
+        .toList();
+  }
+
+  @Override
+  public List<IncomeTypeDTO> getIncomeTypes() {
+    return incomeTypeRepository.findAll().stream()
+        .map(
+            incomeType ->
+                new IncomeTypeDTO(
+                    incomeType.getId(),
+                    incomeType.getName(),
+                    incomeType.getAccounts().stream().map(Account::getId).toList()))
         .toList();
   }
 }

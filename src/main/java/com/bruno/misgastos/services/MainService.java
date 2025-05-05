@@ -5,11 +5,13 @@ import java.util.List;
 
 public interface MainService {
 
-    List<CategoryDTO> getCategories();
+  List<CategoryDTO> getCategories();
 
-    List<SubcategoryDTO> getSubcategories();
+  List<SubcategoryDTO> getSubcategories();
 
-    List<GroupDTO> getGroups();
+  List<GroupDTO> getGroups();
 
-    List<AccountDTO> getAccounts();
+  List<AccountDTO> getAccounts();
+
+  List<IncomeTypeDTO> getIncomeTypes();
 }
