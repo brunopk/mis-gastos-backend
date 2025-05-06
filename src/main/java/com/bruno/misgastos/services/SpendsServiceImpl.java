@@ -25,8 +25,8 @@ public class SpendsServiceImpl implements SpendsService {
                     spend.getDate(),
                     spend.getCategoryId(),
                     spend.getSubcategoryId(),
-                    spend.getSubcategoryId(),
                     spend.getGroupId(),
+                    spend.getAccountId(),
                     spend.getDescription(),
                     spend.getValue()))
         .toList();
