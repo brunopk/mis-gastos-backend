@@ -108,6 +108,8 @@ CREATE TABLE `scheduled_task_config` (
         REFERENCES `account`(`id`)
 );
 
+# TODO: rename to scheduled_task
+
 CREATE TABLE `task` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`google_task_id` VARCHAR(128),
