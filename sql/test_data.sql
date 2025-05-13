@@ -1,19 +1,5 @@
 USE `misgastos`;
 
-SET FOREIGN_KEY_CHECKS = 0;
-
-TRUNCATE TABLE `spend`;
-
-TRUNCATE TABLE `account`;
-
-TRUNCATE TABLE `group`; 
-
-TRUNCATE TABLE `subcategory`;
-
-TRUNCATE TABLE `category`;
-
-SET FOREIGN_KEY_CHECKS = 1;
-
 INSERT INTO `category`(name) VALUES ('Services'), ('Health care'), ('Entertainment');
 
 INSERT INTO `subcategory`(category_id, name) VALUES (1, 'Basic'), (1, 'Internet'), (2, 'Medicine');
@@ -40,15 +26,11 @@ INSERT INTO `group_account`(`group_id`, `account_id`) VALUES (2, 3);
  * 
  **/
 
-INSERT INTO `spend`(
-	date, 
-	category_id, 
-	subcategory_id, 
-	group_id, 
-	account_id, 
-	value, 
-	description
-) VALUES 
-	('2025-03-29', 1, 1, 1, 1, 10, 'Test 1'),
-	('2025-03-29', 2, NULL, NULL, 1, 10, 'Test 2'),
-	('2025-03-29', 2, 2, NULL, 1, 10, 'Test 3');
+INSERT INTO `spend`(date, category_id, subcategory_id, group_id, account_id, description, value) VALUES
+	('2025-03-29', 1, 1, 1, 1, 'Test 1', 10),
+	('2025-03-29', 2, NULL, NULL, 1, 'Test 2', 10),
+	('2025-03-29', 2, 2, NULL, 1, 'Test 3', 10);
+
+INSERT INTO `income`(date, income_type_id, account_id, spend_id, description, value) VALUES
+    ('2025-03-30', 1, 1, 1, 'Test 1', 1),
+    ('2025-03-30', 2, 1, NULL, 'Test 1', 100)
