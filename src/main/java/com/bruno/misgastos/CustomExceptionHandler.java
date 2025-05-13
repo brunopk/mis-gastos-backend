@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @ControllerAdvice
 public class CustomExceptionHandler {
@@ -22,6 +24,12 @@ public class CustomExceptionHandler {
   private static final String API_EXCEPTION_LOG_MESSAGE = "API exception";
 
   private static final String GENERIC_ERROR_LOG_MESSAGE = "Exception";
+
+  private static final String MISSING_PARAMETER_MESSAGE = "Missing parameter %s";
+
+  private static final String NO_RESOURCE_FOUND_EXCEPTION = "No resource found %s";
+
+  // Internal server error
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorDTO> handleException(Exception ex) {
@@ -37,6 +45,25 @@ public class CustomExceptionHandler {
       logger.error(API_EXCEPTION_LOG_MESSAGE, ex);
     else logger.debug(API_EXCEPTION_LOG_MESSAGE, ex);
     return new ResponseEntity<>(body, ex.getHttpStatus());
+  }
+
+  // Bad request
+  
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  public ResponseEntity<ErrorDTO> handleMissingServletRequestParameterException(
+      MissingServletRequestParameterException ex) {
+    String errorMessage = String.format(MISSING_PARAMETER_MESSAGE, ex.getParameterName());
+    ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), errorMessage);
+    logger.debug(errorMessage, ex);
+    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(NoResourceFoundException.class)
+  public ResponseEntity<ErrorDTO> handleNoResourceFoundException(NoResourceFoundException ex) {
+    String errorMessage = String.format(NO_RESOURCE_FOUND_EXCEPTION, ex.getResourcePath());
+    ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), errorMessage);
+    logger.debug(errorMessage, ex);
+    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
