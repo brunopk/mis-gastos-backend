@@ -108,9 +108,7 @@ CREATE TABLE `scheduled_task_config` (
         REFERENCES `account`(`id`)
 );
 
-# TODO: rename to scheduled_task
-
-CREATE TABLE `task` (
+CREATE TABLE `scheduled_task` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`google_task_id` VARCHAR(128),
 	`completed` TINYINT(1) NOT NULL DEFAULT 0,
@@ -144,11 +142,11 @@ CREATE TABLE `spend` (
         FOREIGN KEY `spend`(`task_id`)
         REFERENCES `task`(`id`)
 );
-
+ 
 CREATE TABLE `income` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`date` TIMESTAMP NOT NULL,
-	`income_type_id` INT UNSIGNED NOT NULL,
+	`income_type_id` INT UNSIGNED,
     `account_id` INT UNSIGNED NOT NULL,
     `spend_id` BIGINT UNSIGNED,
     `description` TEXT,
