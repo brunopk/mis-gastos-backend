@@ -7,3 +7,10 @@ spring:
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+scheduling:
+  task-scheduler:
+    pool-size: 1
+  task-executor:
+    core-pool-size: 1
+    max-pool-size: 5
+    queue-capacity: 5
