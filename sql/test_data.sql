@@ -18,6 +18,28 @@ INSERT INTO `subcategory_account`(`subcategory_id`, `account_id`) VALUES (3, 3);
 
 INSERT INTO `group_account`(`group_id`, `account_id`) VALUES (2, 3);
 
+INSERT INTO `scheduled_task_config`(
+    `scheduled_task_name`,
+    `scheduled_task_type`,
+    `class_name`,
+    `create_google_task`,
+    `send_mail`,
+    `category_id`,
+    `account_id`,
+    `spend_value`,
+    `cron_expression`
+) VALUES (
+    'test_scheduled_task_1',
+    'AUTOMATIC',
+    'RecurrentSpendScheduledTask',
+    0,
+    0,
+    1,
+    1,
+    10,
+    '0 * * * * *'
+);
+
 
 /**
  * Note that this tuple won't be inserted because it fails 'fk_group_subcategory' constraint :
@@ -26,11 +48,59 @@ INSERT INTO `group_account`(`group_id`, `account_id`) VALUES (2, 3);
  * 
  **/
 
-INSERT INTO `spend`(date, category_id, subcategory_id, group_id, account_id, description, value) VALUES
-	('2025-03-29', 1, 1, 1, 1, 'Test 1', 10),
-	('2025-03-29', 2, NULL, NULL, 1, 'Test 2', 10),
-	('2025-03-29', 2, 2, NULL, 1, 'Test 3', 10);
+INSERT INTO `spend`(
+    date,
+    category_id,
+    subcategory_id,
+    group_id,
+    account_id,
+    description,
+    value
+) VALUES (
+    '2025-03-29',
+    1,
+    1,
+    1,
+    1,
+    'Test 1',
+    10
+), (
+    '2025-03-29',
+    2,
+    NULL,
+    NULL,
+    1,
+    'Test 2',
+    10
+), (
+    '2025-03-29',
+    2,
+    2,
+    NULL,
+    1,
+    'Test 3',
+    10
+);
 
-INSERT INTO `income`(date, income_type_id, account_id, spend_id, description, value) VALUES
-    ('2025-03-30', 1, 1, 1, 'Test 1', 1),
-    ('2025-03-30', 2, 1, NULL, 'Test 1', 100)
+INSERT INTO `income`(
+    date,
+    income_type_id,
+    account_id,
+    spend_id,
+    description,
+    value
+) VALUES (
+    '2025-03-30',
+    1,
+    1,
+    1,
+    'Test 1',
+    1
+), (
+    '2025-03-30',
+    2,
+    1,
+    NULL,
+    'Test 1',
+    100
+)
