@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# TODO: copy Google credentials
+# TODO: update build script to receive JWT secret
 
 # Cross-platform sed replace
 sed_replace() {
