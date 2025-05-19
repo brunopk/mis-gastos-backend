@@ -29,6 +29,3 @@ build/
 
 ### Mac OS ###
 .DS_Store
-
-### Credentials ###
-src/main/resources/client_secret.json
