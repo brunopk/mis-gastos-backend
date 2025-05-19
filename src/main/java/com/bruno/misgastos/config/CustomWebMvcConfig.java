@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-@Profile("default")
+@Profile({"default", "local"})
 public class CustomWebMvcConfig implements WebMvcConfigurer {
 
   @Override
