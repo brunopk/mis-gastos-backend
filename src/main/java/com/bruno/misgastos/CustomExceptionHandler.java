@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -27,6 +28,8 @@ public class CustomExceptionHandler {
   private static final String GENERIC_ERROR_LOG_MESSAGE = "Exception";
 
   private static final String MISSING_PARAMETER_MESSAGE = "Missing parameter %s";
+
+  private static final String BODY_NOT_READABLE_MESSAGE = "Message not readable";
 
   private static final String NO_RESOURCE_FOUND_EXCEPTION = "No resource found %s";
 
@@ -65,6 +68,14 @@ public class CustomExceptionHandler {
     String errorMessage = String.format(MISSING_PARAMETER_MESSAGE, ex.getParameterName());
     ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), errorMessage);
     LOGGER.debug(errorMessage, ex);
+    return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  public ResponseEntity<ErrorDTO> handleHttpMessageNotReadableException(
+      HttpMessageNotReadableException ex) {
+    ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), BODY_NOT_READABLE_MESSAGE);
+    LOGGER.debug(BODY_NOT_READABLE_MESSAGE, ex);
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
 
