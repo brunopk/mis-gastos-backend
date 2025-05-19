@@ -21,6 +21,8 @@ public class OAuth2Controller {
 
   private final GoogleRestClient googleRestClient;
 
+  // TODO: CONTINUE implement custom JWT token creation
+
   // TODO: remove this (just for testing)
 
   private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
