@@ -1,6 +1,6 @@
 package com.bruno.misgastos.rest;
 
-import com.bruno.misgastos.dto.google.GoogleTokenRequestDTO;
+import com.bruno.misgastos.dto.GoogleTokenRequestDTO;
 
 import java.util.Map;
 
