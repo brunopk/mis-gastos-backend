@@ -34,7 +34,7 @@ Optionally but not required:
 2. Configure database
 3. Start the server :
     ```bash
-    mvn spring-boot:run
+    SPRING_PROFILES_ACTIVE=local mvn spring-boot:run
     ```
 
 Optionally, to run some Spring tasks that use Google Tasks, for instance to create tasks on Google to notify about spending, it is necessary to configure credentials as described in [this](doc/google.md) documentation.
