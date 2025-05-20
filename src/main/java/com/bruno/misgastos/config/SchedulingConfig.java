@@ -1,11 +1,12 @@
 package com.bruno.misgastos.config;
 
-import com.bruno.misgastos.entities.ScheduledTask;
 import com.bruno.misgastos.entities.ScheduledTaskConfig;
 import com.bruno.misgastos.respositories.ScheduledTaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.ScheduledTaskSpringDataRepository;
 import com.bruno.misgastos.scheduling.Scheduler;
 import com.bruno.misgastos.scheduling.tasks.AbstractScheduledTask;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 @Configuration
 public class SchedulingConfig {

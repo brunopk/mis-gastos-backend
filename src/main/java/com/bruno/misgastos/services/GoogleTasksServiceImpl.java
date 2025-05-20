@@ -11,6 +11,8 @@ import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 import java.io.IOException;
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,10 +22,16 @@ public class GoogleTasksServiceImpl implements GoogleTasksService {
 
   private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
+  private final GoogleAuthService googleAuthService;
+
+  @Autowired
+  public GoogleTasksServiceImpl(GoogleAuthService googleAuthService) {
+    this.googleAuthService = googleAuthService;
+  }
+
   @Override
-  public void test() throws IOException {
-    Credential credential = new Credential(BearerToken.authorizationHeaderAccessMethod())
-      .setAccessToken("");
+  public void test() throws IOException{
+    Credential credential = googleAuthService.getUserCredentials();
     
     Tasks service = new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
 

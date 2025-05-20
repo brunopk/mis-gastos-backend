@@ -128,6 +128,7 @@ CREATE TABLE `google_auth_token` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `access_token` VARCHAR(128),
     `refresh_token` VARCHAR(128),
+    `expires_in` BIGINT UNSIGNED NOT NULL,
     `revoked` TINYINT(1) NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -12,6 +12,7 @@ import java.time.ZoneOffset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: rename to AbstractTask
 public abstract class AbstractScheduledTask implements Runnable {
 
   private final Logger LOGGER = LoggerFactory.getLogger(AbstractScheduledTask.class);

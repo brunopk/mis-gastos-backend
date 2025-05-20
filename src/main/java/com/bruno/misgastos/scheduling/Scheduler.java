@@ -6,6 +6,8 @@ import org.springframework.scheduling.support.CronTrigger;
 
 // TODO: move tasks package to com.bruno.misgastos (no com.bruno.misgastos.scheduling)
 
+// TODO: remove this class (it's not necessary)
+
 public class Scheduler {
 
   private final TaskScheduler taskScheduler;
