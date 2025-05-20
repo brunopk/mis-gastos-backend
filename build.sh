@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# TODO: update build script to receive JWT secret
+# TODO: update build script to generate JWT_SECRET with openssl rand -base64 256
+
+# TODO: update build script to generate GOOGLE_TOKEN_ENCRYPTION_SECRET with openssl rand -base64 32
+
 
 # Cross-platform sed replace
 sed_replace() {

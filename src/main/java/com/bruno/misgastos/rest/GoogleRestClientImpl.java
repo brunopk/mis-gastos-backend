@@ -1,6 +1,7 @@
 package com.bruno.misgastos.rest;
 
 import com.bruno.misgastos.dto.GoogleTokenRequestDTO;
+import com.bruno.misgastos.dto.GoogleTokenResponseDTO;
 import com.bruno.misgastos.exceptions.RestClientException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -13,7 +14,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
-// TODO: get client id and redirect URI and client secret from properties ( to test just hardcode them)
+// TODO: get client id and redirect URI and client secret from properties ( to test just hardcode
+// them)
 
 @Component
 public class GoogleRestClientImpl implements GoogleRestClient {
@@ -28,7 +30,7 @@ public class GoogleRestClientImpl implements GoogleRestClient {
   }
 
   @Override
-  public Map<?, ?> getToken(GoogleTokenRequestDTO params) {
+  public GoogleTokenResponseDTO getToken(GoogleTokenRequestDTO params) {
     RestClient restClient = restClientBuilder.build();
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("grant_type", "authorization_code");
@@ -51,6 +53,6 @@ public class GoogleRestClientImpl implements GoogleRestClient {
                   new String(response.getBody().readAllBytes(), StandardCharsets.UTF_8);
               throw new RestClientException(BASE_URL, response.getStatusCode(), responseBody);
             })
-        .body(Map.class);
+        .body(GoogleTokenResponseDTO.class);
   }
 }

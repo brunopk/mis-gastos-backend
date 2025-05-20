@@ -124,6 +124,14 @@ CREATE TABLE `scheduled_task` (
         REFERENCES `scheduled_task_config`(`id`)
 );
 
+CREATE TABLE `google_auth_token` (
+    `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `access_token` VARCHAR(128),
+    `refresh_token` VARCHAR(128),
+    `revoked` TINYINT(1) NOT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE `spend` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`date` TIMESTAMP NOT NULL,

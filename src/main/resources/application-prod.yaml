@@ -7,3 +7,6 @@ spring:
 jwt:
   expiration: 3600
   secret: ${JWT_SECRET}
+google:
+  token-encryption:
+    secret: ${GOOGLE_TOKEN_ENCRYPTION_SECRET}

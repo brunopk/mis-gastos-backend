@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 // TODO: pluralize repository names
 
+// TODO: rename this file to AutocompleteServiceImpl
+
 @Service
 public class AutocompleteServiceImp implements AutocompleteService {
 

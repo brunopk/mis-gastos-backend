@@ -4,6 +4,8 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.support.CronTrigger;
 
+// TODO: move tasks package to com.bruno.misgastos (no com.bruno.misgastos.scheduling)
+
 public class Scheduler {
 
   private final TaskScheduler taskScheduler;

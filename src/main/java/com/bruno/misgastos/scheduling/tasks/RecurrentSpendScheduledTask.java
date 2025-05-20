@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 
 // TODO: continue
 
+// TODO: if the scheduled task fails due to credentials error , the whole application should catch the error and finish
+
+
 public class RecurrentSpendScheduledTask extends AbstractScheduledTask {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RecurrentSpendScheduledTask.class);

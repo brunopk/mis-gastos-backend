@@ -1,9 +1,8 @@
 package com.bruno.misgastos.rest;
 
 import com.bruno.misgastos.dto.GoogleTokenRequestDTO;
-
-import java.util.Map;
+import com.bruno.misgastos.dto.GoogleTokenResponseDTO;
 
 public interface GoogleRestClient {
-  Map<?, ?> getToken(GoogleTokenRequestDTO params);
+  GoogleTokenResponseDTO getToken(GoogleTokenRequestDTO params);
 }
