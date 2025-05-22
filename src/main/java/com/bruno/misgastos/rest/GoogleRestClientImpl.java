@@ -4,8 +4,8 @@ import com.bruno.misgastos.dto.GoogleTokenRequestDTO;
 import com.bruno.misgastos.dto.GoogleTokenResponseDTO;
 import com.bruno.misgastos.exceptions.RestClientException;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -14,15 +14,21 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 
-// TODO: get client id and redirect URI and client secret from properties ( to test just hardcode
-// them)
-
 @Component
 public class GoogleRestClientImpl implements GoogleRestClient {
 
+  private static final String BASE_URL = "https://oauth2.googleapis.com/token";
+
   private final RestClient.Builder restClientBuilder;
 
-  private static final String BASE_URL = "https://oauth2.googleapis.com/token";
+  @Value("${google.client-id}")
+  private String clientId;
+
+  @Value("${google.client-secret}")
+  private String clientSecret;
+
+  @Value("${google.redirect-uri}")
+  private String redirectUri;
 
   @Autowired
   public GoogleRestClientImpl(RestClient.Builder restClientBuilder) {
@@ -34,11 +40,11 @@ public class GoogleRestClientImpl implements GoogleRestClient {
     RestClient restClient = restClientBuilder.build();
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("grant_type", "authorization_code");
-    body.add("client_id", "asd");
-    body.add("client_secret", "asd");
+    body.add("client_id", clientId);
+    body.add("client_secret", clientSecret);
     body.add("code", params.authorizationCode());
     body.add("code_verifier", params.codeVerifier());
-    body.add("redirect_uri", "http://localhost:5173/login");
+    body.add("redirect_uri", redirectUri);
 
     return restClient
         .post()

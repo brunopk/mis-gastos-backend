@@ -4,6 +4,14 @@
 
 # TODO: update build script to generate GOOGLE_TOKEN_ENCRYPTION_SECRET with openssl rand -base64 32
 
+# TODO: ask user client id and store it in GOOGLE_CLIENT_ID
+
+# TODO: ask user client secret and store it in GOOGLE_CLIENT_SECRET
+
+# TODO: ask user redirect URI and store it in GOOGLE_REDIRECT_URI
+
+# TODO: ask user email and store it in GOOGLE_AUTHORIZED_EMAIL
+
 
 # Cross-platform sed replace
 sed_replace() {

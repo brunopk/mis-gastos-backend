@@ -4,6 +4,7 @@ import com.bruno.misgastos.dto.ErrorDTO;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.exceptions.RestClientException;
+import com.bruno.misgastos.exceptions.UnauthorizedException;
 import com.bruno.misgastos.utils.ErrorMessages;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -31,7 +32,22 @@ public class CustomExceptionHandler {
 
   private static final String BODY_NOT_READABLE_MESSAGE = "Message not readable";
 
+  private static final String GOOGLE_AUTH_ERROR_MESSAGE = "Unauthorized by Google";
+
+  private static final String GENERIC_AUTH_ERROR_MESSAGE = "Unauthorized";
+
+  private static final String REST_CLIENT_ERROR_MESSAGE = "REST client error";
+
   private static final String NO_RESOURCE_FOUND_EXCEPTION = "No resource found %s";
+
+  @ExceptionHandler(ApiException.class)
+  public ResponseEntity<ErrorDTO> handleApiException(ApiException ex) {
+    ErrorDTO body = new ErrorDTO(ex.getErrorCode().name(), ex.getMessage());
+    if (ex.getHttpStatus().value() >= HttpStatus.INTERNAL_SERVER_ERROR.value())
+      LOGGER.error(API_EXCEPTION_LOG_MESSAGE, ex);
+    else LOGGER.debug(API_EXCEPTION_LOG_MESSAGE, ex);
+    return new ResponseEntity<>(body, ex.getHttpStatus());
+  }
 
   // Internal server error
 
@@ -43,21 +59,11 @@ public class CustomExceptionHandler {
     return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
-  @ExceptionHandler(ApiException.class)
-  public ResponseEntity<ErrorDTO> handleApiException(ApiException ex) {
-    ErrorDTO body = new ErrorDTO(ex.getErrorCode().name(), ex.getMessage());
-    if (ex.getHttpStatus().value() >= HttpStatus.INTERNAL_SERVER_ERROR.value())
-      LOGGER.error(API_EXCEPTION_LOG_MESSAGE, ex);
-    else LOGGER.debug(API_EXCEPTION_LOG_MESSAGE, ex);
-    return new ResponseEntity<>(body, ex.getHttpStatus());
-  }
-
   @ExceptionHandler(RestClientException.class)
   public ResponseEntity<ErrorDTO> handleRestClientException(RestClientException ex) {
-    ErrorDTO body = new ErrorDTO(ex.getErrorCode().name(), ex.getMessage());
-    LOGGER.error(ex.getMessage());
-    LOGGER.debug("{} \n Response body: {}", ex.getMessage(), ex.getResponseBody());
-    return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+    ErrorDTO body = new ErrorDTO(ErrorCode.INTERNAL_SERVER_ERROR.name(), REST_CLIENT_ERROR_MESSAGE);
+    LOGGER.error(ex.getMessage(), ex);
+    return new ResponseEntity<>(body, ex.getHttpStatus());
   }
 
   // Bad request
@@ -94,6 +100,18 @@ public class CustomExceptionHandler {
     ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), errorMessage);
     LOGGER.debug(GENERIC_ERROR_LOG_MESSAGE, ex);
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+  }
+
+  // Unauthorized
+
+  @ExceptionHandler(UnauthorizedException.class)
+  public ResponseEntity<ErrorDTO> handleUnauthorizedException(UnauthorizedException ex) {
+    String userMessage =
+        ex.getErrorCode().equals(ErrorCode.GOOGLE_AUTH_ERROR)
+            ? GOOGLE_AUTH_ERROR_MESSAGE
+            : GENERIC_AUTH_ERROR_MESSAGE;
+    ErrorDTO body = new ErrorDTO(ErrorCode.UNAUTHORIZED.name(), userMessage);
+    return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
   }
 
   private String extractErrorMessage(MethodArgumentNotValidException ex) {
