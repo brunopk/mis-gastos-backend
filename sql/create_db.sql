@@ -129,7 +129,6 @@ CREATE TABLE `google_auth_token` (
     `access_token` VARCHAR(512),
     `refresh_token` VARCHAR(512),
     `expires_in` BIGINT UNSIGNED NOT NULL,
-    `revoked` TINYINT(1) NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

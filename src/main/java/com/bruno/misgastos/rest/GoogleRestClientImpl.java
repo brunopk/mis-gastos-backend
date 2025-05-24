@@ -2,6 +2,7 @@ package com.bruno.misgastos.rest;
 
 import com.bruno.misgastos.dto.GoogleTokenRequestDTO;
 import com.bruno.misgastos.dto.GoogleTokenResponseDTO;
+import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDTO;
 import com.bruno.misgastos.exceptions.RestClientException;
 import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import org.springframework.web.client.RestClient;
 @Component
 public class GoogleRestClientImpl implements GoogleRestClient {
 
-  private static final String BASE_URL = "https://oauth2.googleapis.com/token";
+  private static final String BASE_URL = "https://oauth2.googleapis.com";
 
   private final RestClient.Builder restClientBuilder;
 
@@ -38,6 +39,9 @@ public class GoogleRestClientImpl implements GoogleRestClient {
   @Override
   public GoogleTokenResponseDTO getToken(GoogleTokenRequestDTO params) {
     RestClient restClient = restClientBuilder.build();
+
+    String url = String.format("%s/token", BASE_URL);
+
     MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
     body.add("grant_type", "authorization_code");
     body.add("client_id", clientId);
@@ -48,7 +52,7 @@ public class GoogleRestClientImpl implements GoogleRestClient {
 
     return restClient
         .post()
-        .uri(BASE_URL)
+        .uri(url)
         .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED.toString())
         .body(body)
         .retrieve()
@@ -60,5 +64,33 @@ public class GoogleRestClientImpl implements GoogleRestClient {
               throw new RestClientException(BASE_URL, response.getStatusCode(), responseBody);
             })
         .body(GoogleTokenResponseDTO.class);
+  }
+
+  @Override
+  public GoogleTokenResponseDTO refreshToken(RefreshTokenRequestDTO params) {
+    RestClient restClient = restClientBuilder.build();
+
+    String url = String.format("%s/token", BASE_URL);
+
+    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+    body.add("grant_type", "refresh_token");
+    body.add("client_id", clientId);
+    body.add("client_secret", clientSecret);
+    body.add("refresh_token", params.refreshToken());
+
+    return restClient
+      .post()
+      .uri(url)
+      .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED.toString())
+      .body(body)
+      .retrieve()
+      .onStatus(
+        HttpStatusCode::isError,
+        (request, response) -> {
+          String responseBody =
+            new String(response.getBody().readAllBytes(), StandardCharsets.UTF_8);
+          throw new RestClientException(BASE_URL, response.getStatusCode(), responseBody);
+        })
+      .body(GoogleTokenResponseDTO.class);
   }
 }

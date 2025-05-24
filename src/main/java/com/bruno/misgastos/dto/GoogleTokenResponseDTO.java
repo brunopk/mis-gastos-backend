@@ -1,5 +1,7 @@
 package com.bruno.misgastos.dto;
 
+// TODO: move this to com.bruno.misgastos.dto.rest.google and rename to GetTokenResponseDTO
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record GoogleTokenResponseDTO(

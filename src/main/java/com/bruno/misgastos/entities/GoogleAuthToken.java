@@ -18,8 +18,6 @@ public class GoogleAuthToken {
   @Column(name="expires_in")
   private final Long expiresIn;
 
-  private final Boolean revoked;
-
   @Column(name="created_at")
   private final OffsetDateTime createdAt;
 
@@ -28,7 +26,6 @@ public class GoogleAuthToken {
     this.accessToken = null;
     this.refreshToken = null;
     this.expiresIn = null;
-    this.revoked = null;
     this.createdAt = null;
   }
 
@@ -37,12 +34,15 @@ public class GoogleAuthToken {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.expiresIn = expiresIn;
-    this.revoked = false;
     this.createdAt = OffsetDateTime.now();
   }
 
   public String getAccessToken() {
     return accessToken;
+  }
+
+  public String getRefreshToken() {
+    return refreshToken;
   }
 
   public Long getExpiresIn() {

@@ -19,6 +19,7 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import jakarta.transaction.Transactional;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.OffsetDateTime;
@@ -32,8 +33,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
-
-// TODO: after generating new one, validate with an external service or something the last token in database is invalid
 
 @Service
 public class GoogleAuthServiceImpl implements GoogleAuthService {
@@ -62,7 +61,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
 
   private final String authorizedEmail;
 
-  private final SecretKey secret;
+  private final SecretKey encryptionSecret;
 
 
   @Autowired
@@ -70,7 +69,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
       TaskScheduler taskScheduler,
       GoogleAuthTokenSpringDataRepository googleAuthTokenRepository,
       GoogleRestClient googleRestClient,
-      @Value("${google.token-encryption.secret}") String secret,
+      @Value("${google.token-encryption.secret}") String encryptionSecret,
       @Value("${google.client-id}") String clientId,
       @Value("${google.authorized-email}") String authorizedEmail) {
     this.taskScheduler = taskScheduler;
@@ -78,7 +77,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
     this.googleRestClient = googleRestClient;
     this.clientId = clientId;
     this.authorizedEmail = authorizedEmail;
-    this.secret = new SecretKeySpec(Base64.getDecoder().decode(secret), "AES");
+    this.encryptionSecret = new SecretKeySpec(Base64.getDecoder().decode(encryptionSecret), "AES");
   }
 
   @Override
@@ -86,19 +85,19 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
     LOGGER.info("Obtaining token from Google");
     GoogleTokenResponseDTO resp = googleRestClient.getToken(request);
     return new GoogleAuthTokenDTO(
-        resp.accessToken(), resp.refreshToken(), resp.idToken(), resp.expiresIn(), false);
+        resp.accessToken(), resp.refreshToken(), resp.idToken(), resp.expiresIn());
   }
 
   @Override
+  @Transactional
   public void saveToken(GoogleAuthTokenDTO token) {
     try {
-      String encryptedAccessToken = EncryptionUtils.encryptString(secret, token.accessToken());
-      String encryptedRefreshToken = EncryptionUtils.encryptString(secret, token.refreshToken());
+      String encryptedAccessToken = EncryptionUtils.encryptString(encryptionSecret, token.accessToken());
+      String encryptedRefreshToken = EncryptionUtils.encryptString(encryptionSecret, token.refreshToken());
       GoogleAuthToken googleAuthToken =
           new GoogleAuthToken(encryptedAccessToken, encryptedRefreshToken, token.expiresIn());
-      // TODO: revoke last token
       googleAuthTokenRepository.save(googleAuthToken);
-
+      scheduleRefreshTask(token, googleRestClient, googleAuthTokenRepository, encryptionSecret);
     } catch (Exception ex) {
       throw new ApiException(
           HttpStatus.INTERNAL_SERVER_ERROR,
@@ -127,36 +126,35 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
   }
 
   @Override
-  public void scheduleRefreshTask(GoogleAuthTokenDTO token) {
-    OffsetDateTime taskTime =
-        OffsetDateTime.now().plusSeconds(token.expiresIn() - TOKEN_EXPIRATION_TOLERANCE);
-    GoogleTokenRefreshTask task = new GoogleTokenRefreshTask(token, googleAuthTokenRepository);
-    LOGGER.debug("Scheduling token refresh task at {}", taskTime);
-    taskScheduler.schedule(task, taskTime.toInstant());
-  }
-
-  @Override
   public Credential getUserCredentials() {
-    List<GoogleAuthToken> tokenList =
-        googleAuthTokenRepository.findByRevokedOrderByCreatedAtDesc(false);
-
-    if (tokenList.size() > 1)
-      throw new ApiException(
-          HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.GOOGLE_AUTH_ERROR, MULTIPLE_TOKENS_ERROR_MSG);
-
-    Optional<GoogleAuthToken> token = tokenList.stream().findFirst();
+    Optional<GoogleAuthToken> token = googleAuthTokenRepository.getLastActiveToken();
     if (token.isEmpty() || isExpired(token.get()))
       throw new ApiException(
           HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.GOOGLE_AUTH_ERROR, NO_VALID_TOKEN_FOUND);
 
     try {
-      String decryptedToken = EncryptionUtils.decryptString(secret, token.get().getAccessToken());
+      String decryptedToken =
+          EncryptionUtils.decryptString(encryptionSecret, token.get().getAccessToken());
       return new Credential(BearerToken.authorizationHeaderAccessMethod())
           .setAccessToken(decryptedToken);
     } catch (Exception ex) {
       throw new ApiException(
           HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.GOOGLE_AUTH_ERROR, GENERIC_ERROR_MSG);
     }
+  }
+
+  private void scheduleRefreshTask(
+      GoogleAuthTokenDTO token,
+      GoogleRestClient googleRestClient,
+      GoogleAuthTokenSpringDataRepository googleAuthTokenRepository,
+      SecretKey encryptionSecret) {
+    OffsetDateTime taskTime =
+        OffsetDateTime.now().plusSeconds(token.expiresIn() - TOKEN_EXPIRATION_TOLERANCE);
+    GoogleTokenRefreshTask task =
+        new GoogleTokenRefreshTask(
+            token, googleRestClient, googleAuthTokenRepository, encryptionSecret, taskScheduler);
+    LOGGER.debug("Scheduling token refresh task at {}", taskTime);
+    taskScheduler.schedule(task, taskTime.toInstant());
   }
 
   private boolean isExpired(GoogleAuthToken token) {
