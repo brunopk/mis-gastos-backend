@@ -75,7 +75,7 @@ INSERT INTO `spend`(
 ), (
     '2025-03-29',
     2,
-    2,
+    3,
     NULL,
     1,
     'Test 3',
