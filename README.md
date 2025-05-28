@@ -45,12 +45,15 @@ To use Checkstyle for linting:
 mvn checkstyle:check
 ```
 
+For more development tips, follow `doc/development.md`.
+
 ## Configuration
 
 Configuration file (Spring properties) is `src/main/resources/application.yaml`.
 
-- To change log-level set `logging.level.<PACKAGE-NAME>: <LEVEL>`
 - Database configuration is defined in `spring.datasource`
+- To change log-level set `logging.level.<PACKAGE-NAME>: <LEVEL>`
+- To set different session expiration times set `server.servlet.session.timeout` property (see `doc/development.yaml`)
 
 
 Install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.

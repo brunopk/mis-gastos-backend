@@ -88,27 +88,6 @@
             <groupId>com.google.apis</groupId>
             <artifactId>google-api-services-tasks</artifactId>
         </dependency>
-
-        <!-- Others -->
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-impl</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.jsonwebtoken</groupId>
-            <artifactId>jjwt-jackson</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
-
     </dependencies>
 
     <dependencyManagement>
@@ -172,27 +151,6 @@
                 <artifactId>google-api-services-tasks</artifactId>
                 <version>v1-rev20250415-2.0.0</version>
             </dependency>
-
-            <!-- Others -->
-
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-api</artifactId>
-                <version>${jsonwebtoken.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-impl</artifactId>
-                <version>${jsonwebtoken.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>io.jsonwebtoken</groupId>
-                <artifactId>jjwt-jackson</artifactId>
-                <version>${jsonwebtoken.version}</version>
-            </dependency>
-
 
         </dependencies>
     </dependencyManagement>

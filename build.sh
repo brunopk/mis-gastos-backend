@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# TODO: update build script to generate JWT_SECRET with openssl rand -base64 256
-
 # TODO: update build script to generate GOOGLE_TOKEN_ENCRYPTION_SECRET with openssl rand -base64 32
 
 # TODO: ask user client id and store it in GOOGLE_CLIENT_ID

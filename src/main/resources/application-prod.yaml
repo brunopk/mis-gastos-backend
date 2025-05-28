@@ -4,9 +4,6 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASS}
     driver-class-name: org.mariadb.jdbc.Driver
-jwt:
-  expiration: 3600
-  secret: ${JWT_SECRET}
 google:
   client-id: ${GOOGLE_CLIENT_ID}
   client-secret: ${GOOGLE_CLIENT_SECRET}

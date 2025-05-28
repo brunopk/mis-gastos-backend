@@ -3,43 +3,38 @@ package com.bruno.misgastos.services;
 import com.bruno.misgastos.dto.GoogleAuthTokenDTO;
 import com.bruno.misgastos.dto.GoogleTokenRequestDTO;
 import com.bruno.misgastos.dto.Oauth2CallbackRequestDTO;
-import com.bruno.misgastos.dto.Oauth2CallbackResponseDTO;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.UnauthorizedException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
-import java.util.Base64;
-import java.util.Date;
-import javax.crypto.SecretKey;
+import java.util.Collections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OAuth2ServiceImpl implements OAuth2Service {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2ServiceImpl.class);
+
   private final GoogleAuthService googleAuthService;
 
-  private final long jwtExpiration;
-
-  private final SecretKey jwtSecret;
-
   @Autowired
-  public OAuth2ServiceImpl(
-      @Value("${jwt.secret}") String jwtSecret,
-      @Value("${jwt.expiration}") long jwtExpiration,
-      GoogleAuthService googleAuthService) {
-    this.jwtSecret = Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtSecret));
-    this.jwtExpiration = jwtExpiration;
+  public OAuth2ServiceImpl(GoogleAuthService googleAuthService) {
     this.googleAuthService = googleAuthService;
   }
 
   @Override
   @Transactional
-  public Oauth2CallbackResponseDTO authCallback(Oauth2CallbackRequestDTO request) {
-    String authorizationCode = request.authorizationCode();
-    String codeVerifier = request.codeVerifier();
+  public void authCallback(HttpServletRequest request, Oauth2CallbackRequestDTO body) {
+    String authorizationCode = body.authorizationCode();
+    String codeVerifier = body.codeVerifier();
 
     GoogleAuthTokenDTO googleToken =
         googleAuthService.getToken(new GoogleTokenRequestDTO(authorizationCode, codeVerifier));
@@ -47,11 +42,20 @@ public class OAuth2ServiceImpl implements OAuth2Service {
       throw new UnauthorizedException(ErrorCode.GOOGLE_AUTH_ERROR);
     googleAuthService.saveToken(googleToken);
 
-    Date now = new Date();
-    Date expirationTime = new Date(System.currentTimeMillis() + jwtExpiration * 60 * 1000);
-    String token =
-        Jwts.builder().setIssuedAt(now).setExpiration(expirationTime).signWith(jwtSecret).compact();
-
-    return new Oauth2CallbackResponseDTO(token);
+    // Creates a new session if it wasn't created before
+    // Spring identify sessions using JSESSIONID cookie
+    HttpSession session = request.getSession(true);
+    if (session.isNew()) {
+      LOGGER.info("New session created (ID= {})", session.getId());
+      UsernamePasswordAuthenticationToken authentication =
+          new UsernamePasswordAuthenticationToken(null, null, Collections.emptyList());
+      // If you only set SecurityContextHolder.getContext().setAuthentication() in the current
+      // request thread, but don’t store it in the session, the authentication will be lost on the
+      // next request.
+      SecurityContext securityContext = SecurityContextHolder.getContext();
+      securityContext.setAuthentication(authentication);
+      session.setAttribute(
+          HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, securityContext);
+    }
   }
 }
