@@ -2,7 +2,7 @@
 
 ## Authentication
 
-**JWT-based authentication is intended for production use**. If you want to test it in development, follow these steps:
+If you want to test authentication follow these steps:
 
 1. Swap `@Profile` annotations between `defaultSecurityFilterChain` and `prodSecurityFilterChain` in `src/main/java/com/bruno/misgastos/config/SecurityConfig.java` in order to use `prodSecurityFilterChain`
 2. Add CORS configuration: 
