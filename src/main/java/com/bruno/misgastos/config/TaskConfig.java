@@ -2,7 +2,6 @@ package com.bruno.misgastos.config;
 
 import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
-import com.bruno.misgastos.scheduling.Scheduler;
 import com.bruno.misgastos.scheduling.tasks.AbstractTask;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -14,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.support.CronTrigger;
 
 @Configuration
 public class TaskConfig {
@@ -51,20 +51,23 @@ public class TaskConfig {
   }
 
   @Bean
-  public TaskScheduler taskScheduler() {
-    ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
-    scheduler.setPoolSize(1);
-    scheduler.initialize();
-    return scheduler;
+  public TaskScheduler taskScheduler(
+      TaskSpringDataRepository taskRepository,
+      TaskConfigSpringDataRepository taskConfigRepository) {
+    ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+    taskScheduler.setPoolSize(1);
+    taskScheduler.initialize();
+
+    initializeTasks(taskScheduler, taskExecutor(), taskRepository, taskConfigRepository);
+
+    return taskScheduler;
   }
 
-  @Bean
-  public Scheduler scheduler(
+  private void initializeTasks(
       ThreadPoolTaskScheduler taskScheduler,
       ThreadPoolTaskExecutor taskExecutor,
       TaskSpringDataRepository taskRepository,
       TaskConfigSpringDataRepository taskConfigRepository) {
-    Scheduler scheduler = new Scheduler(taskScheduler, taskExecutor);
 
     LOGGER.info("Initializing scheduled tasks");
 
@@ -72,11 +75,19 @@ public class TaskConfig {
     for (com.bruno.misgastos.entities.TaskConfig taskConfig : taskConfigList) {
       String shortClassName = taskConfig.getClassName();
       AbstractTask task = getTaskInstance(shortClassName, taskConfig, taskRepository);
-      LOGGER.info("Scheduling {}", taskConfig.getTaskName());
-      scheduler.scheduleTask(taskConfig.getCronExpression(), task);
-    }
 
-    return scheduler;
+      LOGGER.info(
+          "Scheduling {} with CRON expression {}",
+          taskConfig.getTaskName(),
+          taskConfig.getCronExpression());
+
+      CronTrigger cronTrigger = new CronTrigger(taskConfig.getCronExpression());
+      taskScheduler.schedule(
+          () -> {
+            taskExecutor.execute(task);
+          },
+          cronTrigger);
+    }
   }
 
   private AbstractTask getTaskInstance(
