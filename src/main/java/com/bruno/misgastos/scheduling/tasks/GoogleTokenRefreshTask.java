@@ -1,7 +1,7 @@
 package com.bruno.misgastos.scheduling.tasks;
 
 import com.bruno.misgastos.dto.GoogleAuthTokenDTO;
-import com.bruno.misgastos.dto.rest.google.GetTokenResponseDTO;
+import com.bruno.misgastos.dto.rest.google.TokenDTO;
 import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDTO;
 import com.bruno.misgastos.entities.GoogleAuthToken;
 import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
@@ -58,7 +58,7 @@ public class GoogleTokenRefreshTask implements Runnable {
                         .getRefreshToken();
                 return EncryptionUtils.decryptString(encryptionSecret, encryptedRefreshToken);
               });
-      GetTokenResponseDTO resp =
+      TokenDTO resp =
           googleRestClient.refreshToken(new RefreshTokenRequestDTO(refreshToken));
       GoogleAuthTokenDTO newToken = saveToken(resp, encryptionSecret);
       scheduleRefreshTask(newToken, googleRestClient, googleAuthTokenRepository, encryptionSecret);
@@ -68,7 +68,7 @@ public class GoogleTokenRefreshTask implements Runnable {
     }
   }
 
-  private GoogleAuthTokenDTO saveToken(GetTokenResponseDTO resp, SecretKey encryptionSecret) {
+  private GoogleAuthTokenDTO saveToken(TokenDTO resp, SecretKey encryptionSecret) {
     String encryptedAccessToken =
         EncryptionUtils.encryptString(encryptionSecret, resp.accessToken());
     GoogleAuthToken googleAuthToken =

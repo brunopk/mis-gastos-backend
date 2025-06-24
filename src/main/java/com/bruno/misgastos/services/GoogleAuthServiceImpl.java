@@ -2,7 +2,7 @@ package com.bruno.misgastos.services;
 
 import com.bruno.misgastos.dto.GoogleAuthTokenDTO;
 import com.bruno.misgastos.dto.rest.google.GetTokenRequestDTO;
-import com.bruno.misgastos.dto.rest.google.GetTokenResponseDTO;
+import com.bruno.misgastos.dto.rest.google.TokenDTO;
 import com.bruno.misgastos.entities.GoogleAuthToken;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.ApiException;
@@ -83,7 +83,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
   @Override
   public GoogleAuthTokenDTO getToken(GetTokenRequestDTO request) {
     LOGGER.info("Obtaining token from Google");
-    GetTokenResponseDTO resp = googleRestClient.getToken(request);
+    TokenDTO resp = googleRestClient.getToken(request);
     return new GoogleAuthTokenDTO(
         resp.accessToken(), resp.refreshToken(), resp.idToken(), resp.expiresIn());
   }

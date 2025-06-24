@@ -1,7 +1,7 @@
 package com.bruno.misgastos.rest;
 
 import com.bruno.misgastos.dto.rest.google.GetTokenRequestDTO;
-import com.bruno.misgastos.dto.rest.google.GetTokenResponseDTO;
+import com.bruno.misgastos.dto.rest.google.TokenDTO;
 import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDTO;
 import com.bruno.misgastos.exceptions.RestClientException;
 import java.nio.charset.StandardCharsets;
@@ -37,7 +37,7 @@ public class GoogleRestClientImpl implements GoogleRestClient {
   }
 
   @Override
-  public GetTokenResponseDTO getToken(GetTokenRequestDTO params) {
+  public TokenDTO getToken(GetTokenRequestDTO params) {
     RestClient restClient = restClientBuilder.build();
 
     String url = String.format("%s/token", BASE_URL);
@@ -63,11 +63,11 @@ public class GoogleRestClientImpl implements GoogleRestClient {
                   new String(response.getBody().readAllBytes(), StandardCharsets.UTF_8);
               throw new RestClientException(BASE_URL, response.getStatusCode(), responseBody);
             })
-        .body(GetTokenResponseDTO.class);
+        .body(TokenDTO.class);
   }
 
   @Override
-  public GetTokenResponseDTO refreshToken(RefreshTokenRequestDTO params) {
+  public TokenDTO refreshToken(RefreshTokenRequestDTO params) {
     RestClient restClient = restClientBuilder.build();
 
     String url = String.format("%s/token", BASE_URL);
@@ -91,6 +91,6 @@ public class GoogleRestClientImpl implements GoogleRestClient {
             new String(response.getBody().readAllBytes(), StandardCharsets.UTF_8);
           throw new RestClientException(BASE_URL, response.getStatusCode(), responseBody);
         })
-      .body(GetTokenResponseDTO.class);
+      .body(TokenDTO.class);
   }
 }
