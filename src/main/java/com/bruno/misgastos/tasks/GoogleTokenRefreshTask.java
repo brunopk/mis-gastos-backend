@@ -1,8 +1,8 @@
-package com.bruno.misgastos.scheduling.tasks;
+package com.bruno.misgastos.tasks;
 
 import com.bruno.misgastos.dto.GoogleAuthTokenDTO;
-import com.bruno.misgastos.dto.rest.google.TokenDTO;
 import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDTO;
+import com.bruno.misgastos.dto.rest.google.TokenDTO;
 import com.bruno.misgastos.entities.GoogleAuthToken;
 import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
 import com.bruno.misgastos.rest.GoogleRestClient;

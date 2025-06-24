@@ -8,7 +8,7 @@ import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
 import com.bruno.misgastos.rest.GoogleRestClient;
-import com.bruno.misgastos.scheduling.tasks.GoogleTokenRefreshTask;
+import com.bruno.misgastos.tasks.GoogleTokenRefreshTask;
 import com.bruno.misgastos.utils.EncryptionUtils;
 import com.bruno.misgastos.utils.ErrorMessages;
 import com.google.api.client.auth.oauth2.BearerToken;

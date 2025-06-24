@@ -2,7 +2,7 @@ package com.bruno.misgastos.config;
 
 import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
-import com.bruno.misgastos.scheduling.tasks.AbstractTask;
+import com.bruno.misgastos.tasks.AbstractTask;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import org.slf4j.Logger;

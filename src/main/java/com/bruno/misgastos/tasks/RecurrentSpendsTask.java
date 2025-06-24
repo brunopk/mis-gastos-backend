@@ -1,4 +1,4 @@
-package com.bruno.misgastos.scheduling.tasks;
+package com.bruno.misgastos.tasks;
 
 import com.bruno.misgastos.entities.Task;
 import com.bruno.misgastos.entities.TaskConfig;
