@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
 @Entity
-public class ScheduledTask {
+public class Task {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +19,8 @@ public class ScheduledTask {
   @Column(name = "spend_value", nullable = false)
   private final Double spendValue;
 
-  @Column(name = "scheduled_task_config_id", nullable = false)
-  private final Integer scheduledTaskConfigId;
+  @Column(name = "task_config_id", nullable = false)
+  private final Integer taskConfigId;
 
   @Column(name = "created_at", nullable = false)
   private final OffsetDateTime createdAt;
@@ -31,23 +31,23 @@ public class ScheduledTask {
   @Column(name = "finished_at")
   private OffsetDateTime finishedAt;
 
-  public ScheduledTask() {
+  public Task() {
     this.id = null;
     this.googleTaskId = null;
     this.completed = false;
     this.spendValue = null;
-    this.scheduledTaskConfigId = null;
+    this.taskConfigId = null;
     this.createdAt = null;
     this.updatedAt = null;
     this.finishedAt = null;
   }
 
-  public ScheduledTask(Integer scheduledTaskConfigId, Double spendValue) {
+  public Task(Integer taskConfigId, Double spendValue) {
     this.id = null;
     this.googleTaskId = null;
     this.completed = false;
     this.spendValue = spendValue;
-    this.scheduledTaskConfigId = scheduledTaskConfigId;
+    this.taskConfigId = taskConfigId;
     this.createdAt = OffsetDateTime.now();
     this.updatedAt = OffsetDateTime.now();
     this.finishedAt = null;

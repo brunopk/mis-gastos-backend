@@ -1,10 +1,9 @@
 package com.bruno.misgastos.config;
 
-import com.bruno.misgastos.entities.ScheduledTaskConfig;
-import com.bruno.misgastos.respositories.ScheduledTaskConfigSpringDataRepository;
-import com.bruno.misgastos.respositories.ScheduledTaskSpringDataRepository;
+import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
+import com.bruno.misgastos.respositories.TaskSpringDataRepository;
 import com.bruno.misgastos.scheduling.Scheduler;
-import com.bruno.misgastos.scheduling.tasks.AbstractScheduledTask;
+import com.bruno.misgastos.scheduling.tasks.AbstractTask;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -17,9 +16,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
-public class SchedulingConfig {
+public class TaskConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(SchedulingConfig.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TaskConfig.class);
 
   @Value("${scheduling.task-executor.core-pool-size}")
   private Integer TASK_EXECUTOR_CORE_POOL_SIZE;
@@ -63,43 +62,42 @@ public class SchedulingConfig {
   public Scheduler scheduler(
       ThreadPoolTaskScheduler taskScheduler,
       ThreadPoolTaskExecutor taskExecutor,
-      ScheduledTaskSpringDataRepository scheduledTaskRepository,
-      ScheduledTaskConfigSpringDataRepository scheduledTaskConfigRepository) {
+      TaskSpringDataRepository taskRepository,
+      TaskConfigSpringDataRepository taskConfigRepository) {
     Scheduler scheduler = new Scheduler(taskScheduler, taskExecutor);
 
     LOGGER.info("Initializing scheduled tasks");
 
-    List<ScheduledTaskConfig> scheduledTaskConfigList = scheduledTaskConfigRepository.findAll();
-    for (ScheduledTaskConfig scheduledTaskConfig : scheduledTaskConfigList) {
-      String shortClassName = scheduledTaskConfig.getClassName();
-      AbstractScheduledTask scheduledTask =
-          getScheduledTaskInstance(shortClassName, scheduledTaskConfig, scheduledTaskRepository);
-      LOGGER.info("Scheduling {}", scheduledTaskConfig.getScheduledTaskName());
-      scheduler.scheduleTask(scheduledTaskConfig.getCronExpression(), scheduledTask);
+    List<com.bruno.misgastos.entities.TaskConfig> taskConfigList = taskConfigRepository.findAll();
+    for (com.bruno.misgastos.entities.TaskConfig taskConfig : taskConfigList) {
+      String shortClassName = taskConfig.getClassName();
+      AbstractTask task = getTaskInstance(shortClassName, taskConfig, taskRepository);
+      LOGGER.info("Scheduling {}", taskConfig.getTaskName());
+      scheduler.scheduleTask(taskConfig.getCronExpression(), task);
     }
 
     return scheduler;
   }
 
-  private AbstractScheduledTask getScheduledTaskInstance(
+  private AbstractTask getTaskInstance(
       String shortClassName,
-      ScheduledTaskConfig config,
-      ScheduledTaskSpringDataRepository scheduledTaskRepository) {
+      com.bruno.misgastos.entities.TaskConfig config,
+      TaskSpringDataRepository taskRepository) {
     try {
       String fullClassName =
           String.format("com.bruno.misgastos.scheduling.tasks.%s", shortClassName);
       Class<?> clazz = Class.forName(fullClassName);
-      return (AbstractScheduledTask)
+      return (AbstractTask)
           clazz
-              .getConstructor(ScheduledTaskConfig.class, ScheduledTaskSpringDataRepository.class)
-              .newInstance(config, scheduledTaskRepository);
+              .getConstructor(
+                  com.bruno.misgastos.entities.TaskConfig.class, TaskSpringDataRepository.class)
+              .newInstance(config, taskRepository);
     } catch (ClassNotFoundException
         | NoSuchMethodException
         | InstantiationException
         | IllegalAccessException
         | InvocationTargetException ex) {
-      throw new RuntimeException(
-          String.format("Error initializing %s", config.getScheduledTaskName()), ex);
+      throw new RuntimeException(String.format("Error initializing %s", config.getTaskName()), ex);
     }
   }
 }

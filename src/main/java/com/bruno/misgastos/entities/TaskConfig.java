@@ -1,22 +1,22 @@
 package com.bruno.misgastos.entities;
 
-import com.bruno.misgastos.enums.ScheduledTaskType;
+import com.bruno.misgastos.enums.TaskType;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
 @Entity
-public class ScheduledTaskConfig {
+public class TaskConfig {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private final Integer id;
 
-  @Column(name = "scheduled_task_name")
-  private final String scheduledTaskName;
+  @Column(name = "task_name")
+  private final String taskName;
 
-  @Column(name = "scheduled_task_type")
+  @Column(name = "task_type")
   @Enumerated(EnumType.STRING)
-  private final ScheduledTaskType scheduledTaskType;
+  private final TaskType taskType;
 
   @Column(name = "class_name")
   private final String className;
@@ -60,10 +60,10 @@ public class ScheduledTaskConfig {
   @Column(name = "updated_at")
   private final OffsetDateTime updatedAt;
     
-  public ScheduledTaskConfig() {
+  public TaskConfig() {
     this.id = null;
-    this.scheduledTaskName = null;
-    this.scheduledTaskType = null;
+    this.taskName = null;
+    this.taskType = null;
     this.className = null;
     this.createGoogleTask = null;
     this.sendMail = null;
@@ -84,8 +84,8 @@ public class ScheduledTaskConfig {
     return id;
   }
 
-  public String getScheduledTaskName() {
-    return scheduledTaskName;
+  public String getTaskName() {
+    return taskName;
   }
 
   public String getClassName() {

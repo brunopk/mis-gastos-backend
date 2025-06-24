@@ -84,10 +84,10 @@ CREATE TABLE `income_type_account` (
         REFERENCES `account`(`id`)
 );
 
-CREATE TABLE `scheduled_task_config` (
+CREATE TABLE `task_config` (
 	`id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	`scheduled_task_name` VARCHAR(64) NOT NULL,
-	`scheduled_task_type` ENUM('AUTOMATIC', 'MANUAL') NOT NULL,
+	`task_name` VARCHAR(64) NOT NULL,
+	`task_type` ENUM('AUTOMATIC', 'MANUAL') NOT NULL,
 	`class_name` VARCHAR(64) NOT NULL,
     `create_google_task` TINYINT(1) NOT NULL,
     `send_mail` TINYINT(1) NOT NULL,
@@ -102,26 +102,26 @@ CREATE TABLE `scheduled_task_config` (
     `cron_expression` VARCHAR(64) NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_scheduled_task_config_group`
-        FOREIGN KEY `scheduled_task_config`(`group_id`, `subcategory_id`, `category_id`)
+    CONSTRAINT `fk_task_config_group`
+        FOREIGN KEY `task_config`(`group_id`, `subcategory_id`, `category_id`)
         REFERENCES `group`(`id`, `subcategory_id`, `category_id`),
-    CONSTRAINT `fk_scheduled_task_config_account`
-        FOREIGN KEY `scheduled_task_config`(`account_id`)
+    CONSTRAINT `fk_task_config_account`
+        FOREIGN KEY `task_config`(`account_id`)
         REFERENCES `account`(`id`)
 );
 
-CREATE TABLE `scheduled_task` (
+CREATE TABLE `task` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`google_task_id` VARCHAR(128),
 	`completed` TINYINT(1) NOT NULL DEFAULT 0,
     `spend_value` BIGINT UNSIGNED NOT NULL,
-    `scheduled_task_config_id` INT UNSIGNED NOT NULL,
+    `task_config_id` INT UNSIGNED NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `finished_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT `fk_scheduled_task_scheduled_task_config`
-        FOREIGN KEY `scheduled_task`(`scheduled_task_config_id`)
-        REFERENCES `scheduled_task_config`(`id`)
+    CONSTRAINT `fk_task_task_config`
+        FOREIGN KEY `task`(`task_config_id`)
+        REFERENCES `task_config`(`id`)
 );
 
 CREATE TABLE `google_auth_token` (
@@ -132,7 +132,7 @@ CREATE TABLE `google_auth_token` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-// TODO: correct subcategory_account table
+# TODO: correct subcategory_account table
 
 CREATE TABLE `spend` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -142,7 +142,7 @@ CREATE TABLE `spend` (
     `group_id` INT UNSIGNED,
     `account_id` INT UNSIGNED NOT NULL,
     `description` TEXT,
-    `scheduled_task_id` BIGINT UNSIGNED,
+    `task_id` BIGINT UNSIGNED,
     `value` BIGINT UNSIGNED NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `fk_spend_account` 
@@ -151,9 +151,9 @@ CREATE TABLE `spend` (
     CONSTRAINT `fk_spend_group` 
     	FOREIGN KEY `spend`(`group_id`, `subcategory_id`, `category_id`) 
     	REFERENCES `group`(`id`, `subcategory_id`, `category_id`),
-    CONSTRAINT `fk_spend_scheduled_task`
-        FOREIGN KEY `spend`(`scheduled_task_id`)
-        REFERENCES `scheduled_task`(`id`)
+    CONSTRAINT `fk_spend_task`
+        FOREIGN KEY `spend`(`task_id`)
+        REFERENCES `task`(`id`)
 );
  
 CREATE TABLE `income` (

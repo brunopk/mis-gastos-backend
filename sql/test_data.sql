@@ -18,9 +18,9 @@ INSERT INTO `subcategory_account`(`subcategory_id`, `account_id`) VALUES (3, 3);
 
 INSERT INTO `group_account`(`group_id`, `account_id`) VALUES (2, 3);
 
-INSERT INTO `scheduled_task_config`(
-    `scheduled_task_name`,
-    `scheduled_task_type`,
+INSERT INTO `task_config`(
+    `task_name`,
+    `task_type`,
     `class_name`,
     `create_google_task`,
     `send_mail`,
@@ -29,9 +29,9 @@ INSERT INTO `scheduled_task_config`(
     `spend_value`,
     `cron_expression`
 ) VALUES (
-    'test_scheduled_task_1',
+    'test_task_1',
     'AUTOMATIC',
-    'RecurrentSpendScheduledTask',
+    'RecurrentSpendsTask',
     0,
     0,
     1,
