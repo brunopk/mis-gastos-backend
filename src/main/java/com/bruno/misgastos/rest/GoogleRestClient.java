@@ -1,11 +1,11 @@
 package com.bruno.misgastos.rest;
 
-import com.bruno.misgastos.dto.GoogleTokenRequestDTO;
-import com.bruno.misgastos.dto.GoogleTokenResponseDTO;
+import com.bruno.misgastos.dto.rest.google.GetTokenRequestDTO;
+import com.bruno.misgastos.dto.rest.google.GetTokenResponseDTO;
 import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDTO;
 
 public interface GoogleRestClient {
-  GoogleTokenResponseDTO getToken(GoogleTokenRequestDTO params);
+  GetTokenResponseDTO getToken(GetTokenRequestDTO params);
 
-  GoogleTokenResponseDTO refreshToken(RefreshTokenRequestDTO params);
+  GetTokenResponseDTO refreshToken(RefreshTokenRequestDTO params);
 }
