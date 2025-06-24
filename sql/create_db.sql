@@ -132,6 +132,8 @@ CREATE TABLE `google_auth_token` (
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+// TODO: correct subcategory_account table
+
 CREATE TABLE `spend` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`date` TIMESTAMP NOT NULL,
