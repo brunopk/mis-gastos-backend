@@ -10,4 +10,4 @@ google:
   redirect-uri: ${GOOGLE_REDIRECT_URI}
   authorized-email: ${GOOGLE_AUTHORIZED_EMAIL}
   token-encryption:
-    secret: ${GOOGLE_TOKEN_ENCRYPTION_SECRET}
+    secret: ${GOOGLE_TOKEN_ENCRYPTION_SECRET} # Used to encrypt tokens before saving them into DB
