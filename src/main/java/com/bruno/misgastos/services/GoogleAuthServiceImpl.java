@@ -1,8 +1,8 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dto.GoogleAuthTokenDTO;
-import com.bruno.misgastos.dto.rest.google.GetTokenRequestDTO;
-import com.bruno.misgastos.dto.rest.google.TokenDTO;
+import com.bruno.misgastos.dto.GoogleAuthTokenDto;
+import com.bruno.misgastos.dto.rest.google.GetTokenRequestDto;
+import com.bruno.misgastos.dto.rest.google.TokenDto;
 import com.bruno.misgastos.entities.GoogleAuthToken;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.ApiException;
@@ -81,16 +81,16 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
   }
 
   @Override
-  public GoogleAuthTokenDTO getToken(GetTokenRequestDTO request) {
+  public GoogleAuthTokenDto getToken(GetTokenRequestDto request) {
     LOGGER.info("Obtaining token from Google");
-    TokenDTO resp = googleRestClient.getToken(request);
-    return new GoogleAuthTokenDTO(
+    TokenDto resp = googleRestClient.getToken(request);
+    return new GoogleAuthTokenDto(
         resp.accessToken(), resp.refreshToken(), resp.idToken(), resp.expiresIn());
   }
 
   @Override
   @Transactional
-  public void saveToken(GoogleAuthTokenDTO token) {
+  public void saveToken(GoogleAuthTokenDto token) {
     try {
       String encryptedAccessToken = EncryptionUtils.encryptString(encryptionSecret, token.accessToken());
       String encryptedRefreshToken = EncryptionUtils.encryptString(encryptionSecret, token.refreshToken());
@@ -108,7 +108,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
   }
 
   @Override
-  public boolean isValid(GoogleAuthTokenDTO token) {
+  public boolean isValid(GoogleAuthTokenDto token) {
     try {
       GoogleIdTokenVerifier verifier =
           new GoogleIdTokenVerifier.Builder(HTTP_TRANSPORT, JSON_FACTORY)
@@ -144,7 +144,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
   }
 
   private void scheduleRefreshTask(
-      GoogleAuthTokenDTO token,
+      GoogleAuthTokenDto token,
       GoogleRestClient googleRestClient,
       GoogleAuthTokenSpringDataRepository googleAuthTokenRepository,
       SecretKey encryptionSecret) {

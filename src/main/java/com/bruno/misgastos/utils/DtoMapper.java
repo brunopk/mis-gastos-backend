@@ -1,13 +1,13 @@
 package com.bruno.misgastos.utils;
 
-import com.bruno.misgastos.dto.SpendDTO;
+import com.bruno.misgastos.dto.SpendDto;
 import com.bruno.misgastos.entities.Spend;
 
 // TODO: rename to DtoMapper
 
-public interface DTOMapper {
-  static SpendDTO mapSpendToSpendDTO(Spend spend) {
-    return new SpendDTO(
+public interface DtoMapper {
+  static SpendDto mapSpendToSpendDTO(Spend spend) {
+    return new SpendDto(
         spend.getId(),
         spend.getDate(),
         spend.getCategoryId(),

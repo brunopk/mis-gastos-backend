@@ -33,11 +33,11 @@ public class MainServiceImpl implements MainService {
   }
 
   @Override
-  public List<CategoryDTO> getCategories() {
+  public List<CategoryDto> getCategories() {
     return categoryRepository.findAll().stream()
         .map(
             category ->
-                new CategoryDTO(
+                new CategoryDto(
                     category.getId(),
                     category.getName(),
                     category.getAccounts().stream().map(Account::getId).toList()))
@@ -45,11 +45,11 @@ public class MainServiceImpl implements MainService {
   }
 
   @Override
-  public List<SubcategoryDTO> getSubcategories() {
+  public List<SubcategoryDto> getSubcategories() {
     return subcategoryRepository.findAll().stream()
         .map(
             subcategory ->
-                new SubcategoryDTO(
+                new SubcategoryDto(
                     subcategory.getId(),
                     subcategory.getName(),
                     subcategory.getCategoryId(),
@@ -58,11 +58,11 @@ public class MainServiceImpl implements MainService {
   }
 
   @Override
-  public List<GroupDTO> getGroups() {
+  public List<GroupDto> getGroups() {
     return groupRepository.findAll().stream()
         .map(
             group ->
-                new GroupDTO(
+                new GroupDto(
                     group.getId(),
                     group.getName(),
                     group.getSubcategoryId(),
@@ -71,18 +71,18 @@ public class MainServiceImpl implements MainService {
   }
 
   @Override
-  public List<AccountDTO> getAccounts() {
+  public List<AccountDto> getAccounts() {
     return accountRepository.findAll().stream()
-        .map(account -> new AccountDTO(account.getId(), account.getName()))
+        .map(account -> new AccountDto(account.getId(), account.getName()))
         .toList();
   }
 
   @Override
-  public List<IncomeTypeDTO> getIncomeTypes() {
+  public List<IncomeTypeDto> getIncomeTypes() {
     return incomeTypeRepository.findAll().stream()
         .map(
             incomeType ->
-                new IncomeTypeDTO(
+                new IncomeTypeDto(
                     incomeType.getId(),
                     incomeType.getName(),
                     incomeType.getAccounts().stream().map(Account::getId).toList()))

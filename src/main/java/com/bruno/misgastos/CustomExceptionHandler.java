@@ -1,6 +1,6 @@
 package com.bruno.misgastos;
 
-import com.bruno.misgastos.dto.ErrorDTO;
+import com.bruno.misgastos.dto.ErrorDto;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.exceptions.RestClientException;
@@ -41,8 +41,8 @@ public class CustomExceptionHandler {
   private static final String NO_RESOURCE_FOUND_EXCEPTION = "No resource found %s";
 
   @ExceptionHandler(ApiException.class)
-  public ResponseEntity<ErrorDTO> handleApiException(ApiException ex) {
-    ErrorDTO body = new ErrorDTO(ex.getErrorCode().name(), ex.getMessage());
+  public ResponseEntity<ErrorDto> handleApiException(ApiException ex) {
+    ErrorDto body = new ErrorDto(ex.getErrorCode().name(), ex.getMessage());
     if (ex.getHttpStatus().value() >= HttpStatus.INTERNAL_SERVER_ERROR.value())
       LOGGER.error(API_EXCEPTION_LOG_MESSAGE, ex);
     else LOGGER.debug(API_EXCEPTION_LOG_MESSAGE, ex);
@@ -52,16 +52,16 @@ public class CustomExceptionHandler {
   // Internal server error
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<ErrorDTO> handleException(Exception ex) {
-    ErrorDTO body =
-        new ErrorDTO(ErrorCode.INTERNAL_SERVER_ERROR.name(), ErrorMessages.GENERIC_ERROR_MESSAGE);
+  public ResponseEntity<ErrorDto> handleException(Exception ex) {
+    ErrorDto body =
+        new ErrorDto(ErrorCode.INTERNAL_SERVER_ERROR.name(), ErrorMessages.GENERIC_ERROR_MESSAGE);
     LOGGER.error(GENERIC_ERROR_LOG_MESSAGE, ex);
     return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @ExceptionHandler(RestClientException.class)
-  public ResponseEntity<ErrorDTO> handleRestClientException(RestClientException ex) {
-    ErrorDTO body = new ErrorDTO(ErrorCode.INTERNAL_SERVER_ERROR.name(), REST_CLIENT_ERROR_MESSAGE);
+  public ResponseEntity<ErrorDto> handleRestClientException(RestClientException ex) {
+    ErrorDto body = new ErrorDto(ErrorCode.INTERNAL_SERVER_ERROR.name(), REST_CLIENT_ERROR_MESSAGE);
     LOGGER.error(ex.getMessage(), ex);
     return new ResponseEntity<>(body, ex.getHttpStatus());
   }
@@ -69,35 +69,35 @@ public class CustomExceptionHandler {
   // Bad request
 
   @ExceptionHandler(MissingServletRequestParameterException.class)
-  public ResponseEntity<ErrorDTO> handleMissingServletRequestParameterException(
+  public ResponseEntity<ErrorDto> handleMissingServletRequestParameterException(
       MissingServletRequestParameterException ex) {
     String errorMessage = String.format(MISSING_PARAMETER_MESSAGE, ex.getParameterName());
-    ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), errorMessage);
+    ErrorDto body = new ErrorDto(ErrorCode.BAD_REQUEST.name(), errorMessage);
     LOGGER.debug(errorMessage, ex);
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public ResponseEntity<ErrorDTO> handleHttpMessageNotReadableException(
+  public ResponseEntity<ErrorDto> handleHttpMessageNotReadableException(
       HttpMessageNotReadableException ex) {
-    ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), BODY_NOT_READABLE_MESSAGE);
+    ErrorDto body = new ErrorDto(ErrorCode.BAD_REQUEST.name(), BODY_NOT_READABLE_MESSAGE);
     LOGGER.debug(BODY_NOT_READABLE_MESSAGE, ex);
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(NoResourceFoundException.class)
-  public ResponseEntity<ErrorDTO> handleNoResourceFoundException(NoResourceFoundException ex) {
+  public ResponseEntity<ErrorDto> handleNoResourceFoundException(NoResourceFoundException ex) {
     String errorMessage = String.format(NO_RESOURCE_FOUND_EXCEPTION, ex.getResourcePath());
-    ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), errorMessage);
+    ErrorDto body = new ErrorDto(ErrorCode.BAD_REQUEST.name(), errorMessage);
     LOGGER.debug(errorMessage, ex);
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
-  public ResponseEntity<ErrorDTO> handleMethodArgumentNotValidException(
+  public ResponseEntity<ErrorDto> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException ex) {
     String errorMessage = extractErrorMessage(ex);
-    ErrorDTO body = new ErrorDTO(ErrorCode.BAD_REQUEST.name(), errorMessage);
+    ErrorDto body = new ErrorDto(ErrorCode.BAD_REQUEST.name(), errorMessage);
     LOGGER.debug(GENERIC_ERROR_LOG_MESSAGE, ex);
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
   }
@@ -105,12 +105,12 @@ public class CustomExceptionHandler {
   // Unauthorized
 
   @ExceptionHandler(UnauthorizedException.class)
-  public ResponseEntity<ErrorDTO> handleUnauthorizedException(UnauthorizedException ex) {
+  public ResponseEntity<ErrorDto> handleUnauthorizedException(UnauthorizedException ex) {
     String userMessage =
         ex.getErrorCode().equals(ErrorCode.GOOGLE_AUTH_ERROR)
             ? GOOGLE_AUTH_ERROR_MESSAGE
             : GENERIC_AUTH_ERROR_MESSAGE;
-    ErrorDTO body = new ErrorDTO(ErrorCode.UNAUTHORIZED.name(), userMessage);
+    ErrorDto body = new ErrorDto(ErrorCode.UNAUTHORIZED.name(), userMessage);
     return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
   }
 

@@ -1,10 +1,10 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dto.SpendDTO;
+import com.bruno.misgastos.dto.SpendDto;
 import java.util.List;
 
 public interface SpendsService {
-  List<SpendDTO> getSpends();
+  List<SpendDto> getSpends();
 
-  SpendDTO createSpend(SpendDTO spend);
+  SpendDto createSpend(SpendDto spend);
 }

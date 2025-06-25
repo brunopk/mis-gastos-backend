@@ -1,12 +1,12 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dto.IncomeDTO;
+import com.bruno.misgastos.dto.IncomeDto;
 import com.bruno.misgastos.entities.Income;
 import com.bruno.misgastos.entities.Spend;
 import com.bruno.misgastos.exceptions.ResourceNotFoundException;
 import com.bruno.misgastos.respositories.IncomeSpringDataRepository;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
-import com.bruno.misgastos.utils.DTOMapper;
+import com.bruno.misgastos.utils.DtoMapper;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
@@ -29,13 +29,13 @@ public class IncomesServiceImpl implements IncomesService {
   }
 
   @Override
-  public List<IncomeDTO> getIncomes() {
+  public List<IncomeDto> getIncomes() {
     return incomeRepository.findAll().stream().map(this::mapIncomeToIncomeDTO).toList();
   }
 
   @Override
   @Transactional
-  public IncomeDTO createIncome(IncomeDTO income) {
+  public IncomeDto createIncome(IncomeDto income) {
     Optional<Spend> spend =
         income.spend() != null ? spendRepository.findById(income.spend().id()) : Optional.empty();
     if (Objects.nonNull(income.spend()) && spend.isEmpty())
@@ -54,13 +54,13 @@ public class IncomesServiceImpl implements IncomesService {
     return mapIncomeToIncomeDTO(newIncome);
   }
 
-  private IncomeDTO mapIncomeToIncomeDTO(Income income) {
-    return new IncomeDTO(
+  private IncomeDto mapIncomeToIncomeDTO(Income income) {
+    return new IncomeDto(
         income.getId(),
         income.getDate(),
         income.getIncomeTypeId(),
         income.getAccountId(),
-        Objects.nonNull(income.getSpend()) ? DTOMapper.mapSpendToSpendDTO(income.getSpend()) : null,
+        Objects.nonNull(income.getSpend()) ? DtoMapper.mapSpendToSpendDTO(income.getSpend()) : null,
         income.getDescription(),
         income.getValue());
   }

@@ -23,14 +23,14 @@ public class SpendController {
   }
 
   @GetMapping
-  public ResponseEntity<List<SpendDTO>> getSpends() {
-    List<SpendDTO> spends = spendsService.getSpends();
+  public ResponseEntity<List<SpendDto>> getSpends() {
+    List<SpendDto> spends = spendsService.getSpends();
     return new ResponseEntity<>(spends, HttpStatus.OK);
   }
 
   @PostMapping
-  public ResponseEntity<SpendDTO> createSpend(@Valid @RequestBody SpendDTO spend) {
-    SpendDTO newSpend = spendsService.createSpend(spend);
+  public ResponseEntity<SpendDto> createSpend(@Valid @RequestBody SpendDto spend) {
+    SpendDto newSpend = spendsService.createSpend(spend);
     return new ResponseEntity<>(newSpend, HttpStatus.CREATED);
   }
 }

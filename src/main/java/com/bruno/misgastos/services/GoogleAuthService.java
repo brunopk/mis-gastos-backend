@@ -1,16 +1,16 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dto.GoogleAuthTokenDTO;
-import com.bruno.misgastos.dto.rest.google.GetTokenRequestDTO;
+import com.bruno.misgastos.dto.GoogleAuthTokenDto;
+import com.bruno.misgastos.dto.rest.google.GetTokenRequestDto;
 import com.google.api.client.auth.oauth2.Credential;
 
 public interface GoogleAuthService {
 
-  GoogleAuthTokenDTO getToken(GetTokenRequestDTO request);
+  GoogleAuthTokenDto getToken(GetTokenRequestDto request);
 
-  void saveToken(GoogleAuthTokenDTO token);
+  void saveToken(GoogleAuthTokenDto token);
 
-  boolean isValid(GoogleAuthTokenDTO token);
+  boolean isValid(GoogleAuthTokenDto token);
 
   Credential getUserCredentials();
 }

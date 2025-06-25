@@ -1,8 +1,8 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dto.GoogleAuthTokenDTO;
-import com.bruno.misgastos.dto.rest.google.GetTokenRequestDTO;
-import com.bruno.misgastos.dto.Oauth2CallbackRequestDTO;
+import com.bruno.misgastos.dto.GoogleAuthTokenDto;
+import com.bruno.misgastos.dto.rest.google.GetTokenRequestDto;
+import com.bruno.misgastos.dto.Oauth2CallbackRequestDto;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.UnauthorizedException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,12 +32,12 @@ public class OAuth2ServiceImpl implements OAuth2Service {
 
   @Override
   @Transactional
-  public void authCallback(HttpServletRequest request, Oauth2CallbackRequestDTO body) {
+  public void authCallback(HttpServletRequest request, Oauth2CallbackRequestDto body) {
     String authorizationCode = body.authorizationCode();
     String codeVerifier = body.codeVerifier();
 
-    GoogleAuthTokenDTO googleToken =
-        googleAuthService.getToken(new GetTokenRequestDTO(authorizationCode, codeVerifier));
+    GoogleAuthTokenDto googleToken =
+        googleAuthService.getToken(new GetTokenRequestDto(authorizationCode, codeVerifier));
     if (!googleAuthService.isValid(googleToken))
       throw new UnauthorizedException(ErrorCode.GOOGLE_AUTH_ERROR);
     googleAuthService.saveToken(googleToken);

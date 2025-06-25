@@ -2,7 +2,7 @@ package com.bruno.misgastos.dto.rest.google;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record TokenDTO(
+public record TokenDto(
     @JsonProperty("access_token") String accessToken,
     @JsonProperty("expires_in") long expiresIn,
     @JsonProperty("refresh_token") String refreshToken,

@@ -1,6 +1,6 @@
 package com.bruno.misgastos.respositories;
 
-import com.bruno.misgastos.dto.AutocompleteQueryProjectionDTO;
+import com.bruno.misgastos.dto.AutocompleteQueryProjectionDto;
 import com.bruno.misgastos.entities.Income;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +15,5 @@ public interface IncomeSpringDataRepository extends JpaRepository<Income, Intege
     GROUP BY i.description
     ORDER BY COUNT(*) DESC
     """)
-  List<AutocompleteQueryProjectionDTO> getDescriptions(@Param("query") String query);
+  List<AutocompleteQueryProjectionDto> getDescriptions(@Param("query") String query);
 }

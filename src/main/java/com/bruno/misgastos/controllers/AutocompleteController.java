@@ -1,6 +1,6 @@
 package com.bruno.misgastos.controllers;
 
-import com.bruno.misgastos.dto.AutocompleteOptionsDTO;
+import com.bruno.misgastos.dto.AutocompleteOptionsDto;
 import com.bruno.misgastos.services.AutocompleteService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
@@ -21,17 +21,17 @@ public class AutocompleteController {
   }
 
   @GetMapping("/spends/description")
-  public ResponseEntity<AutocompleteOptionsDTO> getSpendDescriptionAutocompleteOptions(
+  public ResponseEntity<AutocompleteOptionsDto> getSpendDescriptionAutocompleteOptions(
       @NotNull @RequestParam String query) {
-    AutocompleteOptionsDTO result =
+    AutocompleteOptionsDto result =
         autocompleteService.getSpendDescriptionAutocompleteOptions(query);
     return new ResponseEntity<>(result, HttpStatus.OK);
   }
 
   @GetMapping("/incomes/description")
-  public ResponseEntity<AutocompleteOptionsDTO> getIncomeDescriptionAutocompleteOptions(
+  public ResponseEntity<AutocompleteOptionsDto> getIncomeDescriptionAutocompleteOptions(
       @RequestParam String query) {
-    AutocompleteOptionsDTO result =
+    AutocompleteOptionsDto result =
         autocompleteService.getIncomeDescriptionAutocompleteOptions(query);
     return new ResponseEntity<>(result, HttpStatus.OK);
   }

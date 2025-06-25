@@ -1,6 +1,6 @@
 package com.bruno.misgastos.controllers;
 
-import com.bruno.misgastos.dto.Oauth2CallbackRequestDTO;
+import com.bruno.misgastos.dto.Oauth2CallbackRequestDto;
 import com.bruno.misgastos.services.OAuth2Service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -22,7 +22,7 @@ public class OAuth2Controller {
 
   @PostMapping("/callback")
   public ResponseEntity<Object> authCallback(
-      HttpServletRequest request, @Valid @RequestBody Oauth2CallbackRequestDTO body) {
+      HttpServletRequest request, @Valid @RequestBody Oauth2CallbackRequestDto body) {
     oAuth2Service.authCallback(request, body);
     return ResponseEntity.ok(Collections.emptyMap());
   }

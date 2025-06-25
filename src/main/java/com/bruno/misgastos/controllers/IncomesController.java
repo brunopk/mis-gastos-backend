@@ -21,14 +21,14 @@ public class IncomesController {
   }
 
   @GetMapping
-  public ResponseEntity<List<IncomeDTO>> getIncomes() {
-    List<IncomeDTO> incomes = incomesService.getIncomes();
+  public ResponseEntity<List<IncomeDto>> getIncomes() {
+    List<IncomeDto> incomes = incomesService.getIncomes();
     return new ResponseEntity<>(incomes, HttpStatus.OK);
   }
 
   @PostMapping
-  public ResponseEntity<IncomeDTO> createIncome(@Valid @RequestBody IncomeDTO income) {
-    IncomeDTO newIncome = incomesService.createIncome(income);
+  public ResponseEntity<IncomeDto> createIncome(@Valid @RequestBody IncomeDto income) {
+    IncomeDto newIncome = incomesService.createIncome(income);
     return new ResponseEntity<>(newIncome, HttpStatus.CREATED);
   }
 }

@@ -1,10 +1,10 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dto.IncomeDTO;
+import com.bruno.misgastos.dto.IncomeDto;
 import java.util.List;
 
 public interface IncomesService {
-  List<IncomeDTO> getIncomes();
+  List<IncomeDto> getIncomes();
 
-  IncomeDTO createIncome(IncomeDTO income);
+  IncomeDto createIncome(IncomeDto income);
 }

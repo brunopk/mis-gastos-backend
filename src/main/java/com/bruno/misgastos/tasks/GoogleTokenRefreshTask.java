@@ -1,8 +1,8 @@
 package com.bruno.misgastos.tasks;
 
-import com.bruno.misgastos.dto.GoogleAuthTokenDTO;
-import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDTO;
-import com.bruno.misgastos.dto.rest.google.TokenDTO;
+import com.bruno.misgastos.dto.GoogleAuthTokenDto;
+import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDto;
+import com.bruno.misgastos.dto.rest.google.TokenDto;
 import com.bruno.misgastos.entities.GoogleAuthToken;
 import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
 import com.bruno.misgastos.rest.GoogleRestClient;
@@ -24,14 +24,14 @@ public class GoogleTokenRefreshTask implements Runnable {
 
   private final GoogleAuthTokenSpringDataRepository googleAuthTokenRepository;
 
-  private final GoogleAuthTokenDTO tokenToBeRefreshed;
+  private final GoogleAuthTokenDto tokenToBeRefreshed;
 
   private final SecretKey encryptionSecret;
 
   private final TaskScheduler taskScheduler;
 
   public GoogleTokenRefreshTask(
-      GoogleAuthTokenDTO tokenToBeRefreshed,
+      GoogleAuthTokenDto tokenToBeRefreshed,
       GoogleRestClient googleRestClient,
       GoogleAuthTokenSpringDataRepository googleAuthTokenRepository,
       SecretKey encryptionSecret,
@@ -58,9 +58,9 @@ public class GoogleTokenRefreshTask implements Runnable {
                         .getRefreshToken();
                 return EncryptionUtils.decryptString(encryptionSecret, encryptedRefreshToken);
               });
-      TokenDTO resp =
-          googleRestClient.refreshToken(new RefreshTokenRequestDTO(refreshToken));
-      GoogleAuthTokenDTO newToken = saveToken(resp, encryptionSecret);
+      TokenDto resp =
+          googleRestClient.refreshToken(new RefreshTokenRequestDto(refreshToken));
+      GoogleAuthTokenDto newToken = saveToken(resp, encryptionSecret);
       scheduleRefreshTask(newToken, googleRestClient, googleAuthTokenRepository, encryptionSecret);
       LOGGER.info("Google token refreshed correctly");
     } catch (Exception ex) {
@@ -68,18 +68,18 @@ public class GoogleTokenRefreshTask implements Runnable {
     }
   }
 
-  private GoogleAuthTokenDTO saveToken(TokenDTO resp, SecretKey encryptionSecret) {
+  private GoogleAuthTokenDto saveToken(TokenDto resp, SecretKey encryptionSecret) {
     String encryptedAccessToken =
         EncryptionUtils.encryptString(encryptionSecret, resp.accessToken());
     GoogleAuthToken googleAuthToken =
         new GoogleAuthToken(encryptedAccessToken, resp.refreshToken(), resp.expiresIn());
     googleAuthTokenRepository.save(googleAuthToken);
-    return new GoogleAuthTokenDTO(
+    return new GoogleAuthTokenDto(
         resp.accessToken(), resp.refreshToken(), resp.idToken(), resp.expiresIn());
   }
 
   private void scheduleRefreshTask(
-      GoogleAuthTokenDTO token,
+      GoogleAuthTokenDto token,
       GoogleRestClient googleRestClient,
       GoogleAuthTokenSpringDataRepository googleAuthTokenRepository,
       SecretKey encryptionSecret) {

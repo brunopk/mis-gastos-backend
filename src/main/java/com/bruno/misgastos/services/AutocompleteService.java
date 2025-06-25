@@ -1,9 +1,9 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dto.AutocompleteOptionsDTO;
+import com.bruno.misgastos.dto.AutocompleteOptionsDto;
 
 public interface AutocompleteService {
-  AutocompleteOptionsDTO getSpendDescriptionAutocompleteOptions(String query);
+  AutocompleteOptionsDto getSpendDescriptionAutocompleteOptions(String query);
 
-  AutocompleteOptionsDTO getIncomeDescriptionAutocompleteOptions(String query);
+  AutocompleteOptionsDto getIncomeDescriptionAutocompleteOptions(String query);
 }

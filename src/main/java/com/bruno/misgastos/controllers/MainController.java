@@ -25,32 +25,32 @@ public class MainController {
   }
 
   @GetMapping("/categories")
-  public ResponseEntity<List<CategoryDTO>> getCategories() {
-    List<CategoryDTO> categories = mainService.getCategories();
+  public ResponseEntity<List<CategoryDto>> getCategories() {
+    List<CategoryDto> categories = mainService.getCategories();
     return new ResponseEntity<>(categories, HttpStatus.OK);
   }
 
   @GetMapping("/subcategories")
-  public ResponseEntity<List<SubcategoryDTO>> getSubcategories() {
-    List<SubcategoryDTO> subcategories = mainService.getSubcategories();
+  public ResponseEntity<List<SubcategoryDto>> getSubcategories() {
+    List<SubcategoryDto> subcategories = mainService.getSubcategories();
     return new ResponseEntity<>(subcategories, HttpStatus.OK);
   }
 
   @GetMapping("/groups")
-  public ResponseEntity<List<GroupDTO>> getGroups() {
-    List<GroupDTO> groups = mainService.getGroups();
+  public ResponseEntity<List<GroupDto>> getGroups() {
+    List<GroupDto> groups = mainService.getGroups();
     return new ResponseEntity<>(groups, HttpStatus.OK);
   }
 
   @GetMapping("/accounts")
-  public ResponseEntity<List<AccountDTO>> getAccounts() {
-    List<AccountDTO> groups = mainService.getAccounts();
+  public ResponseEntity<List<AccountDto>> getAccounts() {
+    List<AccountDto> groups = mainService.getAccounts();
     return new ResponseEntity<>(groups, HttpStatus.OK);
   }
 
   @GetMapping("/income-types")
-  public ResponseEntity<List<IncomeTypeDTO>> getIncomeTypes() {
-    List<IncomeTypeDTO> incomeTypes = mainService.getIncomeTypes();
+  public ResponseEntity<List<IncomeTypeDto>> getIncomeTypes() {
+    List<IncomeTypeDto> incomeTypes = mainService.getIncomeTypes();
     return new ResponseEntity<>(incomeTypes, HttpStatus.OK);
   }
 

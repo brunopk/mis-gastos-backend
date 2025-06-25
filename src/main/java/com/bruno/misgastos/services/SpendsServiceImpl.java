@@ -1,9 +1,9 @@
 package com.bruno.misgastos.services;
 
-import com.bruno.misgastos.dto.SpendDTO;
+import com.bruno.misgastos.dto.SpendDto;
 import com.bruno.misgastos.entities.Spend;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
-import com.bruno.misgastos.utils.DTOMapper;
+import com.bruno.misgastos.utils.DtoMapper;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +17,12 @@ public class SpendsServiceImpl implements SpendsService {
   }
 
   @Override
-  public List<SpendDTO> getSpends() {
-    return spendRepository.findAll().stream().map(DTOMapper::mapSpendToSpendDTO).toList();
+  public List<SpendDto> getSpends() {
+    return spendRepository.findAll().stream().map(DtoMapper::mapSpendToSpendDTO).toList();
   }
 
   @Override
-  public SpendDTO createSpend(SpendDTO spend) {
+  public SpendDto createSpend(SpendDto spend) {
     Spend newSpend =
         spendRepository.save(
             new Spend(
@@ -33,6 +33,6 @@ public class SpendsServiceImpl implements SpendsService {
                 spend.accountId(),
                 spend.description(),
                 spend.value()));
-    return DTOMapper.mapSpendToSpendDTO(newSpend);
+    return DtoMapper.mapSpendToSpendDTO(newSpend);
   }
 }

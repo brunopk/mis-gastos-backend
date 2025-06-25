@@ -3,8 +3,8 @@ package com.bruno.misgastos.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
-public record SubcategoryDTO(
+public record GroupDto(
     int id,
     String name,
-    @JsonProperty("category_id") int categoryId,
+    @JsonProperty("subcategory_id") int subcategoryId,
     @JsonProperty("account_ids") List<Integer> accountIds) {}

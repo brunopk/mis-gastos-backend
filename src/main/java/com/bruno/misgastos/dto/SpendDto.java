@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 
-public record SpendDTO(
+public record SpendDto(
     int id,
     @NotNull(message = "date cannot be null") OffsetDateTime date,
     @NotNull(message = "category cannot be null") @JsonProperty("category_id") Integer categoryId,
