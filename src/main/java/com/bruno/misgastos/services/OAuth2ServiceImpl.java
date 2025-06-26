@@ -46,7 +46,7 @@ public class OAuth2ServiceImpl implements OAuth2Service {
     // Spring identify sessions using JSESSIONID cookie
     HttpSession session = request.getSession(true);
     if (session.isNew()) {
-      LOGGER.info("New session created (ID= {})", session.getId());
+      LOGGER.info("New session created (ID={})", session.getId());
       UsernamePasswordAuthenticationToken authentication =
           new UsernamePasswordAuthenticationToken(null, null, Collections.emptyList());
       // If you only set SecurityContextHolder.getContext().setAuthentication() in the current
