@@ -43,9 +43,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
 
   private static final String GENERIC_ERROR_MSG = "Error obtaining or saving Google tokens";
 
-  private static final String MULTIPLE_TOKENS_ERROR_MSG = "Multiple valid tokens found";
-
-  private static final String NO_VALID_TOKEN_FOUND = "No valid token found on database";
+  private static final String NO_VALID_TOKEN_FOUND = "No valid token found";
 
   private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -160,6 +158,6 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
   private boolean isExpired(GoogleAuthToken token) {
     OffsetDateTime expirationTime = token.getCreatedAt().plusSeconds(token.getExpiresIn());
     OffsetDateTime now = OffsetDateTime.now();
-    return now.isBefore(expirationTime.minusSeconds(TOKEN_EXPIRATION_TOLERANCE));
+    return now.isAfter(expirationTime) || now.isEqual(expirationTime);
   }
 }
