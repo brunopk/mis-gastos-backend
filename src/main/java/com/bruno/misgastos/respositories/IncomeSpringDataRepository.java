@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface IncomeSpringDataRepository extends JpaRepository<Income, Integer> {
   @Query(
       """
-    SELECT new com.bruno.misgastos.dto.AutocompleteQueryProjectionDTO(i.description, COUNT(*))
+    SELECT new com.bruno.misgastos.dto.AutocompleteQueryProjectionDto(i.description, COUNT(*))
     FROM Income i WHERE i.description LIKE CONCAT('%', :query, '%')
     GROUP BY i.description
     ORDER BY COUNT(*) DESC
