@@ -3,7 +3,7 @@ package com.bruno.misgastos.services;
 import com.bruno.misgastos.dto.google.Task;
 import java.io.IOException;
 
-public interface GoogleTasksService {
+public interface GoogleTaskService {
   // TODO: remove this method if not longer used
 
   void test() throws IOException;

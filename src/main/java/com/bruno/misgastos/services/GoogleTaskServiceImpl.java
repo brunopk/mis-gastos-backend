@@ -19,9 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GoogleTasksServiceImpl implements GoogleTasksService {
+public class GoogleTaskServiceImpl implements GoogleTaskService {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GoogleTasksServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GoogleTaskServiceImpl.class);
 
   private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
@@ -30,7 +30,7 @@ public class GoogleTasksServiceImpl implements GoogleTasksService {
   private final GoogleAuthService googleAuthService;
 
   @Autowired
-  public GoogleTasksServiceImpl(GoogleAuthService googleAuthService) {
+  public GoogleTaskServiceImpl(GoogleAuthService googleAuthService) {
     this.googleAuthService = googleAuthService;
   }
 
