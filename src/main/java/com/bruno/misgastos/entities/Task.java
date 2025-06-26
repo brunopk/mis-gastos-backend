@@ -16,8 +16,8 @@ public class Task {
   @Column(name = "google_task_finished_at")
   private OffsetDateTime googleTaskFinishedAt;
 
-  @Column(name = "completed", nullable = false)
-  private final Boolean completed;
+  @Column(name = "is_google_task_completed", nullable = false)
+  private final Boolean isGoogleTaskCompleted;
 
   @Column(name = "spend_value", nullable = false)
   private final Double spendValue;
@@ -38,7 +38,7 @@ public class Task {
     this.id = null;
     this.googleTaskId = null;
     this.googleTaskFinishedAt = null;
-    this.completed = false;
+    this.isGoogleTaskCompleted = false;
     this.spendValue = null;
     this.taskConfigId = null;
     this.createdAt = null;
@@ -50,7 +50,7 @@ public class Task {
     this.id = null;
     this.googleTaskId = null;
     this.googleTaskFinishedAt = null;
-    this.completed = false;
+    this.isGoogleTaskCompleted = false;
     this.spendValue = spendValue;
     this.taskConfigId = taskConfigId;
     this.createdAt = OffsetDateTime.now();

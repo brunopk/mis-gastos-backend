@@ -113,10 +113,10 @@ CREATE TABLE `task_config` (
 CREATE TABLE `task` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`google_task_id` VARCHAR(128),
-	`google_task_finished_at` TIMESTAMP,
-	`completed` TINYINT(1) NOT NULL DEFAULT 0,
+	`is_google_task_completed` TINYINT(1) NOT NULL DEFAULT 0,
     `spend_value` BIGINT UNSIGNED NOT NULL,
     `task_config_id` INT UNSIGNED NOT NULL,
+    `google_task_finished_at` TIMESTAMP,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `finished_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
