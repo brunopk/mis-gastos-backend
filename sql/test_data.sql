@@ -31,7 +31,7 @@ INSERT INTO `task_config`(
 ) VALUES (
     'test_task_1',
     'AUTOMATIC',
-    'RecurrentSpendsTask',
+    'RecurrentSpendTask',
     0,
     0,
     1,

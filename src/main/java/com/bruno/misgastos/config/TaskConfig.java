@@ -96,7 +96,7 @@ public class TaskConfig {
       TaskSpringDataRepository taskRepository) {
     try {
       String fullClassName =
-          String.format("com.bruno.misgastos.scheduling.tasks.%s", shortClassName);
+          String.format("com.bruno.misgastos.tasks.%s", shortClassName);
       Class<?> clazz = Class.forName(fullClassName);
       return (AbstractTask)
           clazz

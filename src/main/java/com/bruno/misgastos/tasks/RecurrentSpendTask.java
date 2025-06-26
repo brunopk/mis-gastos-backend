@@ -21,17 +21,17 @@ import org.slf4j.LoggerFactory;
 
 // TODO: if type is "automatic" completed should be set on "true"
 
-public class RecurrentSpendsTask extends AbstractTask {
+public class RecurrentSpendTask extends AbstractTask {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(RecurrentSpendsTask.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RecurrentSpendTask.class);
 
-  public RecurrentSpendsTask(
+  public RecurrentSpendTask(
     TaskConfig config, TaskSpringDataRepository scheduledTaskRepository) {
     super(config, scheduledTaskRepository);
   }
 
   @Override
   public void doWork(Task dbEntry) {
-    LOGGER.debug("Executing RecurrentSpendsTask");
+    LOGGER.debug("Executing RecurrentSpendTask");
   }
 }
