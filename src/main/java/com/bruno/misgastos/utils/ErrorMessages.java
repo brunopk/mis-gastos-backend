@@ -1,7 +1,10 @@
 package com.bruno.misgastos.utils;
 
-// TODO: rename all errors to xxx_ERROR (without _MESSAGE)
-
 public interface ErrorMessages {
-  String GENERIC_ERROR_MESSAGE = "Internal server error";
+  String GENERIC_ERROR = "Internal server error";
+
+  String GENERIC_GOOGLE_AUTH_ERROR = "Error obtaining or saving Google tokens";
+
+  String NO_VALID_TOKEN_FOUND = "No valid token found";
+
 }

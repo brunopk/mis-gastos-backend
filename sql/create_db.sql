@@ -84,12 +84,17 @@ CREATE TABLE `income_type_account` (
         REFERENCES `account`(`id`)
 );
 
+# TODO: consider removing spend_value field
+
 CREATE TABLE `task_config` (
 	`id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	`task_name` VARCHAR(64) NOT NULL,
 	`task_type` ENUM('AUTOMATIC', 'MANUAL') NOT NULL,
 	`class_name` VARCHAR(64) NOT NULL,
-    `create_google_task` TINYINT(1) NOT NULL,
+	`cron_expression` VARCHAR(64) NOT NULL,
+    `create_google_task` TINYINT(1) DEFAULT 0,
+    `google_task_title` VARCHAR(64),
+    `google_task_description` VARCHAR(128),
     `send_mail` TINYINT(1) NOT NULL,
     `mail_subject` TEXT,
     `mail_body` TEXT,
@@ -99,7 +104,6 @@ CREATE TABLE `task_config` (
     `account_id` INT UNSIGNED NOT NULL,
     `spend_value` BIGINT UNSIGNED NOT NULL,
     `spend_description` TEXT,
-    `cron_expression` VARCHAR(64) NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `fk_task_config_group`
@@ -110,10 +114,12 @@ CREATE TABLE `task_config` (
         REFERENCES `account`(`id`)
 );
 
+# TODO: consider removing spend_value field
+
 CREATE TABLE `task` (
 	`id` BIGINT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	`google_task_id` VARCHAR(128),
-	`is_google_task_completed` TINYINT(1) NOT NULL DEFAULT 0,
+	`is_google_task_completed` TINYINT(1) DEFAULT 0,
     `spend_value` BIGINT UNSIGNED NOT NULL,
     `task_config_id` INT UNSIGNED NOT NULL,
     `google_task_finished_at` TIMESTAMP,

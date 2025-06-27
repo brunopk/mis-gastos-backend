@@ -1,7 +1,13 @@
 package com.bruno.misgastos.services;
 
 import com.bruno.misgastos.dto.google.Task;
+import com.bruno.misgastos.entities.GoogleAuthToken;
+import com.bruno.misgastos.enums.ErrorCode;
+import com.bruno.misgastos.exceptions.UnauthorizedException;
 import com.bruno.misgastos.exceptions.google.GoogleApiException;
+import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
+import com.bruno.misgastos.utils.ErrorMessages;
+import com.bruno.misgastos.utils.GoogleUtils;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -12,10 +18,14 @@ import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,17 +37,21 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
 
   private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  private final GoogleAuthService googleAuthService;
+  private final SecretKey encryptionSecret;
+
+  private final GoogleAuthTokenSpringDataRepository googleAuthTokenRepository;
 
   @Autowired
-  public GoogleTaskServiceImpl(GoogleAuthService googleAuthService) {
-    this.googleAuthService = googleAuthService;
+  public GoogleTaskServiceImpl(
+      @Value("${google.token-encryption.secret}") String encryptionSecret,
+      GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
+    this.googleAuthTokenRepository = googleAuthTokenRepository;
+    this.encryptionSecret = new SecretKeySpec(Base64.getDecoder().decode(encryptionSecret), "AES");
   }
 
   @Override
-  public void test() throws IOException{
-    Credential credential = googleAuthService.getUserCredentials();
-    
+  public void test() throws IOException {
+    Credential credential = getUserCredentials(googleAuthTokenRepository, encryptionSecret);
     Tasks service = new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
 
     // Print the first 10 task lists.
@@ -57,7 +71,7 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
 
   @Override
   public void createTask(Task task, String taskList) {
-    Credential credential = googleAuthService.getUserCredentials();
+    Credential credential = getUserCredentials(googleAuthTokenRepository, encryptionSecret);
     Tasks.TasksOperations tasksOperations = new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
       .build()
       .tasks();
@@ -70,10 +84,21 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
             .setNotes(task.notes());
 
     try {
-      LOGGER.debug("Creating task in Google");
       tasksOperations.insert(taskList, taskAux).execute();
     } catch (IOException ex) {
       throw new GoogleApiException(ex);
     }
+  }
+
+  private Credential getUserCredentials(
+      GoogleAuthTokenSpringDataRepository googleAuthTokenRepository, SecretKey encryptionSecret) {
+    GoogleAuthToken token =
+        googleAuthTokenRepository
+            .getLastActiveToken()
+            .orElseThrow(
+                () ->
+                    new UnauthorizedException(
+                        ErrorCode.UNAUTHORIZED, ErrorMessages.NO_VALID_TOKEN_FOUND));
+    return GoogleUtils.getUserCredentials(token, encryptionSecret);
   }
 }

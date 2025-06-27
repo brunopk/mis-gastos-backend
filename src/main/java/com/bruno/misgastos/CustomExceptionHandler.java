@@ -54,7 +54,7 @@ public class CustomExceptionHandler {
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorDto> handleException(Exception ex) {
     ErrorDto body =
-        new ErrorDto(ErrorCode.INTERNAL_SERVER_ERROR.name(), ErrorMessages.GENERIC_ERROR_MESSAGE);
+        new ErrorDto(ErrorCode.INTERNAL_SERVER_ERROR.name(), ErrorMessages.GENERIC_ERROR);
     LOGGER.error(GENERIC_ERROR_LOG_MESSAGE, ex);
     return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
   }

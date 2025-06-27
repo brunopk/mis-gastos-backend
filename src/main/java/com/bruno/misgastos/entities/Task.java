@@ -16,14 +16,15 @@ public class Task {
   @Column(name = "google_task_finished_at")
   private OffsetDateTime googleTaskFinishedAt;
 
-  @Column(name = "is_google_task_completed", nullable = false)
+  @Column(name = "is_google_task_completed")
   private final Boolean isGoogleTaskCompleted;
 
-  @Column(name = "spend_value", nullable = false)
+  @Column(name = "spend_value")
   private final Double spendValue;
 
-  @Column(name = "task_config_id", nullable = false)
-  private final Integer taskConfigId;
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "task_config_id", nullable = false)
+  private final TaskConfig taskConfig;
 
   @Column(name = "created_at", nullable = false)
   private final OffsetDateTime createdAt;
@@ -40,19 +41,19 @@ public class Task {
     this.googleTaskFinishedAt = null;
     this.isGoogleTaskCompleted = false;
     this.spendValue = null;
-    this.taskConfigId = null;
+    this.taskConfig = null;
     this.createdAt = null;
     this.updatedAt = null;
     this.finishedAt = null;
   }
 
-  public Task(Integer taskConfigId, Double spendValue) {
+  public Task(TaskConfig config) {
     this.id = null;
     this.googleTaskId = null;
     this.googleTaskFinishedAt = null;
     this.isGoogleTaskCompleted = false;
-    this.spendValue = spendValue;
-    this.taskConfigId = taskConfigId;
+    this.spendValue = config.getSpendValue();
+    this.taskConfig = config;
     this.createdAt = OffsetDateTime.now();
     this.updatedAt = OffsetDateTime.now();
     this.finishedAt = null;
@@ -60,6 +61,10 @@ public class Task {
 
   public Integer getId() {
     return id;
+  }
+
+  public TaskConfig getTaskConfig() {
+    return taskConfig;
   }
 
   public void setGoogleTaskFinishedAt(OffsetDateTime googleTaskFinishedAt) {

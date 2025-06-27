@@ -22,22 +22,26 @@ INSERT INTO `task_config`(
     `task_name`,
     `task_type`,
     `class_name`,
+    `cron_expression`,
     `create_google_task`,
+    `google_task_title`,
+    `google_task_description`,
     `send_mail`,
     `category_id`,
     `account_id`,
-    `spend_value`,
-    `cron_expression`
+    `spend_value`
 ) VALUES (
     'test_task_1',
     'AUTOMATIC',
     'RecurrentSpendTask',
+    '0 * * * * *',
     0,
+    NULL,
+    NULL,
     0,
     1,
     1,
-    10,
-    '0 * * * * *'
+    10
 );
 
 

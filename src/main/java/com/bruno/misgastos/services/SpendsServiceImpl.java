@@ -32,6 +32,7 @@ public class SpendsServiceImpl implements SpendsService {
                 spend.groupId(),
                 spend.accountId(),
                 spend.description(),
+                null,
                 spend.value()));
     return DtoMapper.mapSpendToSpendDTO(newSpend);
   }

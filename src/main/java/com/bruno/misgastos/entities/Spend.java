@@ -27,6 +27,8 @@ public class Spend {
 
   private final String description;
 
+  private final Integer taskId;
+
   @Column(nullable = false)
   private final Double value;
 
@@ -37,6 +39,7 @@ public class Spend {
       Integer groupId,
       Integer accountId,
       String description,
+      Integer taskId,
       double value) {
     this.id = null;
     this.date = date;
@@ -45,6 +48,7 @@ public class Spend {
     this.groupId = groupId;
     this.accountId = accountId;
     this.description = description;
+    this.taskId = taskId;
     this.value = value;
   }
 
@@ -56,6 +60,7 @@ public class Spend {
     this.groupId = null;
     this.accountId = null;
     this.description = null;
+    this.taskId = null;
     this.value = null;
   }
 

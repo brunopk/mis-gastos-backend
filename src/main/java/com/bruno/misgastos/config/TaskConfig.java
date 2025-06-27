@@ -1,7 +1,9 @@
 package com.bruno.misgastos.config;
 
+import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
+import com.bruno.misgastos.services.GoogleTaskService;
 import com.bruno.misgastos.tasks.AbstractTask;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -19,6 +21,8 @@ import org.springframework.scheduling.support.CronTrigger;
 public class TaskConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskConfig.class);
+
+  // TODO: rename scheduling to task
 
   @Value("${scheduling.task-executor.core-pool-size}")
   private Integer TASK_EXECUTOR_CORE_POOL_SIZE;
@@ -52,13 +56,21 @@ public class TaskConfig {
 
   @Bean
   public TaskScheduler taskScheduler(
+      GoogleTaskService googleTaskService,
+      SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository,
       TaskConfigSpringDataRepository taskConfigRepository) {
     ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
     taskScheduler.setPoolSize(1);
     taskScheduler.initialize();
 
-    initializeTasks(taskScheduler, taskExecutor(), taskRepository, taskConfigRepository);
+    initializeTasks(
+        taskScheduler,
+        taskExecutor(),
+        googleTaskService,
+        spendRepository,
+        taskRepository,
+        taskConfigRepository);
 
     return taskScheduler;
   }
@@ -66,6 +78,8 @@ public class TaskConfig {
   private void initializeTasks(
       ThreadPoolTaskScheduler taskScheduler,
       ThreadPoolTaskExecutor taskExecutor,
+      GoogleTaskService googleTaskService,
+      SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository,
       TaskConfigSpringDataRepository taskConfigRepository) {
 
@@ -74,7 +88,9 @@ public class TaskConfig {
     List<com.bruno.misgastos.entities.TaskConfig> taskConfigList = taskConfigRepository.findAll();
     for (com.bruno.misgastos.entities.TaskConfig taskConfig : taskConfigList) {
       String shortClassName = taskConfig.getClassName();
-      AbstractTask task = getTaskInstance(shortClassName, taskConfig, taskRepository);
+      AbstractTask task =
+          getTaskInstance(
+              shortClassName, taskConfig, googleTaskService, spendRepository, taskRepository);
 
       LOGGER.info(
           "Scheduling {} with CRON expression {}",
@@ -93,16 +109,20 @@ public class TaskConfig {
   private AbstractTask getTaskInstance(
       String shortClassName,
       com.bruno.misgastos.entities.TaskConfig config,
+      GoogleTaskService googleTaskService,
+      SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository) {
     try {
-      String fullClassName =
-          String.format("com.bruno.misgastos.tasks.%s", shortClassName);
+      String fullClassName = String.format("com.bruno.misgastos.tasks.%s", shortClassName);
       Class<?> clazz = Class.forName(fullClassName);
       return (AbstractTask)
           clazz
               .getConstructor(
-                  com.bruno.misgastos.entities.TaskConfig.class, TaskSpringDataRepository.class)
-              .newInstance(config, taskRepository);
+                  com.bruno.misgastos.entities.TaskConfig.class,
+                  GoogleTaskService.class,
+                  SpendSpringDataRepository.class,
+                  TaskSpringDataRepository.class)
+              .newInstance(config, googleTaskService, spendRepository, taskRepository);
     } catch (ClassNotFoundException
         | NoSuchMethodException
         | InstantiationException

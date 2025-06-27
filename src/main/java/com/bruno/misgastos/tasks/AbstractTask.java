@@ -2,7 +2,9 @@ package com.bruno.misgastos.tasks;
 
 import com.bruno.misgastos.entities.Task;
 import com.bruno.misgastos.entities.TaskConfig;
+import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
+import com.bruno.misgastos.services.GoogleTaskService;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
@@ -14,13 +16,23 @@ public abstract class AbstractTask implements Runnable {
 
   private final Logger LOGGER = LoggerFactory.getLogger(AbstractTask.class);
 
+  protected final GoogleTaskService googleTaskService;
+
   protected final TaskSpringDataRepository taskRepository;
+
+  protected final SpendSpringDataRepository spendRepository;
 
   protected final TaskConfig config;
 
-  protected AbstractTask(TaskConfig config, TaskSpringDataRepository taskRepository) {
+  protected AbstractTask(
+      TaskConfig config,
+      GoogleTaskService googleTaskService,
+      TaskSpringDataRepository taskRepository,
+      SpendSpringDataRepository spendRepository) {
     this.config = config;
+    this.googleTaskService = googleTaskService;
     this.taskRepository = taskRepository;
+    this.spendRepository = spendRepository;
   }
 
   public abstract void doWork(Task dbEntry);
@@ -29,9 +41,11 @@ public abstract class AbstractTask implements Runnable {
   @Transactional
   public void run() {
     try {
-      Task dbEntry = new Task(config.getId(), config.getSpendValue());
+      Task dbEntry = new Task(config);
       dbEntry = taskRepository.save(dbEntry);
+
       LOGGER.info("Starting {} (id={})", config.getTaskName(), dbEntry.getId());
+
       Instant start = Instant.now();
 
       doWork(dbEntry);

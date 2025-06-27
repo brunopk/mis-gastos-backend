@@ -7,4 +7,8 @@ public class UnauthorizedException extends ApiException {
   public UnauthorizedException(ErrorCode errorCode) {
     super(HttpStatus.UNAUTHORIZED, errorCode, HttpStatus.UNAUTHORIZED.name().toLowerCase());
   }
+
+  public UnauthorizedException(ErrorCode errorCode, String message) {
+    super(HttpStatus.UNAUTHORIZED, errorCode, message);
+  }
 }

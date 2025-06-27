@@ -21,8 +21,17 @@ public class TaskConfig {
   @Column(name = "class_name")
   private final String className;
 
+  @Column(name = "cron_expression", nullable = false)
+  private final String cronExpression;
+
   @Column(name = "create_google_task")
   private final Boolean createGoogleTask;
+
+  @Column(name = "google_task_title")
+  private final String googleTaskTitle;
+
+  @Column(name = "google_task_description")
+  private final String googleTaskDescription;
   
   @Column(name = "send_mail")
   private final Boolean sendMail;
@@ -50,9 +59,6 @@ public class TaskConfig {
 
   @Column(name = "spend_description")
   private final String spendDescription;
-
-  @Column(name = "cron_expression", nullable = false)
-  private final String cronExpression;
   
   @Column(name = "created_at", nullable = false)
   private final OffsetDateTime createdAt;
@@ -65,7 +71,10 @@ public class TaskConfig {
     this.taskName = null;
     this.taskType = null;
     this.className = null;
+    this.cronExpression = null;
     this.createGoogleTask = null;
+    this.googleTaskTitle = null;
+    this.googleTaskDescription = null;
     this.sendMail = null;
     this.mailSubject = null;
     this.mailBody = null;
@@ -75,7 +84,6 @@ public class TaskConfig {
     this.accountId = null;
     this.spendValue = null;
     this.spendDescription = null;
-    this.cronExpression = null;
     this.createdAt = null;
     this.updatedAt = null;
   }
@@ -88,6 +96,10 @@ public class TaskConfig {
     return taskName;
   }
 
+  public TaskType getTaskType() {
+    return taskType;
+  }
+
   public String getClassName() {
     return className;
   }
@@ -96,7 +108,51 @@ public class TaskConfig {
     return cronExpression;
   }
 
+  public Boolean getCreateGoogleTask() {
+    return createGoogleTask;
+  }
+
+  public String getGoogleTaskTitle() {
+    return googleTaskTitle;
+  }
+
+  public String getGoogleTaskDescription() {
+    return googleTaskDescription;
+  }
+
+  public Boolean getSendMail() {
+    return sendMail;
+  }
+
+  public String getMailSubject() {
+    return mailSubject;
+  }
+
+  public String getMailBody() {
+    return mailBody;
+  }
+
+  public Integer getCategoryId() {
+    return categoryId;
+  }
+
+  public Integer getSubcategoryId() {
+    return subcategoryId;
+  }
+
+  public Integer getGroupId() {
+    return groupId;
+  }
+
+  public Integer getAccountId() {
+    return accountId;
+  }
+
   public Double getSpendValue() {
     return spendValue;
+  }
+
+  public String getSpendDescription() {
+    return spendDescription;
   }
 }

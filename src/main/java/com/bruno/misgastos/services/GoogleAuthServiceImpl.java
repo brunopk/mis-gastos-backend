@@ -11,8 +11,6 @@ import com.bruno.misgastos.rest.GoogleRestClient;
 import com.bruno.misgastos.tasks.GoogleTokenRefreshTask;
 import com.bruno.misgastos.utils.EncryptionUtils;
 import com.bruno.misgastos.utils.ErrorMessages;
-import com.google.api.client.auth.oauth2.BearerToken;
-import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.HttpTransport;
@@ -40,10 +38,6 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
   private static final Logger LOGGER = LoggerFactory.getLogger(GoogleAuthServiceImpl.class);
 
   private static final int TOKEN_EXPIRATION_TOLERANCE = 60;
-
-  private static final String GENERIC_ERROR_MSG = "Error obtaining or saving Google tokens";
-
-  private static final String NO_VALID_TOKEN_FOUND = "No valid token found";
 
   private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
@@ -100,7 +94,7 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
       throw new ApiException(
           HttpStatus.INTERNAL_SERVER_ERROR,
           ErrorCode.INTERNAL_SERVER_ERROR,
-          ErrorMessages.GENERIC_ERROR_MESSAGE,
+          ErrorMessages.GENERIC_GOOGLE_AUTH_ERROR,
           ex);
     }
   }
@@ -123,24 +117,6 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
     }
   }
 
-  @Override
-  public Credential getUserCredentials() {
-    Optional<GoogleAuthToken> token = googleAuthTokenRepository.getLastActiveToken();
-    if (token.isEmpty() || isExpired(token.get()))
-      throw new ApiException(
-          HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.GOOGLE_AUTH_ERROR, NO_VALID_TOKEN_FOUND);
-
-    try {
-      String decryptedToken =
-          EncryptionUtils.decryptString(encryptionSecret, token.get().getAccessToken());
-      return new Credential(BearerToken.authorizationHeaderAccessMethod())
-          .setAccessToken(decryptedToken);
-    } catch (Exception ex) {
-      throw new ApiException(
-          HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.GOOGLE_AUTH_ERROR, GENERIC_ERROR_MSG);
-    }
-  }
-
   private void scheduleRefreshTask(
       GoogleAuthTokenDto token,
       GoogleRestClient googleRestClient,
@@ -153,11 +129,5 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
             token, googleRestClient, googleAuthTokenRepository, encryptionSecret, taskScheduler);
     LOGGER.debug("Scheduling token refresh task at {}", taskTime);
     taskScheduler.schedule(task, taskTime.toInstant());
-  }
-
-  private boolean isExpired(GoogleAuthToken token) {
-    OffsetDateTime expirationTime = token.getCreatedAt().plusSeconds(token.getExpiresIn());
-    OffsetDateTime now = OffsetDateTime.now();
-    return now.isAfter(expirationTime) || now.isEqual(expirationTime);
   }
 }
