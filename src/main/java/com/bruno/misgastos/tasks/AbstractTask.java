@@ -22,46 +22,46 @@ public abstract class AbstractTask implements Runnable {
 
   protected final SpendSpringDataRepository spendRepository;
 
-  protected final TaskConfig config;
+  protected final TaskConfig taskConfig;
 
   protected AbstractTask(
-      TaskConfig config,
+      TaskConfig taskConfig,
       GoogleTaskService googleTaskService,
       TaskSpringDataRepository taskRepository,
       SpendSpringDataRepository spendRepository) {
-    this.config = config;
+    this.taskConfig = taskConfig;
     this.googleTaskService = googleTaskService;
     this.taskRepository = taskRepository;
     this.spendRepository = spendRepository;
   }
 
-  public abstract void doWork(Task dbEntry);
+  public abstract void doWork(Task currentTask);
 
   @Override
   @Transactional
   public void run() {
     try {
-      Task dbEntry = new Task(config);
-      dbEntry = taskRepository.save(dbEntry);
+      Task currentTask = new Task(taskConfig);
+      currentTask = taskRepository.save(currentTask);
 
-      LOGGER.info("Starting {} (id={})", config.getTaskName(), dbEntry.getId());
+      LOGGER.info("Starting {} (id={})", taskConfig.getTaskName(), currentTask.getId());
 
       Instant start = Instant.now();
 
-      doWork(dbEntry);
+      doWork(currentTask);
 
       Instant end = Instant.now();
       Duration duration = Duration.between(start, end);
-      dbEntry.setUpdatedAt(end.atOffset(ZoneOffset.UTC));
-      dbEntry.setFinishedAt(end.atOffset(ZoneOffset.UTC));
-      taskRepository.save(dbEntry);
+      currentTask.setUpdatedAt(end.atOffset(ZoneOffset.UTC));
+      currentTask.setFinishedAt(end.atOffset(ZoneOffset.UTC));
+      taskRepository.save(currentTask);
       LOGGER.info(
           "{} (id={}) finished correctly in {}ms",
-          config.getTaskName(),
-          dbEntry.getId(),
+          taskConfig.getTaskName(),
+          currentTask.getId(),
           duration.toMillis());
     } catch (Exception ex) {
-      LOGGER.error("Error executing {}", config.getTaskName(), ex);
+      LOGGER.error("Error executing {}", taskConfig.getTaskName(), ex);
     }
   }
 }

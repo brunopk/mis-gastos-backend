@@ -25,16 +25,15 @@ public class RecurrentSpendTask extends AbstractTask {
   private static final Logger LOGGER = LoggerFactory.getLogger(RecurrentSpendTask.class);
 
   public RecurrentSpendTask(
-      TaskConfig config,
+      TaskConfig taskConfig,
       GoogleTaskService googleTaskService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository) {
-    super(config, googleTaskService, taskRepository, spendRepository);
+    super(taskConfig, googleTaskService, taskRepository, spendRepository);
   }
 
   @Override
-  public void doWork(Task dbEntry) {
-    TaskConfig taskConfig = dbEntry.getTaskConfig();
+  public void doWork(Task currentTask) {
     validateTaskConfig(taskConfig);
 
     switch (taskConfig.getTaskType()) {
@@ -47,7 +46,7 @@ public class RecurrentSpendTask extends AbstractTask {
                 taskConfig.getSubcategoryId(),
                 taskConfig.getAccountId(),
                 taskConfig.getSpendDescription(),
-                dbEntry.getId(),
+                currentTask.getId(),
                 taskConfig.getSpendValue());
 
         spendRepository.save(spend);
