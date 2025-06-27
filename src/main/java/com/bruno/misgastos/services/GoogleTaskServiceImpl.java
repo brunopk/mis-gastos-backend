@@ -17,6 +17,7 @@ import com.google.api.services.tasks.Tasks;
 import com.google.api.services.tasks.model.TaskList;
 import com.google.api.services.tasks.model.TaskLists;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
@@ -67,14 +68,11 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
     }
   }
 
-  // TODO: if necessary, consider returning task (task dto)
-
   @Override
-  public void createTask(Task task, String taskList) {
+  public Task createTask(Task task, String taskList) {
     Credential credential = getUserCredentials(googleAuthTokenRepository, encryptionSecret);
-    Tasks.TasksOperations tasksOperations = new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-      .build()
-      .tasks();
+    Tasks.TasksOperations tasksOperations =
+        new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build().tasks();
 
     // Google Tasks does not support time-based due dates
     com.google.api.services.tasks.model.Task taskAux =
@@ -84,7 +82,13 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
             .setNotes(task.notes());
 
     try {
-      tasksOperations.insert(taskList, taskAux).execute();
+      com.google.api.services.tasks.model.Task createdTask =
+          tasksOperations.insert(taskList, taskAux).execute();
+      return new Task(
+          createdTask.getId(),
+          OffsetDateTime.parse(createdTask.getDue()),
+          createdTask.getTitle(),
+          createdTask.getNotes());
     } catch (IOException ex) {
       throw new GoogleApiException(ex);
     }

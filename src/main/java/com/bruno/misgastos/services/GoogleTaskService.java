@@ -12,8 +12,9 @@ public interface GoogleTaskService {
    * Create a task
    * @param task Task to be created
    * @param taskList Task list in which to create the task
+   * @return Return created task
    * @throws com.bruno.misgastos.exceptions.google.GoogleApiException If an error occurs when interacting with
    *  Google Tasks API or after.
    */
-  void createTask(Task task, String taskList);
+  Task createTask(Task task, String taskList);
 }

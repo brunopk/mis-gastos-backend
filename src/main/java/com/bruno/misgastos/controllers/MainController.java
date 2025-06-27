@@ -1,9 +1,11 @@
 package com.bruno.misgastos.controllers;
 
 import com.bruno.misgastos.dto.*;
-import com.bruno.misgastos.services.GoogleTasksService;
+import com.bruno.misgastos.dto.google.Task;
+import com.bruno.misgastos.services.GoogleTaskService;
 import com.bruno.misgastos.services.MainService;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,12 +18,12 @@ public class MainController {
 
   private final MainService mainService;
 
-  private final GoogleTasksService googleTasksService;
+  private final GoogleTaskService googleTaskService;
 
   @Autowired
-  public MainController(MainService mainService, GoogleTasksService googleTasksService) {
+  public MainController(MainService mainService, GoogleTaskService googleTaskService) {
     this.mainService = mainService;
-    this.googleTasksService = googleTasksService;
+    this.googleTaskService = googleTaskService;
   }
 
   @GetMapping("/categories")
@@ -56,7 +58,8 @@ public class MainController {
 
   @GetMapping("/test-google-task")
   public ResponseEntity<Void> testGoogleTasks() throws IOException {
-    googleTasksService.test();
+    Task task = new Task(OffsetDateTime.now(), "Test task", "Description");
+    googleTaskService.createTask(task, "V2xFMkpURWhLMDJMeE1qQQ");
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }
