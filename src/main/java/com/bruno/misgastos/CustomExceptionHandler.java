@@ -32,10 +32,6 @@ public class CustomExceptionHandler {
 
   private static final String BODY_NOT_READABLE_MESSAGE = "Message not readable";
 
-  private static final String GOOGLE_AUTH_ERROR_MESSAGE = "Unauthorized by Google";
-
-  private static final String GENERIC_AUTH_ERROR_MESSAGE = "Unauthorized";
-
   private static final String REST_CLIENT_ERROR_MESSAGE = "REST client error";
 
   private static final String NO_RESOURCE_FOUND_EXCEPTION = "No resource found %s";
@@ -106,11 +102,7 @@ public class CustomExceptionHandler {
 
   @ExceptionHandler(UnauthorizedException.class)
   public ResponseEntity<ErrorDto> handleUnauthorizedException(UnauthorizedException ex) {
-    String userMessage =
-        ex.getErrorCode().equals(ErrorCode.GOOGLE_AUTH_ERROR)
-            ? GOOGLE_AUTH_ERROR_MESSAGE
-            : GENERIC_AUTH_ERROR_MESSAGE;
-    ErrorDto body = new ErrorDto(ErrorCode.UNAUTHORIZED.name(), userMessage);
+    ErrorDto body = new ErrorDto(ex.getErrorCode().name(), ex.getMessage());
     return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
   }
 
