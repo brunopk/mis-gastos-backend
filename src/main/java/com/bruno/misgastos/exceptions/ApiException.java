@@ -1,6 +1,7 @@
 package com.bruno.misgastos.exceptions;
 
 import com.bruno.misgastos.enums.ErrorCode;
+import com.bruno.misgastos.utils.ErrorMessages;
 import org.springframework.http.HttpStatus;
 
 public class ApiException extends RuntimeException {
@@ -9,27 +10,28 @@ public class ApiException extends RuntimeException {
 
   private final ErrorCode errorCode;
 
-  private final String message;
-
   public ApiException(HttpStatus httpStatus, ErrorCode errorCode, String message, Throwable cause) {
     super(message, cause);
     this.httpStatus = httpStatus;
     this.errorCode = errorCode;
-    this.message = message;
   }
 
   public ApiException(HttpStatus httpStatus, ErrorCode errorCode, String message) {
     super(message);
     this.httpStatus = httpStatus;
     this.errorCode = errorCode;
-    this.message = message;
   }
 
   public ApiException(ErrorCode errorCode, String message) {
     super(message);
     this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
     this.errorCode = errorCode;
-    this.message = message;
+  }
+
+  public ApiException(Throwable ex) {
+    super(ErrorMessages.GENERIC_ERROR, ex);
+    this.httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    this.errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
   }
 
   public HttpStatus getHttpStatus() {
@@ -38,10 +40,5 @@ public class ApiException extends RuntimeException {
 
   public ErrorCode getErrorCode() {
     return errorCode;
-  }
-
-  @Override
-  public String getMessage() {
-    return message;
   }
 }

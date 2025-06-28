@@ -2,6 +2,7 @@ package com.bruno.misgastos.controllers;
 
 import com.bruno.misgastos.dto.*;
 import com.bruno.misgastos.dto.google.Task;
+import com.bruno.misgastos.services.GoogleMailService;
 import com.bruno.misgastos.services.GoogleTaskService;
 import com.bruno.misgastos.services.MainService;
 import java.io.IOException;
@@ -18,12 +19,12 @@ public class MainController {
 
   private final MainService mainService;
 
-  private final GoogleTaskService googleTaskService;
+  private final GoogleMailService googleMailService;
 
   @Autowired
-  public MainController(MainService mainService, GoogleTaskService googleTaskService) {
+  public MainController(MainService mainService, GoogleMailService googleMailService) {
     this.mainService = mainService;
-    this.googleTaskService = googleTaskService;
+    this.googleMailService = googleMailService;
   }
 
   @GetMapping("/categories")
@@ -58,8 +59,7 @@ public class MainController {
 
   @GetMapping("/test-google-task")
   public ResponseEntity<Void> testGoogleTasks() throws IOException {
-    Task task = new Task(OffsetDateTime.now(), "Test task", "Description");
-    googleTaskService.createTask(task, "V2xFMkpURWhLMDJMeE1qQQ");
+    googleMailService.sendMail("brunopiaggiok@gmail.com", "Test", "<h1>This is the HTML version</h1>");
     return new ResponseEntity<>(HttpStatus.OK);
   }
 }

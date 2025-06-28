@@ -32,6 +32,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class GoogleTaskServiceImpl implements GoogleTaskService {
 
+  // TODO: remove LOGGER
+
   private static final Logger LOGGER = LoggerFactory.getLogger(GoogleTaskServiceImpl.class);
 
   private static final JsonFactory JSON_FACTORY = new GsonFactory();
