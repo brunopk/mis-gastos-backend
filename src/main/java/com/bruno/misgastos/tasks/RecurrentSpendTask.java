@@ -8,7 +8,7 @@ import com.bruno.misgastos.enums.TaskType;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
-import com.bruno.misgastos.services.GoogleTaskService;
+import com.bruno.misgastos.services.google.GoogleTaskService;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import org.slf4j.Logger;

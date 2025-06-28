@@ -5,6 +5,7 @@ import com.bruno.misgastos.dto.rest.google.GetTokenRequestDto;
 import com.bruno.misgastos.dto.Oauth2CallbackRequestDto;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.UnauthorizedException;
+import com.bruno.misgastos.services.google.GoogleAuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;

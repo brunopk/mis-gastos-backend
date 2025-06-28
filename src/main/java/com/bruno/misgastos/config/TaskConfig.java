@@ -3,7 +3,7 @@ package com.bruno.misgastos.config;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
-import com.bruno.misgastos.services.GoogleTaskService;
+import com.bruno.misgastos.services.google.GoogleTaskService;
 import com.bruno.misgastos.tasks.AbstractTask;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;

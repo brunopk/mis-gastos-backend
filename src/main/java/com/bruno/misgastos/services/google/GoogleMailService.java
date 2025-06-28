@@ -1,7 +1,4 @@
-package com.bruno.misgastos.services;
-
-// TODO: create com.bruno.misgastos.services.google package for GoogleMailService, GoogleAuthService
-// and GoogleTaskService
+package com.bruno.misgastos.services.google;
 
 public interface GoogleMailService {
 

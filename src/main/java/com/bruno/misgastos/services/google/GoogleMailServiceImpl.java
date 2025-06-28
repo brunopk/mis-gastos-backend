@@ -1,4 +1,4 @@
-package com.bruno.misgastos.services;
+package com.bruno.misgastos.services.google;
 
 import com.bruno.misgastos.entities.GoogleAuthToken;
 import com.bruno.misgastos.enums.ErrorCode;

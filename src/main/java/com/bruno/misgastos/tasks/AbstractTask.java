@@ -4,7 +4,7 @@ import com.bruno.misgastos.entities.Task;
 import com.bruno.misgastos.entities.TaskConfig;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
-import com.bruno.misgastos.services.GoogleTaskService;
+import com.bruno.misgastos.services.google.GoogleTaskService;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
