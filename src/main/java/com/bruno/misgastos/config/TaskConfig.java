@@ -36,6 +36,9 @@ public class TaskConfig {
   @Value("${scheduling.task-scheduler.pool-size}")
   private Integer TASK_SCHEDULER_POOL_SIZE;
 
+  @Value("{google.task-list-id}")
+  private String GOOGLE_TASK_LIST_ID;
+
   @Bean
   public ThreadPoolTaskExecutor taskExecutor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -90,7 +93,12 @@ public class TaskConfig {
       String shortClassName = taskConfig.getClassName();
       AbstractTask task =
           getTaskInstance(
-              shortClassName, taskConfig, googleTaskService, spendRepository, taskRepository);
+              shortClassName,
+              GOOGLE_TASK_LIST_ID,
+              taskConfig,
+              googleTaskService,
+              spendRepository,
+              taskRepository);
 
       LOGGER.info(
           "Scheduling {} with CRON expression {}",
@@ -108,6 +116,7 @@ public class TaskConfig {
 
   private AbstractTask getTaskInstance(
       String shortClassName,
+      String googleTaskListId,
       com.bruno.misgastos.entities.TaskConfig config,
       GoogleTaskService googleTaskService,
       SpendSpringDataRepository spendRepository,
@@ -118,11 +127,12 @@ public class TaskConfig {
       return (AbstractTask)
           clazz
               .getConstructor(
+                  String.class,
                   com.bruno.misgastos.entities.TaskConfig.class,
                   GoogleTaskService.class,
                   SpendSpringDataRepository.class,
                   TaskSpringDataRepository.class)
-              .newInstance(config, googleTaskService, spendRepository, taskRepository);
+              .newInstance(googleTaskListId, config, googleTaskService, spendRepository, taskRepository);
     } catch (ClassNotFoundException
         | NoSuchMethodException
         | InstantiationException

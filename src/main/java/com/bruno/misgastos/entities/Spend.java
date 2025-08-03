@@ -95,4 +95,18 @@ public class Spend {
   public Double getValue() {
     return value;
   }
+
+  @Override
+  public String toString() {
+    return "Spend{" +
+      "id=" + id +
+      ", date=" + date +
+      ", categoryId=" + categoryId +
+      ", subcategoryId=" + subcategoryId +
+      ", groupId=" + groupId +
+      ", accountId=" + accountId +
+      ", description='" + description + '\'' +
+      ", taskId=" + taskId +
+      '}';
+  }
 }

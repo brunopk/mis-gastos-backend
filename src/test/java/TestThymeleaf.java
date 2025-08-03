@@ -1,3 +1,4 @@
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -40,6 +41,7 @@ public class TestThymeleaf {
   @Test
   public void testDateFormatting() {
     OffsetDateTime now = OffsetDateTime.now();
-    System.out.println(now.format(DATE_TIME_FORMATTER));
+    String formattedDate = StringUtils.capitalize(now.format(DATE_TIME_FORMATTER));
+    System.out.println(formattedDate);
   }
 }
