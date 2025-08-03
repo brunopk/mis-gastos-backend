@@ -39,33 +39,33 @@ public abstract class AbstractTask implements Runnable {
     this.spendRepository = spendRepository;
   }
 
-  public abstract void doWork(Task taskInstance);
+  public abstract void doWork(Task taskDbEntry);
 
   @Override
   @Transactional
   public void run() {
     try {
-      Task taskInstance = new Task(taskConfig);
-      taskInstance = taskRepository.save(taskInstance);
+      Task taskDbEntry = new Task(taskConfig);
+      taskDbEntry = taskRepository.save(taskDbEntry);
 
-      LOGGER.info("Starting {} (id={})", taskConfig.getTaskName(), taskInstance.getId());
+      LOGGER.info("Starting {} (id={})", taskConfig.getTaskName(), taskDbEntry.getId());
 
       Instant start = Instant.now();
 
-      doWork(taskInstance);
+      doWork(taskDbEntry);
 
       Instant end = Instant.now();
       Duration duration = Duration.between(start, end);
 
-      taskInstance.setUpdatedAt(end.atOffset(ZoneOffset.UTC));
-      taskInstance.setFinishedAt(end.atOffset(ZoneOffset.UTC));
+      taskDbEntry.setUpdatedAt(end.atOffset(ZoneOffset.UTC));
+      taskDbEntry.setFinishedAt(end.atOffset(ZoneOffset.UTC));
 
-      taskRepository.save(taskInstance);
+      taskRepository.save(taskDbEntry);
 
       LOGGER.info(
           "{} (id={}) finished correctly in {}ms",
           taskConfig.getTaskName(),
-          taskInstance.getId(),
+          taskDbEntry.getId(),
           duration.toMillis());
     } catch (Exception ex) {
       LOGGER.error("Error executing {}", taskConfig.getTaskName(), ex);

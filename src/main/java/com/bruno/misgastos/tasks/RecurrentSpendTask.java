@@ -46,12 +46,12 @@ public class RecurrentSpendTask extends AbstractTask {
 
   @Override
   @Transactional
-  public void doWork(Task taskInstance) {
+  public void doWork(Task taskDbEntry) {
     validateTaskConfig(taskConfig);
 
     switch (taskConfig.getTaskType()) {
       case AUTOMATIC -> {
-        Spend spend = buildSpend(taskConfig, taskInstance)
+        Spend spend = buildSpend(taskConfig, taskDbEntry);
         spendRepository.save(spend);
         LOGGER.info("Spend created: {}", spend);
       }
@@ -103,7 +103,7 @@ public class RecurrentSpendTask extends AbstractTask {
     }
   }
 
-  private Spend buildSpend(TaskConfig taskConfig, Task taskInstance) {
+  private Spend buildSpend(TaskConfig taskConfig, Task taskDbEntry) {
     return new Spend(
       OffsetDateTime.now(),
       taskConfig.getCategoryId(),
@@ -111,7 +111,7 @@ public class RecurrentSpendTask extends AbstractTask {
       taskConfig.getSubcategoryId(),
       taskConfig.getAccountId(),
       taskConfig.getSpendDescription(),
-      taskInstance.getId(),
+      taskDbEntry.getId(),
       taskConfig.getSpendValue());
   }
 
