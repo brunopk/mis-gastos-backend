@@ -24,41 +24,48 @@ public abstract class AbstractTask implements Runnable {
 
   protected final TaskConfig taskConfig;
 
+  protected final String googleTaskListId;
+
   protected AbstractTask(
+      String googleTaskListId,
       TaskConfig taskConfig,
       GoogleTaskService googleTaskService,
       TaskSpringDataRepository taskRepository,
       SpendSpringDataRepository spendRepository) {
+    this.googleTaskListId = googleTaskListId;
     this.taskConfig = taskConfig;
     this.googleTaskService = googleTaskService;
     this.taskRepository = taskRepository;
     this.spendRepository = spendRepository;
   }
 
-  public abstract void doWork(Task currentTask);
+  public abstract void doWork(Task taskInstance);
 
   @Override
   @Transactional
   public void run() {
     try {
-      Task currentTask = new Task(taskConfig);
-      currentTask = taskRepository.save(currentTask);
+      Task taskInstance = new Task(taskConfig);
+      taskInstance = taskRepository.save(taskInstance);
 
-      LOGGER.info("Starting {} (id={})", taskConfig.getTaskName(), currentTask.getId());
+      LOGGER.info("Starting {} (id={})", taskConfig.getTaskName(), taskInstance.getId());
 
       Instant start = Instant.now();
 
-      doWork(currentTask);
+      doWork(taskInstance);
 
       Instant end = Instant.now();
       Duration duration = Duration.between(start, end);
-      currentTask.setUpdatedAt(end.atOffset(ZoneOffset.UTC));
-      currentTask.setFinishedAt(end.atOffset(ZoneOffset.UTC));
-      taskRepository.save(currentTask);
+
+      taskInstance.setUpdatedAt(end.atOffset(ZoneOffset.UTC));
+      taskInstance.setFinishedAt(end.atOffset(ZoneOffset.UTC));
+
+      taskRepository.save(taskInstance);
+
       LOGGER.info(
           "{} (id={}) finished correctly in {}ms",
           taskConfig.getTaskName(),
-          currentTask.getId(),
+          taskInstance.getId(),
           duration.toMillis());
     } catch (Exception ex) {
       LOGGER.error("Error executing {}", taskConfig.getTaskName(), ex);

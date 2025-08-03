@@ -51,19 +51,8 @@ public class RecurrentSpendTask extends AbstractTask {
 
     switch (taskConfig.getTaskType()) {
       case AUTOMATIC -> {
-        Spend spend =
-            new Spend(
-                OffsetDateTime.now(),
-                taskConfig.getCategoryId(),
-                taskConfig.getSubcategoryId(),
-                taskConfig.getSubcategoryId(),
-                taskConfig.getAccountId(),
-                taskConfig.getSpendDescription(),
-                taskInstance.getId(),
-                taskConfig.getSpendValue());
-
+        Spend spend = buildSpend(taskConfig, taskInstance)
         spendRepository.save(spend);
-
         LOGGER.info("Spend created: {}", spend);
       }
       case MANUAL -> {
@@ -112,6 +101,18 @@ public class RecurrentSpendTask extends AbstractTask {
               "Invalid task configuration for \"%s\", mail_subject not defined",
               config.getTaskName()));
     }
+  }
+
+  private Spend buildSpend(TaskConfig taskConfig, Task taskInstance) {
+    return new Spend(
+      OffsetDateTime.now(),
+      taskConfig.getCategoryId(),
+      taskConfig.getSubcategoryId(),
+      taskConfig.getSubcategoryId(),
+      taskConfig.getAccountId(),
+      taskConfig.getSpendDescription(),
+      taskInstance.getId(),
+      taskConfig.getSpendValue());
   }
 
   private com.bruno.misgastos.dto.google.Task createGoogleTask(TaskConfig taskConfig, String taskList) {
