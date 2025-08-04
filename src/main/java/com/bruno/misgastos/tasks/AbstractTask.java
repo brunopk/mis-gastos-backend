@@ -12,6 +12,8 @@ import java.time.ZoneOffset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: create a task to process completed google tasks
+
 public abstract class AbstractTask implements Runnable {
 
   private final Logger LOGGER = LoggerFactory.getLogger(AbstractTask.class);
