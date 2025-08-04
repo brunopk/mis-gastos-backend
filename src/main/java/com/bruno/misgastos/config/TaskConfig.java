@@ -22,8 +22,6 @@ public class TaskConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskConfig.class);
 
-  // TODO: rename scheduling to task
-
   @Value("${scheduling.task-executor.core-pool-size}")
   private Integer TASK_EXECUTOR_CORE_POOL_SIZE;
 
