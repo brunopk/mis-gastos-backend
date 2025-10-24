@@ -67,10 +67,6 @@ public class Task {
     return taskConfig;
   }
 
-  public void setGoogleTaskFinishedAt(OffsetDateTime googleTaskFinishedAt) {
-    this.googleTaskFinishedAt = googleTaskFinishedAt;
-  }
-
   public void setUpdatedAt(OffsetDateTime updatedAt) {
     this.updatedAt = updatedAt;
   }

@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 
 // TODO: create a task to process completed google tasks
 
+// TODO: rename to AbstractTaskHandler
+
 public abstract class AbstractTask implements Runnable {
 
   private final Logger LOGGER = LoggerFactory.getLogger(AbstractTask.class);

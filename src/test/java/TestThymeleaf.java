@@ -30,7 +30,6 @@ public class TestThymeleaf {
     // TODO: check if server is in correct timezone (if not set it on Docker image)
     OffsetDateTime now = OffsetDateTime.now();
     context.setVariable("date", now.format((DateTimeFormatter.ISO_LOCAL_DATE)));
-
     context.setVariable("amount", 500);
 
     // Process template

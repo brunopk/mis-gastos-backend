@@ -22,9 +22,23 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
+// TODO: rename to RecurrentSpendTaskHandler
+
 // TODO: create a function like this ...
 // https://github.com/brunopk/mis-gastos/blob/90a9be15182955c033a31ff73db2aaa4298b4593/src/Utils.ts#L301C27-L301C61
 
+/**
+ * There are two types of recurrent spend tasks:<br>
+ * <br>
+ * - {@code MANUAL}: generates spends automatically<br>
+ * - {@code AUTOMATIC}: needs user interaction to generate spends (for example, completing the task on Google Tasks)<br>
+ * <br>
+ * Important considerations for all recurrent spend tasks :<br>
+ * <br>
+ * - The due date for the Google Tasks will be the actual date when this handler is running.<br>
+ * - Configuration passed on constructor is the same as the configuration for the task in the {@code doWork} method.<br>
+ * <br>
+ */
 public class RecurrentSpendTask extends AbstractTask {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RecurrentSpendTask.class);
@@ -46,18 +60,13 @@ public class RecurrentSpendTask extends AbstractTask {
 
   @Override
   @Transactional
-  public void doWork(Task taskDbEntry) {
+  public void doWork(Task task) {
     validateTaskConfig(taskConfig);
-
     switch (taskConfig.getTaskType()) {
-      case AUTOMATIC -> {
-        Spend spend = buildSpend(taskConfig, taskDbEntry);
-        spendRepository.save(spend);
-        LOGGER.info("Spend created: {}", spend);
-      }
-      case MANUAL -> {
-        // TODO: CONTINUE
-      }
+      case AUTOMATIC -> //
+        processAutomaticTask(task);
+      case MANUAL -> //
+        processManualTask(task);
     }
   }
 
@@ -66,7 +75,7 @@ public class RecurrentSpendTask extends AbstractTask {
       throw new ApiException(
           ErrorCode.INVALID_TASK_CONFIG,
           String.format(
-              "Invalid task configuration for \"%s\", create_google_task cannot be set while task_type is AUTOMATIC",
+              "Invalid task configuration for \"%s\", create_google_task cannot be enabled when task_type is AUTOMATIC",
               config.getTaskName()));
     }
 
@@ -103,7 +112,30 @@ public class RecurrentSpendTask extends AbstractTask {
     }
   }
 
-  private Spend buildSpend(TaskConfig taskConfig, Task taskDbEntry) {
+  private void processAutomaticTask(Task task) {
+    Spend spend = buildSpend(task);
+    spendRepository.save(spend);
+    LOGGER.info("Spend created: {}", spend);
+  }
+
+  private void processManualTask(Task task) {
+    TaskConfig taskConfig = task.getTaskConfig();
+    boolean createGoogleTask = taskConfig.getCreateGoogleTask();
+    if (createGoogleTask) {
+      com.bruno.misgastos.dto.google.Task googleTask = buildGoogleTask(task);
+      googleTaskService.createTask(googleTask, googleTaskListId);
+    }
+  }
+
+  private com.bruno.misgastos.dto.google.Task buildGoogleTask(Task task) {
+    TaskConfig taskConfig = task.getTaskConfig();
+    // TODO: CONTINUE (then continue using this in processManualTask)
+    // TODO: the due date will be the actual date.
+    return null;
+  }
+
+  private Spend buildSpend(Task task) {
+    TaskConfig taskConfig = task.getTaskConfig();
     return new Spend(
       OffsetDateTime.now(),
       taskConfig.getCategoryId(),
@@ -111,7 +143,7 @@ public class RecurrentSpendTask extends AbstractTask {
       taskConfig.getSubcategoryId(),
       taskConfig.getAccountId(),
       taskConfig.getSpendDescription(),
-      taskDbEntry.getId(),
+      task.getId(),
       taskConfig.getSpendValue());
   }
 
@@ -126,6 +158,7 @@ public class RecurrentSpendTask extends AbstractTask {
   }
 
   private String generateTaskTitle(TaskConfig taskConfig) {
+    // TODO: move this method to a new GoogleTaskHelper
     String taskTitlePrefix = taskConfig.getGoogleTaskTitle();
     String formattedDate = StringUtils.capitalize(OffsetDateTime.now().format(DATE_TIME_FORMATTER));
     return String.format(
@@ -135,12 +168,11 @@ public class RecurrentSpendTask extends AbstractTask {
   }
 
   private String generateTaskNotes(TaskConfig taskConfig) {
+    // TODO: move this method to a new GoogleTaskHelper
     Context context = new Context();
-
     // TODO: check if server is in correct timezone (if not set it on Docker image)
     OffsetDateTime now = OffsetDateTime.now();
     context.setVariable("date", now.format((DateTimeFormatter.ISO_LOCAL_DATE)));
-
     context.setVariable("amount", taskConfig.getSpendValue());
 
     // Process template

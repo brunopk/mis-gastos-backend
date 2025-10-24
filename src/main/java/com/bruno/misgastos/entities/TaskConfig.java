@@ -140,10 +140,6 @@ public class TaskConfig {
     return subcategoryId;
   }
 
-  public Integer getGroupId() {
-    return groupId;
-  }
-
   public Integer getAccountId() {
     return accountId;
   }
