@@ -4,6 +4,8 @@ import com.bruno.misgastos.enums.TaskType;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
+// TODO: Update database table CREATE with field rename (google_task_description_template and mail_body_template)
+
 @Entity
 public class TaskConfig {
 
@@ -30,8 +32,8 @@ public class TaskConfig {
   @Column(name = "google_task_title")
   private final String googleTaskTitle;
 
-  @Column(name = "google_task_description")
-  private final String googleTaskDescription;
+  @Column(name = "google_task_description_template")
+  private final String googleTaskDescriptionTemplate;
   
   @Column(name = "send_mail")
   private final Boolean sendMail;
@@ -39,8 +41,8 @@ public class TaskConfig {
   @Column(name = "mail_subject")
   private final String mailSubject;
 
-  @Column(name = "mail_body")
-  private final String mailBody;
+  @Column(name = "mail_body_template")
+  private final String mailBodyTemplate;
   
   @Column(name = "category_id", nullable = false)
   private final Integer categoryId;
@@ -74,10 +76,10 @@ public class TaskConfig {
     this.cronExpression = null;
     this.createGoogleTask = null;
     this.googleTaskTitle = null;
-    this.googleTaskDescription = null;
+    this.googleTaskDescriptionTemplate = null;
     this.sendMail = null;
     this.mailSubject = null;
-    this.mailBody = null;
+    this.mailBodyTemplate = null;
     this.categoryId = null;
     this.subcategoryId = null;
     this.groupId = null;
@@ -116,8 +118,8 @@ public class TaskConfig {
     return googleTaskTitle;
   }
 
-  public String getGoogleTaskDescription() {
-    return googleTaskDescription;
+  public String getGoogleTaskDescriptionTemplate() {
+    return googleTaskDescriptionTemplate;
   }
 
   public Boolean getSendMail() {
@@ -128,8 +130,8 @@ public class TaskConfig {
     return mailSubject;
   }
 
-  public String getMailBody() {
-    return mailBody;
+  public String getMailBodyTemplate() {
+    return mailBodyTemplate;
   }
 
   public Integer getCategoryId() {

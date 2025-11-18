@@ -29,18 +29,13 @@ public class TestThymeleaf {
 
     // TODO: check if server is in correct timezone (if not set it on Docker image)
     OffsetDateTime now = OffsetDateTime.now();
-    context.setVariable("date", now.format((DateTimeFormatter.ISO_LOCAL_DATE)));
+    String formattedDate = StringUtils.capitalize(now.format(DATE_TIME_FORMATTER));
+    context.setVariable("month", formattedDate);
     context.setVariable("amount", 500);
 
     // Process template
-    String result = engine.process("task_description_es.txt", context);
-    System.out.println(result);
-  }
+    String result = engine.process("test_template.txt", context);
 
-  @Test
-  public void testDateFormatting() {
-    OffsetDateTime now = OffsetDateTime.now();
-    String formattedDate = StringUtils.capitalize(now.format(DATE_TIME_FORMATTER));
-    System.out.println(formattedDate);
+    System.out.printf("Rendered Thymeleaf template:\n\n%s%n", result);
   }
 }

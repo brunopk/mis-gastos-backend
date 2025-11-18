@@ -1,2 +1,2 @@
-Fecha: [[${date}]]
+Mes: [[${month}]]
 Costo: [[${amount}]]
