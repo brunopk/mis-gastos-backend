@@ -28,7 +28,8 @@
     </scm>
     <properties>
         <java.version>21</java.version>
-        <spring-boot-starter.version>3.5.0</spring-boot-starter.version>
+        <spring-boot-starter.version>3.5.0-SNAPSHOT</spring-boot-starter.version>
+        <spring-security.version>6.5.0</spring-security.version>
     </properties>
     <dependencies>
         <!-- Spring -->
@@ -46,6 +47,21 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-oauth2-resource-server</artifactId>
         </dependency>
 
         <dependency>
@@ -110,7 +126,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
     </dependencies>
-
     <dependencyManagement>
         <dependencies>
             <!-- Spring -->
@@ -131,6 +146,24 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-security</artifactId>
                 <version>${spring-boot-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-client</artifactId>
+                <version>${spring-boot-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
+                <version>${spring-boot-starter.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-oauth2-client</artifactId>
+                <version>${spring-security.version}</version>
             </dependency>
 
             <dependency>
@@ -200,7 +233,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -228,7 +260,6 @@
             </plugin>
         </plugins>
     </build>
-
     <repositories>
         <repository>
             <id>spring-milestones</id>
@@ -265,5 +296,4 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
-
 </project>

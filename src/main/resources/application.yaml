@@ -1,3 +1,9 @@
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: LAX
+# TODO: add all security config also for prod (with en env var) and local env, document how to generate it
 spring:
   datasource:
     url: jdbc:mariadb://localhost:3306/misgastos?serverTimezone=UTC
@@ -7,6 +13,27 @@ spring:
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          secret-key: xxx # TODO move this to prod and local config (document that this automatically create the secret for JWT decription) investigate if this property can be moved to a custom mis-gastos:security....
+      client:
+        registration:
+          google:
+            client-id: xxx
+            client-secret: xxxx
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - https://www.googleapis.com/auth/tasks.readonly
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com # OpenID Connect (OIDC) provider
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
 scheduling:
   task-scheduler:
     pool-size: 1
