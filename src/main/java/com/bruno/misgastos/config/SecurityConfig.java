@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -40,7 +42,7 @@ public class SecurityConfig {
     return http.csrf(
             csrf ->
                 csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .ignoringRequestMatchers("/oauth2/token"))
+                    .ignoringRequestMatchers("/oauth2/token")) // TODO: remove this restriction (security will be handled by Home Assistant)
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
         .authorizeHttpRequests(
             (authorizationManagerRequestMatcherRegistry) ->
@@ -48,13 +50,13 @@ public class SecurityConfig {
                     .requestMatchers("/oauth2/**")
                     .permitAll()
                     .anyRequest()
-                    .authenticated())
+                    .authenticated()) // TODO: remove this authorization requirement (security will be handled by Home Assistant)
         .oauth2Login(
             Customizer
-                .withDefaults()) // Session login (by default this will permit request to /login)
+                .withDefaults()) // Session login (by default this will permit request to /login) // TODO verify if Google tokens can be obtaining after removing this line (security will be handled by Home Assistant)
         .oauth2ResourceServer(
             oauth2 ->
-                oauth2.jwt(Customizer.withDefaults())) // TODO: (this requires jwtdecoder bean)
+                oauth2.jwt(Customizer.withDefaults())) // TODO: remove this authorization filter (security will be handled by Home Assistant)
         .build();
   }
 
@@ -73,57 +75,8 @@ public class SecurityConfig {
       .build();
   }
 
-  // TODO: add this to a Gist:
-  //  1. the get-token endpoint below
-  //  2. defaultSecurityFilterChain configuration above
-  //  3. explain that the most important part is oauth2ResourceServer
-  //  4. config   security:
-  //    oauth2:
-  //      resourceserver:
-  //        jwt:
-  //          secret-key
-
-  /* @GetMapping("/get-token")
-  public ResponseEntity<Object> getToken() {
-    Base64.Decoder base64Decoder = Base64.getDecoder();
-    SecretKey secretKey = Keys.hmacShaKeyFor(base64Decoder.decode(JWT_SECRET_KEY));
-    Date now = new Date();
-    Date expirationTime = new Date(System.currentTimeMillis() + 60 * 1000);
-    String token = Jwts.builder()
-      .setIssuedAt(now)
-      .setClaims(Map.of("myField", "EXPECTED_VALUE"))
-      .setExpiration(expirationTime)
-      .signWith(secretKey)
-      .compact();
-    return ResponseEntity.ok(Map.of("token", token));
-  } */
-
-  /*@Bean
-  public JwtDecoder jwtDecoder() {
-    Base64.Decoder base64Decoder = Base64.getDecoder();
-    byte[] secretAsByArray = base64Decoder.decode(JWT_SECRET_KEY);
-    SecretKey key = new SecretKeySpec(secretAsByArray, JWT_SECRET_KEY_ALGORITHM);
-
-    NimbusJwtDecoder decoder = NimbusJwtDecoder.withSecretKey(key).build();
-
-    OAuth2TokenValidator<Jwt> customValidator =
-        jwt -> {
-          String value = jwt.getClaim("myField");
-
-          if (!"EXPECTED_VALUE".equals(value)) {
-            return OAuth2TokenValidatorResult.failure(
-                new OAuth2Error("invalid_token", "Invalid custom field", null));
-          }
-
-          return OAuth2TokenValidatorResult.success();
-        };
-
-    decoder.setJwtValidator(customValidator);
-
-    return decoder;
-  }*/
-
-  // Used for client credentials Oauth2 flow
+  // Provides implementation for /oauth2/token, oauth2/authorize and oauth2/jwks endpoints
+  // that are used to authorize and obtain tokens from Google in order to perform actions on behalf of the users
 
   @Bean
   @Order(1)
@@ -144,7 +97,7 @@ public class SecurityConfig {
 
   // TODO: client-secret in config
 
-  // Used for client credentials Oauth2 flow
+  // Used to manage Google client IDs, secrets, etc in order to perform actions on behalf of the users
 
   @Bean
   public RegisteredClientRepository registeredClientRepository() {
@@ -168,7 +121,5 @@ public class SecurityConfig {
   // TODO: document how to enable properties for security logging: org.springframework.security: trace, springframework.web.client: trace
 
   // TODO: document that /oauth2/authorization/google is the URL to initiate the authorization code flow (default URL)
-
-  // TODO: document in a gist how to generate JWT tokens manually (find an all commit with this)
 
 }
