@@ -76,7 +76,7 @@ public class SecurityConfig {
   }
 
   // Provides implementation for /oauth2/token, oauth2/authorize and oauth2/jwks endpoints
-  // that are used to authorize and obtain tokens from Google in order to perform actions on behalf of the users
+  // that are used to obtain OAuth 2.0 access tokens to perform actions on Google APIs on behalf of users
 
   @Bean
   @Order(1)
@@ -97,7 +97,7 @@ public class SecurityConfig {
 
   // TODO: client-secret in config
 
-  // Used to manage Google client IDs, secrets, etc in order to perform actions on behalf of the users
+  // Used to manage Google clients (applications) data in order to perform actions on Google APIs on behalf of users
 
   @Bean
   public RegisteredClientRepository registeredClientRepository() {
