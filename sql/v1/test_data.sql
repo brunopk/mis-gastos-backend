@@ -44,14 +44,6 @@ INSERT INTO `task_config`(
     10
 );
 
-
-/**
- * Note that this tuple won't be inserted because it fails 'fk_group_subcategory' constraint :
- * 
- * 	('2025-03-29', 1, 2, 1, 1, 10, 'Test 2')
- * 
- **/
-
 INSERT INTO `spend`(
     date,
     category_id,
@@ -68,23 +60,47 @@ INSERT INTO `spend`(
     1,
     'Test 1',
     10
-), (
+),(
+    '2025-04-29',
+    1,
+    1,
+    1,
+    1,
+    'Test 2',
+    10
+  ), (
     '2025-03-29',
     2,
     NULL,
     NULL,
     1,
-    'Test 2',
+    'Test 3',
     10
 ), (
+    '2025-04-29',
+    2,
+    NULL,
+    NULL,
+    1,
+    'Test 4',
+    10
+ ), (
     '2025-03-29',
     2,
     3,
     NULL,
     1,
-    'Test 3',
+    'Test 5',
     10
-);
+), (
+    '2025-04-29',
+    2,
+    3,
+    NULL,
+    1,
+    'Test 6',
+    10
+ );
 
 INSERT INTO `income`(
     date,

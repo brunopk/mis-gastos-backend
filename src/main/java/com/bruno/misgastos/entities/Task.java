@@ -19,9 +19,6 @@ public class Task {
   @Column(name = "is_google_task_completed")
   private final Boolean isGoogleTaskCompleted;
 
-  @Column(name = "spend_value")
-  private final Double spendValue;
-
   @ManyToOne(optional = false)
   @JoinColumn(name = "task_config_id", nullable = false)
   private final TaskConfig taskConfig;
@@ -40,7 +37,6 @@ public class Task {
     this.googleTaskId = null;
     this.googleTaskFinishedAt = null;
     this.isGoogleTaskCompleted = false;
-    this.spendValue = null;
     this.taskConfig = null;
     this.createdAt = null;
     this.updatedAt = null;
@@ -52,7 +48,6 @@ public class Task {
     this.googleTaskId = null;
     this.googleTaskFinishedAt = null;
     this.isGoogleTaskCompleted = false;
-    this.spendValue = config.getSpendValue();
     this.taskConfig = config;
     this.createdAt = OffsetDateTime.now();
     this.updatedAt = OffsetDateTime.now();

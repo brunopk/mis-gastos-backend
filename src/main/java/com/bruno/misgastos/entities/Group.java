@@ -12,9 +12,6 @@ public class Group {
 
   private final String name;
 
-  @Column(name="category_id")
-  private final Integer categoryId;
-
   @Column(name="subcategory_id")
   private final Integer subcategoryId;
 
@@ -28,7 +25,6 @@ public class Group {
   Group() {
     this.id = null;
     this.name = null;
-    this.categoryId = null;
     this.subcategoryId = null;
     this.accounts = null;
   }
@@ -39,10 +35,6 @@ public class Group {
 
   public String getName() {
     return name;
-  }
-
-  public Integer getCategoryId() {
-    return categoryId;
   }
 
   public Integer getSubcategoryId() {

@@ -39,44 +39,37 @@ public class SecurityConfig {
   @Bean
   @Profile({"default", "local"})
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-    return http.csrf(
-            csrf ->
-                csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .ignoringRequestMatchers("/oauth2/token")) // TODO: remove this restriction (security will be handled by Home Assistant)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
-        .authorizeHttpRequests(
-            (authorizationManagerRequestMatcherRegistry) ->
-                authorizationManagerRequestMatcherRegistry
-                    .requestMatchers("/oauth2/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated()) // TODO: remove this authorization requirement (security will be handled by Home Assistant)
-        .oauth2Login(
-            Customizer
-                .withDefaults()) // Session login (by default this will permit request to /login) // TODO verify if Google tokens can be obtaining after removing this line (security will be handled by Home Assistant)
-        .oauth2ResourceServer(
-            oauth2 ->
-                oauth2.jwt(Customizer.withDefaults())) // TODO: remove this authorization filter (security will be handled by Home Assistant)
-        .build();
+    return http.csrf(AbstractHttpConfigurer::disable).build();
   }
 
   @Bean
   @Profile({"prod"})
   public SecurityFilterChain prodSecurityFilterChain(HttpSecurity http) throws Exception {
-    return http.csrf(AbstractHttpConfigurer::disable)
-        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
-        .authorizeHttpRequests(
-            (authorizationManagerRequestMatcherRegistry) ->
-                authorizationManagerRequestMatcherRegistry
-                    .requestMatchers("/oauth2/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
+    return http.csrf(
+        csrf ->
+          csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .ignoringRequestMatchers("/oauth2/token")) // TODO: remove this restriction (security will be handled by Home Assistant)
+      .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
+      .authorizeHttpRequests(
+        (authorizationManagerRequestMatcherRegistry) ->
+          authorizationManagerRequestMatcherRegistry
+            .requestMatchers("/oauth2/**")
+            .permitAll()
+            .anyRequest()
+            .authenticated()) // TODO: remove this authorization requirement (security will be handled by Home Assistant)
+      .oauth2Login(
+        Customizer
+          .withDefaults()) // Session login (by default this will permit request to /login) // TODO verify if Google tokens can be obtaining after removing this line (security will be handled by Home Assistant)
+      .oauth2ResourceServer(
+        oauth2 ->
+          oauth2.jwt(Customizer.withDefaults())) // TODO: remove this authorization filter (security will be handled by Home Assistant)
       .build();
   }
 
-  // Provides implementation for /oauth2/token, oauth2/authorize and oauth2/jwks endpoints
-  // that are used to obtain OAuth 2.0 access tokens to perform actions on Google APIs on behalf of users
+  /**
+   * OAuth2AuthorizationServerConfigurer provides implementation for /oauth2/token, oauth2/authorize and oauth2/jwks
+   * endpoints that are used to obtain OAuth 2.0 access tokens to perform actions on Google APIs on behalf of the user
+   */
 
   @Bean
   @Order(1)

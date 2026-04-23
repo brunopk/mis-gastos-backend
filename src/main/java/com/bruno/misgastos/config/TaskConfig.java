@@ -3,6 +3,7 @@ package com.bruno.misgastos.config;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
+import com.bruno.misgastos.services.google.GoogleMailService;
 import com.bruno.misgastos.services.google.GoogleTaskService;
 import com.bruno.misgastos.tasks.AbstractTask;
 import java.lang.reflect.InvocationTargetException;
@@ -58,6 +59,7 @@ public class TaskConfig {
   @Bean
   public TaskScheduler taskScheduler(
       GoogleTaskService googleTaskService,
+      GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository,
       TaskConfigSpringDataRepository taskConfigRepository) {
@@ -69,6 +71,7 @@ public class TaskConfig {
         taskScheduler,
         taskExecutor(),
         googleTaskService,
+        googleMailService,
         spendRepository,
         taskRepository,
         taskConfigRepository);
@@ -80,6 +83,7 @@ public class TaskConfig {
       ThreadPoolTaskScheduler taskScheduler,
       ThreadPoolTaskExecutor taskExecutor,
       GoogleTaskService googleTaskService,
+      GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository,
       TaskConfigSpringDataRepository taskConfigRepository) {
@@ -88,13 +92,14 @@ public class TaskConfig {
 
     List<com.bruno.misgastos.entities.TaskConfig> taskConfigList = taskConfigRepository.findAll();
     for (com.bruno.misgastos.entities.TaskConfig taskConfig : taskConfigList) {
-      String shortClassName = taskConfig.getClassName();
+      String className = taskConfig.getClassName();
       AbstractTask task =
           getTaskInstance(
-              shortClassName,
+              className,
               GOOGLE_TASK_LIST_ID,
               taskConfig,
               googleTaskService,
+              googleMailService,
               spendRepository,
               taskRepository);
 
@@ -112,15 +117,17 @@ public class TaskConfig {
     }
   }
 
+  // TODO: improvement avoid adding all parameters for all AbstractTask implementation
   private AbstractTask getTaskInstance(
-      String shortClassName,
+      String className,
       String googleTaskListId,
       com.bruno.misgastos.entities.TaskConfig config,
       GoogleTaskService googleTaskService,
+      GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository) {
     try {
-      String fullClassName = String.format("com.bruno.misgastos.tasks.%s", shortClassName);
+      String fullClassName = String.format("com.bruno.misgastos.tasks.%s", className);
       Class<?> clazz = Class.forName(fullClassName);
       return (AbstractTask)
           clazz
@@ -128,9 +135,16 @@ public class TaskConfig {
                   String.class,
                   com.bruno.misgastos.entities.TaskConfig.class,
                   GoogleTaskService.class,
+                  GoogleMailService.class,
                   SpendSpringDataRepository.class,
                   TaskSpringDataRepository.class)
-              .newInstance(googleTaskListId, config, googleTaskService, spendRepository, taskRepository);
+              .newInstance(
+                  googleTaskListId,
+                  config,
+                  googleTaskService,
+                  googleMailService,
+                  spendRepository,
+                  taskRepository);
     } catch (ClassNotFoundException
         | NoSuchMethodException
         | InstantiationException

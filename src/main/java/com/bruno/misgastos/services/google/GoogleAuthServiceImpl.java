@@ -8,7 +8,7 @@ import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
 import com.bruno.misgastos.rest.GoogleRestClient;
-import com.bruno.misgastos.tasks.GoogleTokenRefreshTask;
+import com.bruno.misgastos.tasks.GoogleTokenRefresh;
 import com.bruno.misgastos.utils.EncryptionUtils;
 import com.bruno.misgastos.utils.ErrorMessages;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -80,6 +80,8 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
         resp.accessToken(), resp.refreshToken(), resp.idToken(), resp.expiresIn());
   }
 
+  // DO NOT remove this method (find a better place to call scheduleRefreshTask taking into account that tokens will be automatically created by Spring)
+
   @Override
   @Transactional
   public void saveToken(GoogleAuthTokenDto token) {
@@ -124,8 +126,8 @@ public class GoogleAuthServiceImpl implements GoogleAuthService {
       SecretKey encryptionSecret) {
     OffsetDateTime taskTime =
         OffsetDateTime.now().plusSeconds(token.expiresIn() - TOKEN_EXPIRATION_TOLERANCE);
-    GoogleTokenRefreshTask task =
-        new GoogleTokenRefreshTask(
+    GoogleTokenRefresh task =
+        new GoogleTokenRefresh(
             token, googleRestClient, googleAuthTokenRepository, encryptionSecret, taskScheduler);
     LOGGER.debug("Scheduling token refresh task at {}", taskTime);
     taskScheduler.schedule(task, taskTime.toInstant());

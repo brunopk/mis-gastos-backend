@@ -4,6 +4,7 @@ import com.bruno.misgastos.entities.Task;
 import com.bruno.misgastos.entities.TaskConfig;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
+import com.bruno.misgastos.services.google.GoogleMailService;
 import com.bruno.misgastos.services.google.GoogleTaskService;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
@@ -14,8 +15,11 @@ import org.slf4j.LoggerFactory;
 
 // TODO: create a task to process completed google tasks
 
-// TODO: rename to AbstractTaskHandler
 
+/**
+ * Implementations of this class <strong>must</strong> define a constructor with the same parameters as the main
+ * constructor of this class.
+ */
 public abstract class AbstractTask implements Runnable {
 
   private final Logger LOGGER = LoggerFactory.getLogger(AbstractTask.class);
@@ -34,8 +38,9 @@ public abstract class AbstractTask implements Runnable {
       String googleTaskListId,
       TaskConfig taskConfig,
       GoogleTaskService googleTaskService,
-      TaskSpringDataRepository taskRepository,
-      SpendSpringDataRepository spendRepository) {
+      GoogleMailService googleMailService,
+      SpendSpringDataRepository spendRepository,
+      TaskSpringDataRepository taskRepository) {
     this.googleTaskListId = googleTaskListId;
     this.taskConfig = taskConfig;
     this.googleTaskService = googleTaskService;
@@ -52,7 +57,7 @@ public abstract class AbstractTask implements Runnable {
       Task taskDbEntry = new Task(taskConfig);
       taskDbEntry = taskRepository.save(taskDbEntry);
 
-      LOGGER.info("Starting {} (id={})", taskConfig.getTaskName(), taskDbEntry.getId());
+      LOGGER.info("Starting task (task_name={}, task_id={})", taskConfig.getTaskName(), taskDbEntry.getId());
 
       Instant start = Instant.now();
 
@@ -67,12 +72,12 @@ public abstract class AbstractTask implements Runnable {
       taskRepository.save(taskDbEntry);
 
       LOGGER.info(
-          "{} (id={}) finished correctly in {}ms",
+          "Task finished correctly in {}ms (task_name={}, task_id={})",
+          duration.toMillis(),
           taskConfig.getTaskName(),
-          taskDbEntry.getId(),
-          duration.toMillis());
+          taskDbEntry.getId());
     } catch (Exception ex) {
-      LOGGER.error("Error executing {}", taskConfig.getTaskName(), ex);
+      LOGGER.error("Error executing task (task_name={})", taskConfig.getTaskName(), ex);
     }
   }
 }

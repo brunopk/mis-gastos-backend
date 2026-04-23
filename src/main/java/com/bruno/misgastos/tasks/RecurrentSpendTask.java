@@ -55,7 +55,7 @@ public class RecurrentSpendTask extends AbstractTask {
       GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository) {
-    super(googleTaskListId, taskConfig, googleTaskService, taskRepository, spendRepository);
+    super(googleTaskListId, taskConfig, googleTaskService, googleMailService, spendRepository, taskRepository);
     this.templateEngine = ThymeleafUtils.buildTemplateEngine();
   }
 
@@ -126,9 +126,10 @@ public class RecurrentSpendTask extends AbstractTask {
   }
 
   private void processAutomaticTask(Task task) {
+    TaskConfig taskConfig = task.getTaskConfig();
     Spend spend = buildSpend(task);
     spendRepository.save(spend);
-    LOGGER.info("Spend created: {}", spend);
+    LOGGER.info("Spend created: {} (task_config_name={}, task_id={})", spend, taskConfig.getTaskName(), task.getId());
   }
 
   private void processManualTask(Task task) {
@@ -136,7 +137,7 @@ public class RecurrentSpendTask extends AbstractTask {
     boolean createGoogleTask = taskConfig.getCreateGoogleTask();
     if (createGoogleTask) {
       com.bruno.misgastos.dto.google.Task googleTask = buildGoogleTask(task);
-      LOGGER.info("Creating task in Google");
+      LOGGER.info("Creating task in Google (task_config={}, task_id={})", taskConfig.getTaskName(), task.getId());
       googleTaskService.createTask(googleTask, googleTaskListId);
     }
   }

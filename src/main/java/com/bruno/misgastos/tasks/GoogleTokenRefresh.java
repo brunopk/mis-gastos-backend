@@ -16,9 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.TaskScheduler;
 
-public class GoogleTokenRefreshTask implements Runnable {
+public class GoogleTokenRefresh implements Runnable {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GoogleTokenRefreshTask.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GoogleTokenRefresh.class);
 
   private final GoogleRestClient googleRestClient;
 
@@ -30,7 +30,7 @@ public class GoogleTokenRefreshTask implements Runnable {
 
   private final TaskScheduler taskScheduler;
 
-  public GoogleTokenRefreshTask(
+  public GoogleTokenRefresh(
       GoogleAuthTokenDto tokenToBeRefreshed,
       GoogleRestClient googleRestClient,
       GoogleAuthTokenSpringDataRepository googleAuthTokenRepository,
@@ -86,8 +86,8 @@ public class GoogleTokenRefreshTask implements Runnable {
     OffsetDateTime taskTime =
         OffsetDateTime.now()
             .plusSeconds(token.expiresIn() - Constants.GOOGLE_TOKEN_EXPIRATION_TOLERANCE);
-    GoogleTokenRefreshTask task =
-        new GoogleTokenRefreshTask(
+    GoogleTokenRefresh task =
+        new GoogleTokenRefresh(
             token, googleRestClient, googleAuthTokenRepository, encryptionSecret, taskScheduler);
     LOGGER.debug("Scheduling token refresh task at {}", taskTime);
     taskScheduler.schedule(task, taskTime.toInstant());
