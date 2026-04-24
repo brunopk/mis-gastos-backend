@@ -2,6 +2,8 @@
 
 Node.js backend for Mis gastos project. It's based on [Node JS Server](https://github.com/brunopk/nodejs-server) to run as a Home Assistant add-on.
 
+TEST (REMOVE THIS)
+
 ## Development
 
 ### Development with HMR (hot module reloading)
