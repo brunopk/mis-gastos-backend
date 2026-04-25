@@ -12,13 +12,13 @@
 
 For **production**, the configuration file (Spring properties) is [`application-prod.yaml`](/src/main/resources/application-prod.yaml). Additionally, some of these properties refer to **environment variables** that must be defined :
 
-- `DB_JDBC_URL`: URL for the MariaDB database (e.g.: `jdbc:mariadb://localhost:3306/misgastos?serverTimezone=UTC`).
-- `DB_USER`: MariaDB username.
-- `DB_PASS`: MariaDB password.
-- `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information).
-- `GOOGLE_CLIENT_SECRET`: Google client secret for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information).
-- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: refer to [`/doc/scripts.md`](/doc/scripts.md) for more information.
-- `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: refer to [`/doc/scripts.md`](/doc/scripts.md) for more information..
+- `DB_JDBC_URL`: e.g.: `jdbc:mariadb://localhost:3306/misgastos?serverTimezone=UTC`
+- `DB_USER`: MariaDB username
+- `DB_PASS`: MariaDB password
+- `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information)
+- `GOOGLE_CLIENT_SECRET`: Google client secret for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information)
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: refer to [`/doc/scripts.md`](/doc/scripts.md) for more information
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: refer to [`/doc/scripts.md`](/doc/scripts.md) for more information
 
 > Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
