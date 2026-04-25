@@ -10,7 +10,7 @@
 
 ### Configuration
 
-The main configuration file (Spring properties) is `src/main/resources/application.yaml`. For **production**, some properties are redefined into [`application-prod.yaml`](/src/main/resources/application-prod.yaml). Additionally, some of these properties refer to **environment variables** that must be defined :
+For **production**, the configuration file (Spring properties) is [`application-prod.yaml`](/src/main/resources/application-prod.yaml). Additionally, some of these properties refer to **environment variables** that must be defined :
 
 - `DB_JDBC_URL`: URL for the MariaDB database (e.g.: `jdbc:mariadb://localhost:3306/misgastos?serverTimezone=UTC`).
 - `DB_USER`: MariaDB username.
@@ -53,7 +53,7 @@ For more development tips, follow `doc/development.md`.
 
 ### Configuration
 
-The main configuration file (Spring properties) is `src/main/resources/application.yaml`. For **development**, some properties are redefined into [`application-local.yaml`](/src/main/resources/application-local.yaml).
+For **development**, the configuration file is [`application-local.yaml`](/src/main/resources/application-local.yaml).
 
 > Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
