@@ -17,8 +17,8 @@ For **production**, the configuration file (Spring properties) is [`application-
 - `DB_PASS`: MariaDB password.
 - `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information).
 - `GOOGLE_CLIENT_SECRET`: Google client secret for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information).
-- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: use for client credentials authentication to execute scripts (refer to [`/doc/scripts.md`](/doc/scripts.md) for more information).
-- `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: use for client credentials authentication to execute scripts (refer to [`/doc/scripts.md`](/doc/scripts.md) for more information).
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: refer to [`/doc/scripts.md`](/doc/scripts.md) for more information.
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: refer to [`/doc/scripts.md`](/doc/scripts.md) for more information..
 
 > Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
@@ -60,6 +60,8 @@ For **development**, the configuration file is [`application-local.yaml`](/src/m
 - [`/doc/db.md`](/doc/db.md): how to create the DB and populate with test data
 - [`/doc/development.md`](/doc/development.md): useful information for development
 - [`/doc/google.md`](/doc/google.md): how to generate credentials in the Google Console
+- [`/doc/google.md`](/doc/scripts.md): documentation about complementary Python scripts
+- [`/doc/security.md`](/doc/security.md): OAuth2 flows supported by Mis Gastos Backend
 - [`/doc/spring.md`](/doc/spring.md): details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
 

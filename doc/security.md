@@ -12,7 +12,7 @@ Used to access Google APIs, such as Google Tasks and Gmail, on behalf of the use
 
 ## Client Credentials flow
 
-As defined by the OAuth 2.0 standard, it is used for backend-to-backend authentication. For Mis Gastos Backend is mainly used in [scripts](/scripts). To authorize using the Client Credentials flow:
+As defined by the OAuth 2.0 standard, it is used for backend-to-backend authentication. To authorize using the Client Credentials flow:
 
 1. Obtain a JWT access token by sending a POST request to http://localhost:8080/oauth2/token as defined by the Oauth2 Client Credentials standard :
     - Headers:
