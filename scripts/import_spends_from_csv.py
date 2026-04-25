@@ -1,3 +1,6 @@
+"""
+Used to facilitate data migration from https://github.com/brunopk/mis-gastos to Mis Gastos Backend.
+"""
 import csv
 import os
 
