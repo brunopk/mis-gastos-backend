@@ -13,7 +13,7 @@
 
 ## OAuth2
 
-- The **http://localhost:8080/login** endpoint is provided by the *spring-boot-starter-security* dependency and renders a login page that presents the available authentication methods, including OAuth2 providers (e.g., Google) when configured.
+- The **GET http://localhost:8080/login** endpoint is provided by the *spring-boot-starter-security* dependency and renders a login page that presents the available authentication methods, including OAuth2 providers (e.g., Google) when configured.
 - When using Spring Authorization Server with Nimbus JOSE+JWT (via *spring-security-oauth2-jose*, a transitive dependency of *spring-boot-starter-oauth2-authorization-server*), a default in-memory RSA key may be autoconfigured to sign JWTs (RS256) if no explicit `JWKSource` is defined; this is sufficient for the Mis Gastos Backend project, but **it should be replaced with a persistent key configuration for scalable or distributed environments**.
 
 ## Database
