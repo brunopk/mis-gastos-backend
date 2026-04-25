@@ -22,8 +22,6 @@ For **production**, the configuration file (Spring properties) is [`application-
 
 > Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
-> Refer to [`/doc/spring.md`](/doc/spring.md) for details about [scripts](/scripts).
-
 ## Development
 
 ### Requirements
