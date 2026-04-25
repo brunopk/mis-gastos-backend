@@ -25,11 +25,6 @@ If you want to test authentication follow these steps:
 
 To invoke endpoints that requires authentication through Home Assistant public address, extract `JSESSIONID` cookie with Chrome (inspect the site, go to "Application" tab and then go to "Cookies" on the left panel) and set it on Postman (click "Cookies" link below "Send" button).
 
-To test with different session expiration times set `server.servlet.session.timeout` property like this :
+## Spring properties
 
-```yaml
-server:
-  servlet:
-    session:
-      timeout: 5m
-```
+It's recommended to install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.

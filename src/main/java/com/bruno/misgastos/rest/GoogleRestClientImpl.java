@@ -1,12 +1,10 @@
 package com.bruno.misgastos.rest;
 
-import com.bruno.misgastos.dto.rest.google.GetTokenRequestDto;
-import com.bruno.misgastos.dto.rest.google.TokenDto;
 import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDto;
+import com.bruno.misgastos.dto.rest.google.TokenDto;
 import com.bruno.misgastos.exceptions.RestClientException;
 import java.nio.charset.StandardCharsets;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
@@ -22,53 +20,18 @@ public class GoogleRestClientImpl implements GoogleRestClient {
 
   private final RestClient.Builder restClientBuilder;
 
-  @Value("${google.client-id}")
-  private String clientId;
-
-  @Value("${google.client-secret}")
-  private String clientSecret;
-
-  @Value("${google.redirect-uri}")
-  private String redirectUri;
-
   @Autowired
   public GoogleRestClientImpl(RestClient.Builder restClientBuilder) {
     this.restClientBuilder = restClientBuilder;
   }
 
   @Override
-  public TokenDto getToken(GetTokenRequestDto params) {
-    RestClient restClient = restClientBuilder.build();
-
-    String url = String.format("%s/token", BASE_URL);
-
-    MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-    body.add("grant_type", "authorization_code");
-    body.add("client_id", clientId);
-    body.add("client_secret", clientSecret);
-    body.add("code", params.authorizationCode());
-    body.add("code_verifier", params.codeVerifier());
-    body.add("redirect_uri", redirectUri);
-
-    return restClient
-        .post()
-        .uri(url)
-        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED.toString())
-        .body(body)
-        .retrieve()
-        .onStatus(
-            HttpStatusCode::isError,
-            (request, response) -> {
-              String responseBody =
-                  new String(response.getBody().readAllBytes(), StandardCharsets.UTF_8);
-              throw new RestClientException(BASE_URL, response.getStatusCode(), responseBody);
-            })
-        .body(TokenDto.class);
-  }
-
-  @Override
   public TokenDto refreshToken(RefreshTokenRequestDto params) {
     RestClient restClient = restClientBuilder.build();
+
+    // TODO: Investigate how to obtain tokens and refresh tokens from already logged users. Try to use Spring libraries for Google.
+    String clientId = "xxxx";
+    String clientSecret = "xxxxxx";
 
     String url = String.format("%s/token", BASE_URL);
 

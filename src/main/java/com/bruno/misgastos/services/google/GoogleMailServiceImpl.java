@@ -23,10 +23,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Properties;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -37,24 +34,19 @@ public class GoogleMailServiceImpl implements GoogleMailService {
 
   private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  private final SecretKey encryptionSecret;
-
   private final GoogleAuthTokenSpringDataRepository googleAuthTokenRepository;
 
   @Autowired
-  public GoogleMailServiceImpl(
-    @Value("${google.token-encryption.secret}") String encryptionSecret,
-    GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
+  public GoogleMailServiceImpl(GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
     this.googleAuthTokenRepository = googleAuthTokenRepository;
-    this.encryptionSecret = new SecretKeySpec(Base64.getDecoder().decode(encryptionSecret), "AES");
   }
-
 
   @Override
   public void sendMail(String toEmailAddress, String subject, String htmlBody) {
     try {
       // Based in https://developers.google.com/workspace/gmail/api/guides/sending
-      Credential credential = getUserCredentials(googleAuthTokenRepository, encryptionSecret);
+      // TODO: Investigate how to obtain tokens from already logged users. Try to use Spring libraries for Google.
+      Credential credential = getUserCredentials(googleAuthTokenRepository);
       Gmail service = new Gmail.Builder(HTTP_TRANSPORT,
         JSON_FACTORY,
         credential)
@@ -83,7 +75,7 @@ public class GoogleMailServiceImpl implements GoogleMailService {
   }
 
   private Credential getUserCredentials(
-    GoogleAuthTokenSpringDataRepository googleAuthTokenRepository, SecretKey encryptionSecret) {
+    GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
     GoogleAuthToken token =
       googleAuthTokenRepository
         .getLastActiveToken()
@@ -91,6 +83,6 @@ public class GoogleMailServiceImpl implements GoogleMailService {
           () ->
             new UnauthorizedException(
               ErrorCode.UNAUTHORIZED, ErrorMessages.NO_VALID_TOKEN_FOUND));
-    return GoogleUtils.getUserCredentials(token, encryptionSecret);
+    return GoogleUtils.getUserCredentials(token, null);
   }
 }

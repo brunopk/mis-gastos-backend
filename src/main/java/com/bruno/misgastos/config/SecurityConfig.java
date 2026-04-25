@@ -2,18 +2,16 @@ package com.bruno.misgastos.config;
 
 import java.time.Duration;
 import java.util.UUID;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
@@ -25,16 +23,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 public class SecurityConfig {
 
-  @Value("${spring.security.oauth2.resourceserver.jwt.secret-key}")
-  private String JWT_SECRET_KEY;
-
-  private final String JWT_SECRET_KEY_ALGORITHM = "HmacSHA256";
-
-  // TODO: move the corresponding configuration to prod environment
-
-  // TODO: investigate what define the "Mis gastos" in the consent page of google
-
-  // TODO: document that http://localhost:8080/oauth2/authorization/google is the URL for authorization code flow with Google
 
   @Bean
   @Profile({"default", "local"})
@@ -42,13 +30,19 @@ public class SecurityConfig {
     return http.csrf(AbstractHttpConfigurer::disable).build();
   }
 
+  /**
+   * Among other things, {@code oauth2Login} configuration provides an implementation for the GET /login endpoint.
+   * @param http {@code SecurityFilterChain} bean provided by Spring
+   * @return generated {@code SecurityFilterChain} bean
+   * @throws Exception .
+   */
   @Bean
   @Profile({"prod"})
   public SecurityFilterChain prodSecurityFilterChain(HttpSecurity http) throws Exception {
     return http.csrf(
         csrf ->
           csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            .ignoringRequestMatchers("/oauth2/token")) // TODO: remove this restriction (security will be handled by Home Assistant)
+            .ignoringRequestMatchers("/oauth2/token"))
       .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
       .authorizeHttpRequests(
         (authorizationManagerRequestMatcherRegistry) ->
@@ -56,22 +50,26 @@ public class SecurityConfig {
             .requestMatchers("/oauth2/**")
             .permitAll()
             .anyRequest()
-            .authenticated()) // TODO: remove this authorization requirement (security will be handled by Home Assistant)
+            .authenticated())
       .oauth2Login(
         Customizer
-          .withDefaults()) // Session login (by default this will permit request to /login) // TODO verify if Google tokens can be obtaining after removing this line (security will be handled by Home Assistant)
+          .withDefaults())
       .oauth2ResourceServer(
         oauth2 ->
-          oauth2.jwt(Customizer.withDefaults())) // TODO: remove this authorization filter (security will be handled by Home Assistant)
+          oauth2.jwt(Customizer.withDefaults()))
       .build();
   }
 
   /**
-   * OAuth2AuthorizationServerConfigurer provides implementation for /oauth2/token, oauth2/authorize and oauth2/jwks
-   * endpoints that are used to obtain OAuth 2.0 access tokens to perform actions on Google APIs on behalf of the user
+   * {@code OAuth2AuthorizationServerConfigurer} provides implementation for /oauth2/token, oauth2/authorize and
+   * oauth2/jwks endpoints. Particularly for Mis Gastos Backend, the <strong>POST /oauth2/token</strong> endpoint can be
+   * used to obtain <strong>JWT signed tokens for client credentials flow</strong>.
+   * @param http {@code SecurityFilterChain} bean provided by Spring
+   * @return generated {@code SecurityFilterChain} bean
+   * @throws Exception .
    */
-
   @Bean
+  @Profile({"prod"})
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
@@ -84,35 +82,32 @@ public class SecurityConfig {
     return http.build();
   }
 
-  // TODO: set token duration in config
-
-  // TODO: client-id in config
-
-  // TODO: client-secret in config
-
-  // Used to manage Google clients (applications) data in order to perform actions on Google APIs on behalf of users
-
+  /**
+   * Provides an instance of {code RegisteredClientRepository} required for the bean created by the
+   * {@code authorizationServerSecurityFilterChain} method above (refer to {@code
+   * authorizationServerSecurityFilterChain} method description for more information).
+   *
+   * @return generated {@code RegisteredClientRepository} bean
+   */
   @Bean
-  public RegisteredClientRepository registeredClientRepository() {
+  @Profile({"prod"})
+  public RegisteredClientRepository registeredClientRepository(Environment env) {
+    String MIS_GASTOS_ADMIN_CLIENT_ID = env.getRequiredProperty("mis-gastos.security.admin.client-id");
+    String MIS_GASTOS_ADMIN_CLIENT_SECRET = env.getRequiredProperty("mis-gastos.security.admin.client-secret");
+    int MIS_GASTOS_CLIENT_TOKEN_TTL_IN_HOURS =
+        Integer.parseInt(env.getRequiredProperty("mis-gastos.security.jwt.ttl-in-hours"));
+
     RegisteredClient backendClient =
         RegisteredClient.withId(UUID.randomUUID().toString())
-            .clientId("backend_app_test")
-            .clientSecret("{noop}xxx")
+            .clientId(MIS_GASTOS_ADMIN_CLIENT_ID)
+            .clientSecret(String.format("{noop}%s", MIS_GASTOS_ADMIN_CLIENT_SECRET))
             .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
             .tokenSettings(
-                TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).build())
+                TokenSettings.builder()
+                    .accessTokenTimeToLive(Duration.ofHours(MIS_GASTOS_CLIENT_TOKEN_TTL_IN_HOURS))
+                    .build())
             .build();
     return new InMemoryRegisteredClientRepository(backendClient);
   }
-
- // TODO : change also frontend to use the new auth flow (no PKCE)
-
-  // TODO: remove get-token endpoint (remove also from Postman collection)
-
-  // TODO: refact GoogleRestClientImpl getToken is not needed any more , tokens are handled by spring libraries , authCallback endpoint is not needed anymore
-
-  // TODO: document how to enable properties for security logging: org.springframework.security: trace, springframework.web.client: trace
-
-  // TODO: document that /oauth2/authorization/google is the URL to initiate the authorization code flow (default URL)
 
 }

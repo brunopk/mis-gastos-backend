@@ -19,42 +19,28 @@ import com.google.api.services.tasks.model.TaskLists;
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 import java.util.List;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class GoogleTaskServiceImpl implements GoogleTaskService {
 
-  // TODO: remove LOGGER
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(GoogleTaskServiceImpl.class);
-
   private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
   private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  private final SecretKey encryptionSecret;
-
   private final GoogleAuthTokenSpringDataRepository googleAuthTokenRepository;
 
   @Autowired
-  public GoogleTaskServiceImpl(
-      @Value("${google.token-encryption.secret}") String encryptionSecret,
-      GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
+  public GoogleTaskServiceImpl(GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
     this.googleAuthTokenRepository = googleAuthTokenRepository;
-    this.encryptionSecret = new SecretKeySpec(Base64.getDecoder().decode(encryptionSecret), "AES");
   }
 
   @Override
   public void test() throws IOException {
-    Credential credential = getUserCredentials(googleAuthTokenRepository, encryptionSecret);
+    // TODO: Investigate how to obtain tokens from already logged users. Try to use Spring libraries for Google.
+    Credential credential = getUserCredentials(googleAuthTokenRepository);
     Tasks service = new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
 
     // Print the first 10 task lists.
@@ -72,7 +58,8 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
 
   @Override
   public Task createTask(Task task, String taskList) {
-    Credential credential = getUserCredentials(googleAuthTokenRepository, encryptionSecret);
+    // TODO: Investigate how to obtain tokens from already logged users. Try to use Spring libraries for Google.
+    Credential credential = getUserCredentials(googleAuthTokenRepository);
     Tasks.TasksOperations tasksOperations =
         new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build().tasks();
 
@@ -97,7 +84,7 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
   }
 
   private Credential getUserCredentials(
-      GoogleAuthTokenSpringDataRepository googleAuthTokenRepository, SecretKey encryptionSecret) {
+      GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
     GoogleAuthToken token =
         googleAuthTokenRepository
             .getLastActiveToken()
@@ -105,6 +92,6 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
                 () ->
                     new UnauthorizedException(
                         ErrorCode.UNAUTHORIZED, ErrorMessages.NO_VALID_TOKEN_FOUND));
-    return GoogleUtils.getUserCredentials(token, encryptionSecret);
+    return GoogleUtils.getUserCredentials(token, null);
   }
 }

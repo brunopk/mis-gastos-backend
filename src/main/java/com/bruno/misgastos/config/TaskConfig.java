@@ -23,16 +23,16 @@ public class TaskConfig {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskConfig.class);
 
-  @Value("${scheduling.task-executor.core-pool-size}")
+  @Value("${mis-gastos.scheduling.task-executor.core-pool-size}")
   private Integer TASK_EXECUTOR_CORE_POOL_SIZE;
 
-  @Value("${scheduling.task-executor.max-pool-size}")
+  @Value("${mis-gastos.scheduling.task-executor.max-pool-size}")
   private Integer TASK_EXECUTOR_MAX_POOL_SIZE;
 
-  @Value("${scheduling.task-executor.queue-capacity}")
+  @Value("${mis-gastos.scheduling.task-executor.queue-capacity}")
   private Integer TASK_EXECUTOR_QUEUE_CAPACITY;
 
-  @Value("${scheduling.task-scheduler.pool-size}")
+  @Value("${mis-gastos.scheduling.task-scheduler.pool-size}")
   private Integer TASK_SCHEDULER_POOL_SIZE;
 
   @Value("{google.task-list-id}")

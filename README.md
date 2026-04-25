@@ -1,26 +1,30 @@
-# Mis gastos backend
+# Mis Gastos Backend
 
-Home Assistant add-on that provides a backend [mis-gastos-web](https://github.com/brunopk/mis-gastos-web).
+## Running Mis Gastos Backend
 
-## Requirements
+### Steps to run Mis Gastos Backend
 
-- [Home Assistant Add-on: MariaDB](https://github.com/home-assistant/addons/tree/master/mariadb)
-- [Home Assistant Add-on: NGINX Home Assistant SSL proxy](https://github.com/home-assistant/addons/tree/master/nginx_proxy)
+1. Build the application with Maven to generate the JAR file.
+2. Obtain Google credentials from the Google Console (refer to [`/doc/google.md`](/doc/google.md)).
+3. Set the corresponding environment variables (refer to the [Configuration](#configuration) section below).
 
-Optionally but not required: 
+### Configuration
 
-- [Home Assistant Add-on: Samba share](https://github.com/home-assistant/addons/tree/master/samba)
-- [Home Assistant Community Add-on: phpMyAdmin](https://github.com/hassio-addons/addon-phpmyadmin)
+The main configuration file (Spring properties) is `src/main/resources/application.yaml`. For **production**, some properties are redefined into [`application-prod.yaml`](/src/main/resources/application-prod.yaml). Additionally, some of these properties refer to **environment variables** that must be defined :
 
-## Installation
+- `DB_JDBC_URL`: URL for the MariaDB database (e.g.: `jdbc:mariadb://localhost:3306/misgastos?serverTimezone=UTC`).
+- `DB_USER`: MariaDB username.
+- `DB_PASS`: MariaDB password.
+- `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information)
+- `GOOGLE_CLIENT_SECRET`: Google client secret for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information)
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: use for client credentials authentication to execute [scripts](/scripts)
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: use for client credentials authentication to execute [scripts](/scripts)
 
-1. [Configure Google credentials](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/google.md)
-2. [Build the add-on with `build.sh`](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/building.md)
-3. [Upload the add-on to Home Assistant](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/ha_add_ons_upload.md)
-4. [Configure the database](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/db.md)
-5. [Configure NGINX](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/nginx.md)
+> Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
-## Development
+> Refer to [`/doc/spring.md`](/doc/spring.md) for details about [scripts](/scripts).
+
+## Running Mis Gastos Backend for development
 
 ### Requirements
 
@@ -28,7 +32,7 @@ Optionally but not required:
 - Java 21 (it can be installed with [SdkMan!](https://sdkman.io/))
 - Maven (it can be installed with [SdkMan](https://sdkman.io/))
 
-### Steps to run
+### Steps to run Mis Gastos Backend
 
 1. Create database (see `doc/db.md`).
 2. Configure database
@@ -47,34 +51,23 @@ mvn checkstyle:check
 
 For more development tips, follow `doc/development.md`.
 
-## Configuration
+### Configuration
 
-Configuration file (Spring properties) is `src/main/resources/application.yaml`.
+The main configuration file (Spring properties) is `src/main/resources/application.yaml`. For **development**, some properties are redefined into [`application-local.yaml`](/src/main/resources/application-local.yaml).
 
-- Database configuration is defined in `spring.datasource`
-- To change log-level set `logging.level.<PACKAGE-NAME>: <LEVEL>`
-- To set different session expiration times set `server.servlet.session.timeout` property (see `doc/development.yaml`)
+> Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
+### More documentation
 
-Install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.
+- [`/doc/db.md`](/doc/db.md): how to create the DB and populate with test data
+- [`/doc/development.md`](/doc/development.md): useful information for development
+- [`/doc/google.md`](/doc/google.md): how to generate credentials in the Google Console
+- [`/doc/spring.md`](/doc/spring.md): details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
-## Building
-
-```bash
-mvn package
-```
 
 ## Links
 
 - [SdkMan!](https://sdkman.io/)
-- [Tutorial: Making your first add-on](https://developers.home-assistant.io/docs/add-ons/tutorial)
-- [Google credentials configuration](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/google.md)
-- [Uploading custom add-ons](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/ha_add_ons_upload.md)
-- [Building Mis gastos](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/building.md)
-- [Database configuration for Mis gastos](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/db.md)
-- [NGINX configuration for Mis gastos](https://github.com/brunopk/mis-gastos-backend/blob/feature/initial/doc/nginx.md)
-- [Home Assistant Add-on: MariaDB](https://github.com/home-assistant/addons/tree/master/mariadb)
-- [Home Assistant Add-on: NGINX Home Assistant SSL proxy](https://github.com/home-assistant/addons/tree/master/nginx_proxy)
-- [Home Assistant Add-on: Samba share](https://github.com/home-assistant/addons/tree/master/samba)
-- [Home Assistant Community Add-on: phpMyAdmin](https://github.com/hassio-addons/addon-phpmyadmin)
-- [Restricting Access with HTTP Basic Authentication](https://docs.nginx.com/nginx/admin-guide/security-controls/configuring-http-basic-authentication/)
+- [OAuth 2.0 and the Google OAuth Client Library for Java](https://developers.google.com/api-client-library/java/google-oauth-java-client/oauth2)
+- [Google Tasks Java Quickstart](https://developers.google.com/workspace/tasks/quickstart/java)
+- [Google API Client Libraries for Java](https://developers.google.com/api-client-library/java)
