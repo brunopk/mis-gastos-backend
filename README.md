@@ -12,7 +12,7 @@
 
 For **production**, the configuration file (Spring properties) is [`application-prod.yaml`](/src/main/resources/application-prod.yaml). Additionally, some of these properties refer to **environment variables** that must be defined :
 
-- `DB_JDBC_URL`: for example `jdbc:mariadb://localhost:3306/misgastos?serverTimezone=UTC`
+- `DB_JDBC_URL`: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`
 - `DB_USER`: MariaDB username
 - `DB_PASS`: MariaDB password
 - `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information)
