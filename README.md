@@ -24,7 +24,7 @@ For **production**, the configuration file (Spring properties) is [`application-
 
 > Refer to [`/doc/spring.md`](/doc/spring.md) for details about [scripts](/scripts).
 
-## Running Mis Gastos Backend for development
+## Development
 
 ### Requirements
 
