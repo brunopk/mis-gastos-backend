@@ -1,7 +1,7 @@
-name: "Node JS server"
-description: "Runs a Node JS server with a Express application"
+name: "Mis gastos"
+description: "Provides a backend for https://github.com/brunopk/mis-gastos-web"
 version: "1.0.0"
-slug: "nodejs_server"
+slug: "misgastos"
 init: false
 arch:
   - aarch64

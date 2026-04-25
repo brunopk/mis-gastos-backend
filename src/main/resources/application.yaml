@@ -1,0 +1,13 @@
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: LAX
+mis-gastos:
+  scheduling:
+    task-scheduler:
+      pool-size: 1
+    task-executor:
+      core-pool-size: 1
+      max-pool-size: 5
+      queue-capacity: 5

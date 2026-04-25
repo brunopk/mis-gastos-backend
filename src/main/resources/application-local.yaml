@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://localhost:3306/misgastos_v2?serverTimezone=UTC
+    username: root
+    password: root
+    driver-class-name: org.mariadb.jdbc.Driver
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+logging:
+  level:
+    com.bruno.misgastos: debug
+    org.springframework.security: debug
+    springframework.web.client: debug
