@@ -1,5 +1,4 @@
 target/
-build/
 .venv/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
