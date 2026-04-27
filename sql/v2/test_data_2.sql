@@ -1,3 +1,5 @@
+/* Before invoking, set the corresponding database in the USE statement */
+
 USE `misgastos_v2`;
 
 INSERT INTO `category`(name) VALUES ('Services'), ('Health care'), ('Entertainment');
@@ -53,52 +55,100 @@ INSERT INTO `spend`(
     description,
     value
 ) VALUES (
-    '2025-03-29',
+    DATE(DATE_SUB(NOW(), INTERVAL 3 MONTH)),
     1,
     1,
     1,
     1,
     'Test 1',
     10
-),(
-    '2025-04-29',
+), (
+    DATE(DATE_SUB(NOW(), INTERVAL 2 MONTH)),
     1,
     1,
     1,
     1,
     'Test 2',
     10
-  ), (
-    '2025-03-29',
-    2,
-    NULL,
-    NULL,
+), (
+    DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)),
+    1,
+    1,
+    1,
     1,
     'Test 3',
     10
-), (
-    '2025-04-29',
-    2,
-    NULL,
-    NULL,
+  ), (
+    DATE(NOW()),
+    1,
+    1,
+    1,
     1,
     'Test 4',
     10
- ), (
-    '2025-03-29',
+ ),(
+    DATE(DATE_SUB(NOW(), INTERVAL 3 MONTH)),
     2,
-    3,
+    NULL,
     NULL,
     1,
     'Test 5',
     10
 ), (
-    '2025-04-29',
+    DATE(DATE_SUB(NOW(), INTERVAL 2 MONTH)),
+    2,
+    NULL,
+    NULL,
+    1,
+    'Test 6',
+    10
+ ), (
+    DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)),
+    2,
+    NULL,
+    NULL,
+    1,
+    'Test 7',
+    10
+ ), (
+    DATE(NOW()),
+    2,
+    NULL,
+    NULL,
+    1,
+    'Test 8',
+    10
+ ), (
+    DATE(DATE_SUB(NOW(), INTERVAL 3 MONTH)),
     2,
     3,
     NULL,
     1,
-    'Test 6',
+    'Test 9',
+    10
+), (
+    DATE(DATE_SUB(NOW(), INTERVAL 2 MONTH)),
+    2,
+    3,
+    NULL,
+    1,
+    'Test 10',
+    10
+ ), (
+    DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)),
+    2,
+    3,
+    NULL,
+    1,
+    'Test 11',
+    10
+), (
+    DATE(NOW()),
+    2,
+    3,
+    NULL,
+    1,
+    'Test 12',
     10
  );
 
@@ -110,17 +160,38 @@ INSERT INTO `income`(
     description,
     value
 ) VALUES (
-    '2025-03-30',
+    DATE(DATE_SUB(NOW(), INTERVAL 2 MONTH)),
     1,
     1,
     1,
     'Test 1',
     1
 ), (
-    '2025-03-30',
+    DATE(DATE_SUB(NOW(), INTERVAL 3 MONTH)),
     2,
     1,
     NULL,
     'Test 1',
     100
+), (
+   DATE(DATE_SUB(NOW(), INTERVAL 2 MONTH)),
+   2,
+   1,
+   NULL,
+   'Test 2',
+   100
+), (
+   DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)),
+   2,
+   1,
+   NULL,
+   'Test 3',
+   100
+), (
+   DATE(NOW()),
+   2,
+   1,
+   NULL,
+   'Test 4',
+   100
 )

@@ -22,6 +22,10 @@ For **production**, the configuration file (Spring properties) is [`application-
 
 > Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
+### Grafana
+
+> To recreate all dashboards in Grafana refer to [`/doc/grafana.md`](/doc/grafana.md)
+
 ## Development
 
 ### Requirements
@@ -61,6 +65,7 @@ For **development**, the configuration file is [`application-local.yaml`](/src/m
 - [`/doc/development.md`](/doc/development.md): useful information for development
 - [`/doc/google.md`](/doc/google.md): how to generate credentials in the Google Console
 - [`/doc/google.md`](/doc/scripts.md): documentation about complementary Python scripts
+- [`/doc/grafana.md`](/doc/grafana.md): documentation to recreate dashboards in Grafana
 - [`/doc/security.md`](/doc/security.md): OAuth2 flows supported by Mis Gastos Backend
 - [`/doc/spring.md`](/doc/spring.md): details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
