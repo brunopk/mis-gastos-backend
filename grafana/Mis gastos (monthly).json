@@ -28,7 +28,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 16,
+        "w": 8,
         "x": 0,
         "y": 0
       },
@@ -39,11 +39,36 @@
           "showLineNumbers": false,
           "showMiniMap": false
         },
+        "content": "<div style=\"display: flex; justify-content: center; align-items: center;\">\n  <h1 style=\"margin: 0;\">Monthly dashboard</h1>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "11.6.0",
+      "title": " ",
+      "type": "text"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 11,
+        "x": 8,
+        "y": 0
+      },
+      "id": 12,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
         "content": "- Reimbursements are recorded on the same date as the original spend. For example, if you spend $10 in category A on 01/01/2026 and later receive a $1 reimbursement on 01/02/2026, that $1 will be reflected in **January**, not February.",
         "mode": "markdown"
       },
       "pluginVersion": "11.6.0",
-      "title": "",
+      "title": " ",
       "type": "text"
     },
     {
@@ -70,8 +95,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 8,
-        "x": 16,
+        "w": 5,
+        "x": 19,
         "y": 0
       },
       "id": 3,
@@ -124,7 +149,7 @@
           }
         }
       ],
-      "title": "Total",
+      "title": " ",
       "type": "stat"
     },
     {
@@ -190,7 +215,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  DATE_FORMAT(date, '%m/%Y') AS 'Month/Year',\n  category_name AS 'Category',\n  SUM(value) AS 'Total'\n FROM (\n  SELECT\n    s.date,\n    sc.name AS category_name,\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON sc.id = s.category_id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s\n GROUP BY s.category_name, DATE_FORMAT(s.date, '%m/%Y')\n ORDER BY DATE_FORMAT(s.date, '%m/%Y') ASC, s.category_name ASC\n",
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m-01') AS 'Month',\n  cc.name AS name,\n  SUM(s.value - COALESCE(i.total_income, 0)) AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR (\n      ss.name IN (${Subcategory})\n      AND (\n        s.group_id IS NULL\n        OR gg.name IN (${Group})\n      )\n    )\n  )\nGROUP BY 1, cc.name\nORDER BY 1, cc.name",
           "refId": "A",
           "sql": {
             "columns": [
@@ -232,6 +257,16 @@
         }
       ],
       "title": "Spends by category",
+      "transformations": [
+        {
+          "id": "formatTime",
+          "options": {
+            "outputFormat": "",
+            "timeField": "time",
+            "useTimezone": true
+          }
+        }
+      ],
       "type": "table"
     },
     {
@@ -298,7 +333,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  DATE_FORMAT(date, '%m/%Y') AS 'Month/Year',\n  subcategory_name AS 'Subcategory',\n  SUM(value) AS 'Total'\n FROM (\n  SELECT\n    s.date,\n    ss.name AS subcategory_name,\n    CASE\n      WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s\n GROUP BY s.subcategory_name, DATE_FORMAT(s.date, '%m/%Y')\n ORDER BY DATE_FORMAT(s.date, '%m/%Y') ASC, s.subcategory_name ASC",
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  ss.name AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.id,\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    s.group_id,\n    s.value - COALESCE(i.total_income, 0) AS value\n  FROM spend s\n  LEFT JOIN (\n    SELECT spend_id, SUM(value) AS total_income\n    FROM income\n    GROUP BY spend_id\n  ) i ON s.id = i.spend_id\n) s\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR ( \n      ss.name IN (${Subcategory})\n      AND s.group_id IS NULL OR gg.name IN (${Group})\n    )\n  )\nGROUP BY 1, COALESCE(ss.name, 'No subcategory'), COALESCE(gg.name, 'No group')\nORDER BY 1, COALESCE(ss.name, 'No subcategory'), COALESCE(gg.name, 'No group')",
           "refId": "A",
           "sql": {
             "columns": [
@@ -405,7 +440,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  DATE_FORMAT(date, '%m/%Y') AS 'Month/Year',\n  group_name AS 'Group',\n  SUM(value) AS 'Total'\n FROM (\n  SELECT\n    s.date,\n    sg.name AS group_name,\n    CASE\n      WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value)\n      ELSE AVG(s.value)\n    END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON s.subcategory_id = ss.id\n    LEFT JOIN `group` sg ON s.group_id = sg.id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s\n GROUP BY s.group_name, DATE_FORMAT(s.date, '%m/%Y')\n ORDER BY DATE_FORMAT(s.date, '%m/%Y') ASC, s.group_name ASC\n",
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  gg.name AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.id,\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    s.group_id,\n    s.value - COALESCE(i.total_income, 0) AS value\n  FROM spend s\n  LEFT JOIN (\n    SELECT spend_id, SUM(value) AS total_income\n    FROM income\n    GROUP BY spend_id\n  ) i ON s.id = i.spend_id\n) s\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR (\n      ss.name IN (${Subcategory})\n      AND (\n        s.group_id IS NULL\n        OR gg.name IN (${Group})\n      )\n    )\n  )\nGROUP BY 1, gg.name\nORDER BY 1, gg.name",
           "refId": "A",
           "sql": {
             "columns": [
@@ -535,9 +570,9 @@
             "uid": "ffjwtjbqvpy4ge"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%m/%Y') AS 'Month/Year',\n  SUM(CASE WHEN s.category_id = 1 THEN s.value ELSE 0 END) AS 'Services',\n  SUM(CASE WHEN s.category_id = 2 THEN s.value ELSE 0 END) AS 'Health',\n  SUM(CASE WHEN s.category_id = 3 THEN s.value ELSE 0 END) AS 'Entertainment'\n FROM (\n  SELECT\n    s.date,\n    s.category_id,\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON sc.id = s.category_id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id) s\n GROUP BY DATE_FORMAT(s.date, '%m/%Y')\n",
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date, '1M'),\n  cc.name AS name,\n  SUM(s.value - COALESCE(i.total_income, 0)) AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR (\n      ss.name IN (${Subcategory})\n      AND (\n        s.group_id IS NULL\n        OR gg.name IN (${Group})\n      )\n    )\n  )\nGROUP BY 1, cc.name\nORDER BY 1, cc.name",
           "refId": "A",
           "sql": {
             "columns": [
@@ -669,7 +704,7 @@
           "editorMode": "code",
           "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  COALESCE(ss.name, 'No subcategory') AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category cc ON cc.id = s.category_id\n    WHERE $__timeFilter(s.date) AND cc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id) s\nLEFT JOIN subcategory ss ON s.subcategory_id = ss.id\nGROUP BY 1, COALESCE(ss.name, 'No Subcategory')\nORDER BY 1\n",
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  COALESCE(ss.name, 'No subcategory') AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.id,\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    s.group_id,\n    s.value - COALESCE(i.total_income, 0) AS value\n  FROM spend s\n  LEFT JOIN (\n    SELECT spend_id, SUM(value) AS total_income\n    FROM income\n    GROUP BY spend_id\n  ) i ON s.id = i.spend_id\n) s\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR ( \n      ss.name IN (${Subcategory})\n      AND s.group_id IS NULL OR gg.name IN (${Group})\n    )\n  )\nGROUP BY 1, COALESCE(ss.name, 'No subcategory'), COALESCE(gg.name, 'No group')\nORDER BY 1, COALESCE(ss.name, 'No subcategory'), COALESCE(gg.name, 'No group')",
           "refId": "A",
           "sql": {
             "columns": [
@@ -799,9 +834,9 @@
             "uid": "ffjwtjbqvpy4ge"
           },
           "editorMode": "code",
-          "format": "table",
+          "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%m/%Y') AS 'Month/Year',\n  SUM(CASE WHEN s.group_id = 1 THEN s.value ELSE 0 END) AS 'Gas',\n  SUM(CASE WHEN s.group_id = 2 THEN s.value ELSE 0 END) AS 'Electricity',\n  SUM(CASE WHEN s.group_id IS NULL THEN s.value ELSE 0 END) AS 'Sin definir'\n FROM (\n  SELECT\n    s.date,\n    s.group_id,\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON s.subcategory_id = ss.id\n    LEFT JOIN `group` sg ON s.group_id = sg.id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory})) \n    GROUP BY s.id) s\n GROUP BY DATE_FORMAT(s.date, '%m/%Y')\n",
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  COALESCE(gg.name, 'No group') AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.id,\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    s.group_id,\n    s.value - COALESCE(i.total_income, 0) AS value\n  FROM spend s\n  LEFT JOIN (\n    SELECT spend_id, SUM(value) AS total_income\n    FROM income\n    GROUP BY spend_id\n  ) i ON s.id = i.spend_id\n) s\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR (\n      ss.name IN (${Subcategory})\n      AND (\n        s.group_id IS NULL\n        OR gg.name IN (${Group})\n      )\n    )\n  )\nGROUP BY 1, COALESCE(gg.name, 'No group')\nORDER BY 1, COALESCE(gg.name, 'No group')",
           "refId": "A",
           "sql": {
             "columns": [
@@ -909,6 +944,30 @@
         "regex": "",
         "sort": 1,
         "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": [
+            ""
+          ],
+          "value": [
+            ""
+          ]
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "ffjwtjbqvpy4ge"
+        },
+        "definition": "SELECT g.name FROM `group` g JOIN subcategory s ON s.id = g.subcategory_id WHERE s.name IN (${Subcategory})",
+        "label": "Group",
+        "multi": true,
+        "name": "Group",
+        "options": [],
+        "query": "SELECT g.name FROM `group` g JOIN subcategory s ON s.id = g.subcategory_id WHERE s.name IN (${Subcategory})",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
       }
     ]
   },
@@ -920,5 +979,5 @@
   "timezone": "browser",
   "title": "Mis gastos (monthly) V2",
   "uid": "cfjww7pzeg6psf",
-  "version": 44
+  "version": 77
 }
