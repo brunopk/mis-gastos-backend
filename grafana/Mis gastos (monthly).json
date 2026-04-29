@@ -28,7 +28,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 8,
+        "w": 5,
         "x": 0,
         "y": 0
       },
@@ -53,8 +53,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 11,
-        "x": 8,
+        "w": 14,
+        "x": 5,
         "y": 0
       },
       "id": 12,
@@ -128,7 +128,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  SUM(value) AS 'Total'\nFROM (\n  SELECT\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON sc.id = s.category_id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s",
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'value'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )",
           "refId": "A",
           "sql": {
             "columns": [
@@ -151,6 +151,96 @@
       ],
       "title": " ",
       "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 11,
+        "x": 0,
+        "y": 7
+      },
+      "id": 14,
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS value,\n  aa.name AS metric\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY aa.name",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by account",
+      "type": "piechart"
     },
     {
       "datasource": {
@@ -186,9 +276,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
-        "w": 8,
-        "x": 0,
+        "h": 14,
+        "w": 13,
+        "x": 11,
         "y": 7
       },
       "id": 2,
@@ -215,7 +305,114 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m-01') AS 'Month',\n  cc.name AS name,\n  SUM(s.value - COALESCE(i.total_income, 0)) AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR (\n      ss.name IN (${Subcategory})\n      AND (\n        s.group_id IS NULL\n        OR gg.name IN (${Group})\n      )\n    )\n  )\nGROUP BY 1, cc.name\nORDER BY 1, cc.name",
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m') AS 'Month',\n  aa.name AS 'Name',\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'Amount'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, aa.name\nORDER BY 1, aa.name",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by account",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 20,
+        "w": 8,
+        "x": 0,
+        "y": 21
+      },
+      "id": 18,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m') AS 'Month',\n  cc.name AS 'Name',\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'Amount'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, cc.name\nORDER BY 1, cc.name",
           "refId": "A",
           "sql": {
             "columns": [
@@ -257,16 +454,6 @@
         }
       ],
       "title": "Spends by category",
-      "transformations": [
-        {
-          "id": "formatTime",
-          "options": {
-            "outputFormat": "",
-            "timeField": "time",
-            "useTimezone": true
-          }
-        }
-      ],
       "type": "table"
     },
     {
@@ -303,10 +490,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 20,
         "w": 8,
         "x": 8,
-        "y": 7
+        "y": 21
       },
       "id": 4,
       "options": {
@@ -333,7 +520,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  ss.name AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.id,\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    s.group_id,\n    s.value - COALESCE(i.total_income, 0) AS value\n  FROM spend s\n  LEFT JOIN (\n    SELECT spend_id, SUM(value) AS total_income\n    FROM income\n    GROUP BY spend_id\n  ) i ON s.id = i.spend_id\n) s\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR ( \n      ss.name IN (${Subcategory})\n      AND s.group_id IS NULL OR gg.name IN (${Group})\n    )\n  )\nGROUP BY 1, COALESCE(ss.name, 'No subcategory'), COALESCE(gg.name, 'No group')\nORDER BY 1, COALESCE(ss.name, 'No subcategory'), COALESCE(gg.name, 'No group')",
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m') AS 'Month',\n  COALESCE(ss.name, 'No subcategory') AS 'Name',\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'Amount'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, COALESCE(ss.name, 'No subcategory')\nORDER BY 1, COALESCE(ss.name, 'No subcategory')",
           "refId": "A",
           "sql": {
             "columns": [
@@ -411,10 +598,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 10,
+        "h": 20,
         "w": 8,
         "x": 16,
-        "y": 7
+        "y": 21
       },
       "id": 6,
       "options": {
@@ -440,7 +627,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  gg.name AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.id,\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    s.group_id,\n    s.value - COALESCE(i.total_income, 0) AS value\n  FROM spend s\n  LEFT JOIN (\n    SELECT spend_id, SUM(value) AS total_income\n    FROM income\n    GROUP BY spend_id\n  ) i ON s.id = i.spend_id\n) s\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR (\n      ss.name IN (${Subcategory})\n      AND (\n        s.group_id IS NULL\n        OR gg.name IN (${Group})\n      )\n    )\n  )\nGROUP BY 1, gg.name\nORDER BY 1, gg.name",
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m') AS 'Month',\n  COALESCE(gg.name, 'No group') AS 'Name',\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'Amount'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, COALESCE(gg.name, 'No group') \nORDER BY 1, COALESCE(gg.name, 'No group')",
           "refId": "A",
           "sql": {
             "columns": [
@@ -495,6 +682,96 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 8,
+        "x": 0,
+        "y": 41
+      },
+      "id": 15,
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS value,\n  cc.name AS metric\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY cc.name",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by category",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -532,10 +809,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 17
+        "h": 12,
+        "w": 16,
+        "x": 8,
+        "y": 41
       },
       "id": 1,
       "options": {
@@ -572,7 +849,7 @@
           "editorMode": "code",
           "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(s.date, '1M'),\n  cc.name AS name,\n  SUM(s.value - COALESCE(i.total_income, 0)) AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR (\n      ss.name IN (${Subcategory})\n      AND (\n        s.group_id IS NULL\n        OR gg.name IN (${Group})\n      )\n    )\n  )\nGROUP BY 1, cc.name\nORDER BY 1, cc.name",
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date, '1M'),\n  cc.name AS name,\n  SUM(s.value - COALESCE(i.total_income, 0)) AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, cc.name\nORDER BY 1, cc.name",
           "refId": "A",
           "sql": {
             "columns": [
@@ -627,6 +904,96 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 8,
+        "x": 0,
+        "y": 53
+      },
+      "id": 16,
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS value,\n  COALESCE(ss.name, 'No subcategory') AS metric\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY COALESCE(ss.name, 'No subcategory')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by subcategory",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -664,10 +1031,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 25
+        "h": 12,
+        "w": 16,
+        "x": 8,
+        "y": 53
       },
       "id": 10,
       "options": {
@@ -704,7 +1071,7 @@
           "editorMode": "code",
           "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  COALESCE(ss.name, 'No subcategory') AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.id,\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    s.group_id,\n    s.value - COALESCE(i.total_income, 0) AS value\n  FROM spend s\n  LEFT JOIN (\n    SELECT spend_id, SUM(value) AS total_income\n    FROM income\n    GROUP BY spend_id\n  ) i ON s.id = i.spend_id\n) s\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR ( \n      ss.name IN (${Subcategory})\n      AND s.group_id IS NULL OR gg.name IN (${Group})\n    )\n  )\nGROUP BY 1, COALESCE(ss.name, 'No subcategory'), COALESCE(gg.name, 'No group')\nORDER BY 1, COALESCE(ss.name, 'No subcategory'), COALESCE(gg.name, 'No group')",
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date, '1M'),\n  COALESCE(ss.name, 'No subcategory'),\n  SUM(s.value - COALESCE(i.total_income, 0))  AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, COALESCE(ss.name, 'No subcategory')\nORDER BY 1, COALESCE(ss.name, 'No subcategory')",
           "refId": "A",
           "sql": {
             "columns": [
@@ -759,6 +1126,96 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 8,
+        "x": 0,
+        "y": 65
+      },
+      "id": 17,
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS value,\n  COALESCE(gg.name, 'No group') AS metric\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY COALESCE(gg.name, 'No group')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by group",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
             "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
@@ -796,10 +1253,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 33
+        "h": 12,
+        "w": 16,
+        "x": 8,
+        "y": 65
       },
       "id": 7,
       "options": {
@@ -836,7 +1293,7 @@
           "editorMode": "code",
           "format": "time_series",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(s.date,'1M'),\n  COALESCE(gg.name, 'No group') AS name,\n  SUM(s.value) AS ''\nFROM (\n  SELECT\n    s.id,\n    s.date,\n    s.category_id,\n    s.subcategory_id,\n    s.group_id,\n    s.value - COALESCE(i.total_income, 0) AS value\n  FROM spend s\n  LEFT JOIN (\n    SELECT spend_id, SUM(value) AS total_income\n    FROM income\n    GROUP BY spend_id\n  ) i ON s.id = i.spend_id\n) s\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR (\n      ss.name IN (${Subcategory})\n      AND (\n        s.group_id IS NULL\n        OR gg.name IN (${Group})\n      )\n    )\n  )\nGROUP BY 1, COALESCE(gg.name, 'No group')\nORDER BY 1, COALESCE(gg.name, 'No group')",
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date, '1M'),\n  COALESCE(gg.name, 'No group'),\n  SUM(s.value - COALESCE(i.total_income, 0)) AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, COALESCE(gg.name, 'No group')\nORDER BY 1, COALESCE(gg.name, 'No group')",
           "refId": "A",
           "sql": {
             "columns": [
@@ -891,14 +1348,36 @@
         "allowCustomValue": false,
         "current": {
           "text": [
-            "Entertainment",
-            "Health care",
-            "Services"
+            "My bank 1"
           ],
           "value": [
-            "Entertainment",
-            "Health care",
-            "Services"
+            "My bank 1"
+          ]
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "ffjwtjbqvpy4ge"
+        },
+        "definition": "SELECT a.name FROM account a",
+        "label": "Account",
+        "multi": true,
+        "name": "Account",
+        "options": [],
+        "query": "SELECT a.name FROM account a",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": [
+            "Services",
+            "Health care"
+          ],
+          "value": [
+            "Services",
+            "Health care"
           ]
         },
         "datasource": {
@@ -949,10 +1428,10 @@
         "allowCustomValue": false,
         "current": {
           "text": [
-            ""
+            "Gas"
           ],
           "value": [
-            ""
+            "Gas"
           ]
         },
         "datasource": {
@@ -979,5 +1458,5 @@
   "timezone": "browser",
   "title": "Mis gastos (monthly) V2",
   "uid": "cfjww7pzeg6psf",
-  "version": 77
+  "version": 132
 }

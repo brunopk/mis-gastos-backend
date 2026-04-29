@@ -86,12 +86,12 @@ INSERT INTO `spend`(
     1,
     'Test 4',
     10
- ),(
+ ), (
     DATE(DATE_SUB(NOW(), INTERVAL 3 MONTH)),
     2,
     NULL,
     NULL,
-    1,
+    2,
     'Test 5',
     10
 ), (
@@ -99,7 +99,7 @@ INSERT INTO `spend`(
     2,
     NULL,
     NULL,
-    1,
+    2,
     'Test 6',
     10
  ), (
@@ -107,7 +107,7 @@ INSERT INTO `spend`(
     2,
     NULL,
     NULL,
-    1,
+    2,
     'Test 7',
     10
  ), (
@@ -115,7 +115,7 @@ INSERT INTO `spend`(
     2,
     NULL,
     NULL,
-    1,
+    2,
     'Test 8',
     10
  ), (
@@ -149,6 +149,38 @@ INSERT INTO `spend`(
     NULL,
     1,
     'Test 12',
+    10
+ ), (
+    DATE(DATE_SUB(NOW(), INTERVAL 3 MONTH)),
+    1,
+    2,
+    NULL,
+    2,
+    'Test 13',
+    10
+), (
+    DATE(DATE_SUB(NOW(), INTERVAL 2 MONTH)),
+    1,
+    2,
+    NULL,
+    2,
+    'Test 14',
+    10
+), (
+    DATE(DATE_SUB(NOW(), INTERVAL 1 MONTH)),
+    1,
+    2,
+    NULL,
+    2,
+    'Test 15',
+    10
+  ), (
+    DATE(NOW()),
+    1,
+    2,
+    NULL,
+    2,
+    'Test 16',
     10
  );
 
