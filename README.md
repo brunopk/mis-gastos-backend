@@ -1,14 +1,31 @@
 # Mis Gastos Backend
 
-## Running Mis Gastos Backend
+## Requirements
 
-### Steps to run Mis Gastos Backend
+- Alloy (used to collect logs).
+- Loki (used to receive logs).
+- Grafana (used to visualize metrics and logs).
+- MariaDB 10.11 (see `doc/db.md`).
+- Java 21 (it can be installed with [SdkMan!](https://sdkman.io/) or `apt`).
+- Maven (it can be installed with [SdkMan](https://sdkman.io/)).
 
-1. Build the application with Maven to generate the JAR file.
-2. Obtain Google credentials from the Google Console (refer to [`/doc/google.md`](/doc/google.md)).
-3. Set the corresponding environment variables (refer to the [Configuration](#configuration) section below).
+### Additional information
 
-### Configuration
+- Alloy must be installed in the same machine or container where Mis Gastos Backend is running. Refer to [`/doc/alloy.md`](/doc/alloy.md) for more information about how to install and configure Alloy.
+- Loki should be installed on another machine or LXC container to receive logs from Alloy. For more information refer to [`/doc/loki.md`](/doc/loki.md).
+- Grafana must be installed on another machine or LXC container to visualize logs and metrics. To create Grafana dashboards refer to [`/doc/grafana.md`](/doc/grafana.md).
+
+## Installation
+
+1. Generate the JAR file with Maven :
+      ```bash
+      mvn package   
+      ```
+
+### Additional information
+
+
+## Configuration
 
 For **production**, the configuration file (Spring properties) is [`application-prod.yaml`](/src/main/resources/application-prod.yaml). Additionally, some of these properties refer to **environment variables** that must be defined :
 
@@ -22,10 +39,6 @@ For **production**, the configuration file (Spring properties) is [`application-
 
 > Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
-### Grafana
-
-> To recreate all dashboards in Grafana refer to [`/doc/grafana.md`](/doc/grafana.md)
-
 ## Development
 
 ### Requirements
@@ -36,12 +49,12 @@ For **production**, the configuration file (Spring properties) is [`application-
 
 ### Steps to run Mis Gastos Backend
 
-1. Create database (see `doc/db.md`).
-2. Configure database
-3. Start the server :
-    ```bash
-    SPRING_PROFILES_ACTIVE=local mvn spring-boot:run
-    ```
+
+To start the server :
+    
+```bash
+SPRING_PROFILES_ACTIVE=local mvn spring-boot:run
+```
 
 Optionally, to run some Spring tasks that use Google Tasks, for instance to create tasks on Google to notify about spending, it is necessary to configure credentials as described in [this](doc/google.md) documentation.
 
@@ -59,16 +72,9 @@ For **development**, the configuration file is [`application-local.yaml`](/src/m
 
 > Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 
-### More documentation
+## Documentation
 
-- [`/doc/db.md`](/doc/db.md): how to create the DB and populate with test data
-- [`/doc/development.md`](/doc/development.md): useful information for development
-- [`/doc/google.md`](/doc/google.md): how to generate credentials in the Google Console
-- [`/doc/google.md`](/doc/scripts.md): documentation about complementary Python scripts
-- [`/doc/grafana.md`](/doc/grafana.md): documentation to recreate dashboards in Grafana
-- [`/doc/security.md`](/doc/security.md): OAuth2 flows supported by Mis Gastos Backend
-- [`/doc/spring.md`](/doc/spring.md): details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
-
+> Documentation about different topics related or used by Mis Gastos Backend can be found in the [`/doc`](/doc) folder.
 
 ## Links
 
