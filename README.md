@@ -69,8 +69,8 @@ Additionally, some properties reference **environment variables** that must be d
 - `DB_JDBC_URL`: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`
 - `DB_USER`: MariaDB username
 - `DB_PASS`: MariaDB password
-- `GOOGLE_CLIENT_ID`: used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user. Google client ID for Oauth2 .
-- `GOOGLE_CLIENT_SECRET`: used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user. Google client secret for Oauth2  [Authorization Code flow](/doc/security.md#authorization-code-flow).
+- `GOOGLE_CLIENT_ID`: used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user.
+- `GOOGLE_CLIENT_SECRET`: used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user.
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: Used for [scripts](scripts), to authenticate clients via the [Client Credentials OAuth2 flow](/doc/security.md#client-credentials-flow).
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: Used for [scripts](scripts), to authenticate clients via the [Client Credentials OAuth2 flow](/doc/security.md#client-credentials-flow).
 
