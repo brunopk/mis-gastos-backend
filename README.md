@@ -2,18 +2,12 @@
 
 ## Requirements
 
-- Alloy (used to collect logs).
-- Loki (used to receive logs).
-- Grafana (used to visualize metrics and logs).
+- [Alloy](/doc/alloy.md) (used to collect logs).
+- [Loki](/doc/loki.md) (used to receive logs).
+- [Grafana](/doc/grafana.md) (used to visualize metrics and logs).
 - MariaDB 10.11 (see `doc/db.md`).
 - Java 21 JRE (it can be installed with [SdkMan!](https://sdkman.io/) or the `apt` Linux command).
 - Maven (it can be installed with [SdkMan](https://sdkman.io/)).
-
-### Additional information
-
-- Alloy must be installed in the same machine or container where Mis Gastos Backend is running. Refer to [`/doc/alloy.md`](/doc/alloy.md) for more information about how to install and configure Alloy.
-- Loki should be installed on another machine or LXC container to receive logs from Alloy. For more information refer to [`/doc/loki.md`](/doc/loki.md).
-- Grafana must be installed on another machine or LXC container to visualize logs and metrics. To create Grafana dashboards refer to [`/doc/grafana.md`](/doc/grafana.md).
 
 ## Installation
 

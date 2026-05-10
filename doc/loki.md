@@ -1,6 +1,6 @@
 # Loki
 
-[Grafana Loki](https://grafana.com/docs/loki/latest/), or sometimes abbreviated as Loki, is a logging tool. The [Quick start](https://grafana.com/docs/loki/latest/get-started/quick-start/quick-start/) explains very well the common Loki-Alloy-Grafana architecture. To install Loki with `apt-get` follow these steps :
+[Grafana Loki](https://grafana.com/docs/loki/latest/), or sometimes abbreviated as Loki, is a logging tool. The [Quick start](https://grafana.com/docs/loki/latest/get-started/quick-start/quick-start/) explains very well the common Loki-Alloy-Grafana architecture. Loki should be installed on another machine or LXC container to receive logs from Alloy. To install Loki with `apt-get` follow these steps :
 
 1. Add GPG keys for official repos :
 

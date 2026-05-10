@@ -1,7 +1,6 @@
 # Alloy
 
-As described in its official documentation, Grafana Alloy is an open source telemetry collector for metrics, logs, traces, and continuous profiles. As explained in the [Quickstart to run Loki locally](https://grafana.com/docs/loki/latest/get-started/quick-start/quick-start/#quickstart-to-run-loki-locally), Alloy is part of a big architecture often built with Docker. To install and configure Alloy follow these steps :
-
+As described in its official documentation, Grafana Alloy is an open source telemetry collector for metrics, logs, traces, and continuous profiles. As explained in the [Quickstart to run Loki locally](https://grafana.com/docs/loki/latest/get-started/quick-start/quick-start/#quickstart-to-run-loki-locally), Alloy is part of a big architecture often built with Docker. **Alloy must be installed in the same machine or container where the main process is running**. To install and configure Alloy follow these steps :
 
 1. Add GPG keys for official repos (if not done before) and update `apt-get` registries as described in the [Loki](#loki) section.
 2. Add this configuration to `/etc/alloy/config.alloy`:
