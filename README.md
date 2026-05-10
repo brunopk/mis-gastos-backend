@@ -121,3 +121,4 @@ For **development**, the configuration file is [`application-local.yaml`](/src/m
 - [OAuth 2.0 and the Google OAuth Client Library for Java](https://developers.google.com/api-client-library/java/google-oauth-java-client/oauth2)
 - [Google Tasks Java Quickstart](https://developers.google.com/workspace/tasks/quickstart/java)
 - [Google API Client Libraries for Java](https://developers.google.com/api-client-library/java)
+- [What is Systemctl? An In-Depth Overview](https://www.liquidweb.com/blog/what-is-systemctl-an-in-depth-overview/)
