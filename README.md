@@ -6,7 +6,7 @@
 - Loki (used to receive logs).
 - Grafana (used to visualize metrics and logs).
 - MariaDB 10.11 (see `doc/db.md`).
-- Java 21 (it can be installed with [SdkMan!](https://sdkman.io/) or `apt`).
+- Java 21 JRE (it can be installed with [SdkMan!](https://sdkman.io/) or the `apt` Linux command).
 - Maven (it can be installed with [SdkMan](https://sdkman.io/)).
 
 ### Additional information
@@ -21,23 +21,53 @@
       ```bash
       mvn package   
       ```
+      By default, the JAR file is generated in the `target/` folder.
+2. Create the `/root/mis-gastos-backend.env` file for environment variables configuration. As an example, use [mis-gastos-backend.env](mis-gastos-backend.env). For more information about the configuration of Mis Gastos Backend, refer to the [Configuration](#configuration) section below.
+3. Create the `/etc/systemd/system/mis-gastos-backend.service` unit file for the Linux service : 
+      ```unit
+      [Unit]
+      Description=Mis Gastos Backend server
+   
+      [Service]
+      Type=simple
+      ExecStart=java -jar /root/mis-gastos-backend-0.0.1.jar
+      User=root
+      Restart=on-failure
+      RestartSec=2
+      EnvironmentFile=/root/mis-gastos-backend.env
+   
+      [Install]
+      WantedBy=multi-user.target
+      ```
+   
+      **Replace `ExecStart=java -jar /root/mis-gastos-backend-0.0.1.jar` with the corresponding JAR version.**
 
-### Additional information
 
 
 ## Configuration
 
-For **production**, the configuration file (Spring properties) is [`application-prod.yaml`](/src/main/resources/application-prod.yaml). Additionally, some of these properties refer to **environment variables** that must be defined :
+
+Configuration is split across three property files: [`application.yaml`](src/main/resources/application.yaml), [`application-local.yaml`](src/main/resources/application-local.yaml), and [`application-prod.yaml`](src/main/resources/application-prod.yaml).
+
+The base configuration is defined in `application.yaml`, while environment-specific properties are overridden through Spring profiles:
+
+- `local` → `application-local.yaml`
+- `prod` → `application-prod.yaml`
+
+Additionally, some properties reference **environment variables** that must be defined before starting the application :
 
 - `DB_JDBC_URL`: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`
 - `DB_USER`: MariaDB username
 - `DB_PASS`: MariaDB password
-- `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information)
-- `GOOGLE_CLIENT_SECRET`: Google client secret for Oauth2 (refer to [`doc/google.md`](/doc/google.md) for more information)
-- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: refer to [`/doc/scripts.md`](/doc/scripts.md) for more information
-- `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: refer to [`/doc/scripts.md`](/doc/scripts.md) for more information
+- `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 Authorization Code flow (refer to [`doc/google.md`](/doc/google.md) for more information).
+- `GOOGLE_CLIENT_SECRET`: Google client secret for Oauth2 Authorization Code flow (refer to [`doc/google.md`](/doc/google.md) for more information).
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: Used for [scripts](scripts), to authenticate clients via the [Client Credentials OAuth2 flow](/doc/security.md#client-credentials-flow).
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: Used for [scripts](scripts), to authenticate clients via the [Client Credentials OAuth2 flow](/doc/security.md#client-credentials-flow).
 
-> Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
+
+> - Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
+> - Currently only one user can be configured with the `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` environment variables, this is the "Admin" user.
+> - For local development, there is no need to define `DB_JDBC_URL`, `DB_USER`, or `DB_PASS`, since these values are already specified in `application-local.yaml`.
 
 ## Development
 

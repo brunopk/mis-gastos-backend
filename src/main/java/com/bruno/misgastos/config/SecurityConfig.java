@@ -24,10 +24,27 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 public class SecurityConfig {
 
 
+  /**
+   * Among other things, {@code oauth2Login} configuration provides an implementation for the GET /login endpoint.
+   * @param http {@code SecurityFilterChain} bean provided by Spring
+   * @return generated {@code SecurityFilterChain} bean
+   * @throws Exception .
+   */
   @Bean
   @Profile({"default", "local"})
   public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-    return http.csrf(AbstractHttpConfigurer::disable).build();
+    return http.csrf(AbstractHttpConfigurer::disable)
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
+        .authorizeHttpRequests(
+            (authorizationManagerRequestMatcherRegistry) ->
+                authorizationManagerRequestMatcherRegistry
+                    .requestMatchers("/oauth2/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .oauth2Login(Customizer.withDefaults())
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+        .build();
   }
 
   /**
@@ -69,7 +86,6 @@ public class SecurityConfig {
    * @throws Exception .
    */
   @Bean
-  @Profile({"prod"})
   @Order(1)
   SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
 
@@ -90,7 +106,6 @@ public class SecurityConfig {
    * @return generated {@code RegisteredClientRepository} bean
    */
   @Bean
-  @Profile({"prod"})
   public RegisteredClientRepository registeredClientRepository(Environment env) {
     String MIS_GASTOS_ADMIN_CLIENT_ID = env.getRequiredProperty("mis-gastos.security.admin.client-id");
     String MIS_GASTOS_ADMIN_CLIENT_SECRET = env.getRequiredProperty("mis-gastos.security.admin.client-secret");
