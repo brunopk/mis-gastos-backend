@@ -2,7 +2,7 @@
 
 Mis Gastos Backend supports two OAuth 2.0 flows:
 
-- [Authorization Code flow](#authorization-code-flow): used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user using Google as the OAuth2 provider.
+- [Authorization Code flow](#authorization-code-flow): used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user.
 - [Client Credentials flow](#client-credentials-flow): used to execute [scripts](/scripts).
 
 ## Authorization Code flow
@@ -27,5 +27,7 @@ To authorize using the Client Credentials flow:
     Authorization: Bearer <access_token>
     ```
 
-> - The client ID and client secret are configured through the `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` environment variables, respectively.
-> - As defined by the OAuth 2.0 standard, it is used for backend-to-backend authentication.
+### Additional information
+
+- The client ID and client secret are configured through the `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` environment variables, respectively.
+- As defined by the OAuth 2.0 standard, it is used for backend-to-backend authentication.
