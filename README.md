@@ -78,10 +78,9 @@ Additionally, some properties reference **environment variables** that must be d
 
 ### Additional information 
 
-- Currently only **one** user can be configured with the `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` environment variables, this is the "Admin" user.
+- Currently only **one** user can be configured with the `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` environment variables, this is the "Admin" user. Refer to the [Client Credentials flow](/doc/security.md#client-credentials-flow) section in [`/doc/security.md`](/doc/security.md) for more information about these environment variables.
 - Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 - Refer to the [Authorization Code flow](/doc/security.md#authorization-code-flow) section in [`/doc/security.md`](/doc/security.md) for more information about `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` environment variables.
-- Refer to the [Client Credentials flow](/doc/security.md#client-credentials-flow) section in [`/doc/security.md`](/doc/security.md) for more information about `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` environment variables.
 
 ## Development
 
