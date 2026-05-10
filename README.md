@@ -22,7 +22,17 @@
       mvn package   
       ```
       By default, the JAR file is generated in the `target/` folder.
-2. Create the `/root/mis-gastos-backend.env` file for environment variables configuration. As an example, use [mis-gastos-backend.env](mis-gastos-backend.env). For more information about the configuration of Mis Gastos Backend, refer to the [Configuration](#configuration) section below.
+ 2. Create the `/root/mis-gastos-backend.env` file for environment variables : 
+      ```dotenv
+      DB_JDBC_URL=jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC
+      DB_USER=root
+      DB_PASS=root
+      GOOGLE_CLIENT_ID=123456-xxx.apps.googleusercontent.com
+      GOOGLE_CLIENT_SECRET=xxx
+      MIS_GASTOS_ADMIN_JWT_CLIENT_ID=admin
+      MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET=admin
+      ```
+      **Replace each variable with the corresponding value**, for more information to the [Configuration](#configuration) section below.
 3. Create the `/etc/systemd/system/mis-gastos-backend.service` unit file for the Linux service : 
       ```unit
       [Unit]
@@ -59,15 +69,17 @@ Additionally, some properties reference **environment variables** that must be d
 - `DB_JDBC_URL`: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`
 - `DB_USER`: MariaDB username
 - `DB_PASS`: MariaDB password
-- `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 Authorization Code flow (refer to [`doc/google.md`](/doc/google.md) for more information).
-- `GOOGLE_CLIENT_SECRET`: Google client secret for Oauth2 Authorization Code flow (refer to [`doc/google.md`](/doc/google.md) for more information).
+- `GOOGLE_CLIENT_ID`: Google client ID for Oauth2 Authorization Code flow.
+- `GOOGLE_CLIENT_SECRET`: Google client secret for Oauth2 Authorization Code flow.
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: Used for [scripts](scripts), to authenticate clients via the [Client Credentials OAuth2 flow](/doc/security.md#client-credentials-flow).
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: Used for [scripts](scripts), to authenticate clients via the [Client Credentials OAuth2 flow](/doc/security.md#client-credentials-flow).
 
+<br></br>
 
 > - Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
 > - Currently only one user can be configured with the `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` environment variables, this is the "Admin" user.
 > - For local development, there is no need to define `DB_JDBC_URL`, `DB_USER`, or `DB_PASS`, since these values are already specified in `application-local.yaml`.
+> - For more information about how to set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`, refer to [`doc/google.md`](/doc/google.md) and the [Authorization Code flow](/doc/security.md#authorization-code-flow) in [`/doc/security.md`](/doc/security.md).
 
 ## Development
 
