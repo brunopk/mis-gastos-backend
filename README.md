@@ -74,7 +74,7 @@ Additionally, some properties reference **environment variables** that must be d
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: Used for [scripts](scripts).
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: Used for [scripts](scripts).
 
-<br></br>
+<br>
 
 > For local development, there is no need to define `DB_JDBC_URL`, `DB_USER`, or `DB_PASS`, since these values are already specified in `application-local.yaml`.
 
