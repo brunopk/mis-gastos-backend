@@ -12,39 +12,40 @@
 ## Installation
 
 1. Generate the JAR file with Maven :
-      ```bash
-      mvn package   
-      ```
-      By default, the JAR file is generated in the `target/` folder.
- 2. Create the `/root/mis-gastos-backend.env` file for environment variables : 
-      ```dotenv
-      DB_JDBC_URL=jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC
-      DB_USER=root
-      DB_PASS=root
-      GOOGLE_CLIENT_ID=123456-xxx.apps.googleusercontent.com
-      GOOGLE_CLIENT_SECRET=xxx
-      MIS_GASTOS_ADMIN_JWT_CLIENT_ID=admin
-      MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET=admin
-      ```
-      **Replace each variable with the corresponding value**, refer to the [Configuration](#configuration) section below.
+    ```bash
+    mvn package   
+    ```
+    By default, the JAR file is generated in the `target/` folder.
+2. Create the `/root/mis-gastos-backend.env` file for environment variables : 
+    ```dotenv
+    SPRING_PROFILES_ACTIVE=prod
+    DB_JDBC_URL=jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC
+    DB_USER=root
+    DB_PASS=root
+    GOOGLE_CLIENT_ID=123456-xxx.apps.googleusercontent.com
+    GOOGLE_CLIENT_SECRET=xxx
+    MIS_GASTOS_ADMIN_JWT_CLIENT_ID=admin
+    MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET=admin
+    ```
+    **Replace each variable with the corresponding value**, refer to the [Configuration](#configuration) section below.
 3. Create the `/etc/systemd/system/mis-gastos-backend.service` unit file for the Linux service : 
-      ```unit
-      [Unit]
-      Description=Mis Gastos Backend server
-   
-      [Service]
-      Type=simple
-      ExecStart=java -jar /root/mis-gastos-backend-0.0.1.jar
-      User=root
-      Restart=on-failure
-      RestartSec=2
-      EnvironmentFile=/root/mis-gastos-backend.env
-   
-      [Install]
-      WantedBy=multi-user.target
-      ```
-   
-      **Replace `ExecStart=java -jar /root/mis-gastos-backend-0.0.1.jar` with the corresponding JAR version.**
+    ```unit
+    [Unit]
+    Description=Mis Gastos Backend server
+    
+    [Service]
+    Type=simple
+    ExecStart=java -jar /root/mis-gastos-backend-0.0.1.jar
+    User=root
+    Restart=on-failure
+    RestartSec=2
+    EnvironmentFile=/root/mis-gastos-backend.env
+    
+    [Install]
+    WantedBy=multi-user.target
+    ```
+    
+    **Replace `ExecStart=java -jar /root/mis-gastos-backend-0.0.1.jar` with the corresponding JAR version.**
 
 
 
