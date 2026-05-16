@@ -1,5 +1,7 @@
 # Grafana
 
+## Dashboards
+
 Follow these steps to recreate dashboards in Grafana : 
 
 1. Create the *Datasource* (*Main Menu* > *Connections* > *Datasource*) : 
@@ -10,3 +12,15 @@ Follow these steps to recreate dashboards in Grafana :
 2. Import dashboards in the [`/grafana`](/grafana) folder. 
 
     > Do not use dashboards from [`/grafana/backup`](/grafana/backup), this folder contains old versions.
+
+
+## Logs
+
+To see logs : 
+
+1. Create the *Datasource* (*Main Menu* > *Connections* > *Datasource*) :
+    Datasource type: Loki
+    Default port for Loki: 3100
+2. Navigate to *Drilldown* > *Logs*
+    
+    
