@@ -1,6 +1,6 @@
 /* Before invoking, set the corresponding database in the USE statement */
 
-USE `misgastos_v2`;
+USE `misgastos`;
 
 INSERT INTO `category`(name) VALUES ('Services'), ('Health care'), ('Entertainment');
 

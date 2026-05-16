@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS `misgastos_v2`;
+DROP DATABASE IF EXISTS `misgastos`;
 
-CREATE DATABASE `misgastos_v2`;
+CREATE DATABASE `misgastos`;
 
-USE `misgastos_v2`;
+USE `misgastos`;
 
 CREATE TABLE `income_type` (
     `id` INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
