@@ -5,7 +5,9 @@
 Follow these steps to recreate dashboards in Grafana : 
 
 1. Create the *Datasource* (*Main Menu* > *Connections* > *Datasource*) : 
+
     Datasource type: MySQL
+
     Name: misgastos
 
     > Important: name must be **misgastos** as using another name may break graphics. If necessary it's possible to set a different database name associated to the same Datasource.
@@ -19,8 +21,11 @@ Follow these steps to recreate dashboards in Grafana :
 To see logs : 
 
 1. Create the *Datasource* (*Main Menu* > *Connections* > *Datasource*) :
+
     Datasource type: Loki
+
     Default port for Loki: 3100
+
 2. Navigate to *Drilldown* > *Logs*
     
     
