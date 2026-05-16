@@ -56,5 +56,5 @@ As described in its official documentation, Grafana Alloy is an open source tele
           CUSTOM_ARGS="--server.http.listen-addr=0.0.0.0:12345"
           ```
     2. Restart the service
-    3. Open http://raspberrypi.local:12345 (replace *raspberrypi.local* with the corresponding hostname)
+    3. Open http://mis-gastos-backend.internal:12345 (replace *mis-gastos-backend.internal* with the corresponding hostname)
 - The instructions to install Alloy described above were extracted from https://apt.grafana.com/, Refer to the [Install](https://grafana.com/docs/alloy/latest/set-up/install/linux/#install) section of the official documentation for more information.
