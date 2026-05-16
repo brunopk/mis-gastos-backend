@@ -2,12 +2,18 @@
 
 ## Requirements
 
-- [Alloy](/doc/alloy.md) (used to collect logs).
-- [Loki](/doc/loki.md) (used to receive logs).
-- [Grafana](/doc/grafana.md) (used to visualize metrics and logs).
-- MariaDB 10.11 (see `doc/db.md`).
+- [Alloy](/doc/alloy.md)
+- [Loki](/doc/loki.md)
+- [Grafana](/doc/grafana.md)
+- [MariaDB](/doc/db.md)
 - Java 21 JRE (it can be installed with [SdkMan!](https://sdkman.io/) or the `apt` Linux command).
 - Maven (it can be installed with [SdkMan](https://sdkman.io/)).
+
+<br>
+
+> Java JRE can be installed with [SdkMan!](https://sdkman.io/) or the APT package manager. Maven can be installed with [SdkMan!](https://sdkman.io/) 
+
+<br> 
 
 ## Installation
 
@@ -47,8 +53,6 @@
     
     **Replace `ExecStart=java -jar /root/mis-gastos-backend-0.0.1.jar` with the corresponding JAR version.**
 
-
-
 ## Configuration
 
 
@@ -83,9 +87,15 @@ Additionally, some properties reference **environment variables** that must be d
 
 ### Requirements
 
-- MariaDB 10.11 (see `doc/db.md`)
-- Java 21 (it can be installed with [SdkMan!](https://sdkman.io/))
-- Maven (it can be installed with [SdkMan](https://sdkman.io/))
+- [MariaDB](/doc/db.md)
+- Java 21 JRE (it can be installed with [SdkMan!](https://sdkman.io/) or the `apt` Linux command).
+- Maven (it can be installed with [SdkMan](https://sdkman.io/)).
+
+<br>
+
+> Java JRE can be installed with [SdkMan!](https://sdkman.io/) or the APT package manager. Maven can be installed with [SdkMan!](https://sdkman.io/)
+
+<br>
 
 ### Steps to run Mis Gastos Backend
 
