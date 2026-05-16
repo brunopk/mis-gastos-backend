@@ -55,6 +55,12 @@ Re-create the database executing [`create_db.sql`](/sql/v2/create_db.sql) with a
 SHOW DATABASES;
 ```
 
+### Listing users
+
+```sql
+SELECT User, Host FROM mysql.user;
+```
+
 ### Deleting user
 
 ```sql
