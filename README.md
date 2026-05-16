@@ -6,14 +6,12 @@
 - [Loki](/doc/loki.md)
 - [Grafana](/doc/grafana.md)
 - [MariaDB](/doc/db.md)
-- Java 21 JRE (it can be installed with [SdkMan!](https://sdkman.io/) or the `apt` Linux command).
-- Maven (it can be installed with [SdkMan](https://sdkman.io/)).
+- Java 21 JRE
+- Maven
 
 <br>
 
-> Java JRE can be installed with [SdkMan!](https://sdkman.io/) or the APT package manager. Maven can be installed with [SdkMan!](https://sdkman.io/) 
-
-<br> 
+> Maven can be installed with [SdkMan!](https://sdkman.io/) and the JRE with SdkMan! or the APT package manager.
 
 ## Installation
 
@@ -88,14 +86,12 @@ Additionally, some properties reference **environment variables** that must be d
 ### Requirements
 
 - [MariaDB](/doc/db.md)
-- Java 21 JRE (it can be installed with [SdkMan!](https://sdkman.io/) or the `apt` Linux command).
-- Maven (it can be installed with [SdkMan](https://sdkman.io/)).
+- Java 21 JRE
+- Maven
 
 <br>
 
-> Java JRE can be installed with [SdkMan!](https://sdkman.io/) or the APT package manager. Maven can be installed with [SdkMan!](https://sdkman.io/)
-
-<br>
+> Maven can be installed with [SdkMan!](https://sdkman.io/) and the JRE with SdkMan! or the APT package manager.
 
 ### Steps to run Mis Gastos Backend
 
