@@ -5,7 +5,7 @@ import com.bruno.misgastos.entities.TaskConfig;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
 import com.bruno.misgastos.services.google.GoogleMailService;
-import com.bruno.misgastos.services.google.GoogleTaskService;
+import com.bruno.misgastos.services.google.GoogleTasksService;
 import jakarta.transaction.Transactional;
 import java.time.Duration;
 import java.time.Instant;
@@ -24,7 +24,7 @@ public abstract class AbstractTask implements Runnable {
 
   private final Logger LOGGER = LoggerFactory.getLogger(AbstractTask.class);
 
-  protected final GoogleTaskService googleTaskService;
+  protected final GoogleTasksService googleTaskService;
 
   protected final TaskSpringDataRepository taskRepository;
 
@@ -37,7 +37,7 @@ public abstract class AbstractTask implements Runnable {
   protected AbstractTask(
       String googleTaskListId,
       TaskConfig taskConfig,
-      GoogleTaskService googleTaskService,
+      GoogleTasksService googleTaskService,
       GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository) {

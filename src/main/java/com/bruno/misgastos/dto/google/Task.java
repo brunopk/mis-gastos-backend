@@ -2,6 +2,8 @@ package com.bruno.misgastos.dto.google;
 
 import java.time.OffsetDateTime;
 
+// TODO: consider removing this DTO
+
 public record Task(String taskId, OffsetDateTime due, String title, String notes) {
   /**
    * Use this constructor to create new tasks with {@code GoogleService}

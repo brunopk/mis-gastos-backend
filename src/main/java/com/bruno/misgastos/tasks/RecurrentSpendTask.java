@@ -9,7 +9,7 @@ import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
 import com.bruno.misgastos.services.google.GoogleMailService;
-import com.bruno.misgastos.services.google.GoogleTaskService;
+import com.bruno.misgastos.services.google.GoogleTasksService;
 import com.bruno.misgastos.utils.ThymeleafUtils;
 import jakarta.transaction.Transactional;
 import java.time.OffsetDateTime;
@@ -51,7 +51,7 @@ public class RecurrentSpendTask extends AbstractTask {
   public RecurrentSpendTask(
       String googleTaskListId,
       TaskConfig taskConfig,
-      GoogleTaskService googleTaskService,
+      GoogleTasksService googleTaskService,
       GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository) {
@@ -78,7 +78,7 @@ public class RecurrentSpendTask extends AbstractTask {
 
     boolean sendMail = taskConfig.getSendMail();
     if (sendMail) {
-      // TODO: CONTINUE here
+      // TODO: continue here
       // TODO: create the template files for mails and tasks description
     }
   }

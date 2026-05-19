@@ -1,11 +1,13 @@
 package com.bruno.misgastos.services.google;
 
 import com.bruno.misgastos.dto.google.Task;
+import com.bruno.misgastos.dto.rest.google.tasks.ListDto;
+import com.bruno.misgastos.dto.rest.google.tasks.TaskListDto;
 import com.bruno.misgastos.entities.GoogleAuthToken;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.UnauthorizedException;
-import com.bruno.misgastos.exceptions.google.GoogleApiException;
 import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
+import com.bruno.misgastos.rest.google.GoogleTasksApiRestClient;
 import com.bruno.misgastos.utils.ErrorMessages;
 import com.bruno.misgastos.utils.GoogleUtils;
 import com.google.api.client.auth.oauth2.Credential;
@@ -13,53 +15,42 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.services.tasks.Tasks;
-import com.google.api.services.tasks.model.TaskList;
-import com.google.api.services.tasks.model.TaskLists;
-import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GoogleTaskServiceImpl implements GoogleTaskService {
+public class GoogleTasksServiceImpl implements GoogleTasksService {
 
   private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
   private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
 
-  private final GoogleAuthTokenSpringDataRepository googleAuthTokenRepository;
+  private final OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
+
+  private final GoogleTasksApiRestClient googleTasksApiRestClient;
 
   @Autowired
-  public GoogleTaskServiceImpl(GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
-    this.googleAuthTokenRepository = googleAuthTokenRepository;
+  public GoogleTasksServiceImpl(
+      OAuth2AuthorizedClientService oAuth2AuthorizedClientService,
+      GoogleTasksApiRestClient googleTasksApiRestClient) {
+    this.oAuth2AuthorizedClientService = oAuth2AuthorizedClientService;
+    this.googleTasksApiRestClient = googleTasksApiRestClient;
   }
 
   @Override
-  public void test() throws IOException {
-    // TODO: Investigate how to obtain tokens from already logged users. Try to use Spring libraries for Google.
-    Credential credential = getUserCredentials(googleAuthTokenRepository);
-    Tasks service = new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
-
-    // Print the first 10 task lists.
-    TaskLists result = service.tasklists().list().setMaxResults(10).execute();
-    List<TaskList> taskLists = result.getItems();
-    if (taskLists == null || taskLists.isEmpty()) {
-      System.out.println("No task lists found.");
-    } else {
-      System.out.println("Task lists:");
-      for (TaskList tasklist : taskLists) {
-        System.out.printf("%s (%s)\n", tasklist.getTitle(), tasklist.getId());
-      }
-    }
+  public ListDto<TaskListDto> listTaskLists(String principalName){
+    OAuth2AuthorizedClient client =
+        oAuth2AuthorizedClientService.loadAuthorizedClient("google", principalName);
+    String accessToken = client.getAccessToken().getTokenValue();
+    return googleTasksApiRestClient.listTaskLists(accessToken);
   }
 
   @Override
   public Task createTask(Task task, String taskList) {
     // TODO: Investigate how to obtain tokens from already logged users. Try to use Spring libraries for Google.
-    Credential credential = getUserCredentials(googleAuthTokenRepository);
+    /*Credential credential = getUserCredentials(googleAuthTokenRepository);
     Tasks.TasksOperations tasksOperations =
         new Tasks.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build().tasks();
 
@@ -80,7 +71,8 @@ public class GoogleTaskServiceImpl implements GoogleTaskService {
           createdTask.getNotes());
     } catch (IOException ex) {
       throw new GoogleApiException(ex);
-    }
+    }*/
+    return null;
   }
 
   private Credential getUserCredentials(

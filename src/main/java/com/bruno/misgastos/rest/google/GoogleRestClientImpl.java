@@ -1,4 +1,4 @@
-package com.bruno.misgastos.rest;
+package com.bruno.misgastos.rest.google;
 
 import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDto;
 import com.bruno.misgastos.dto.rest.google.TokenDto;

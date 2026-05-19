@@ -5,7 +5,7 @@ import com.bruno.misgastos.dto.rest.google.RefreshTokenRequestDto;
 import com.bruno.misgastos.dto.rest.google.TokenDto;
 import com.bruno.misgastos.entities.GoogleAuthToken;
 import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
-import com.bruno.misgastos.rest.GoogleRestClient;
+import com.bruno.misgastos.rest.google.GoogleRestClient;
 import com.bruno.misgastos.utils.Constants;
 import com.bruno.misgastos.utils.EncryptionUtils;
 import jakarta.transaction.Transactional;

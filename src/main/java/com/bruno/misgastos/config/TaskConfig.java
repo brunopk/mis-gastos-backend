@@ -4,7 +4,7 @@ import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
 import com.bruno.misgastos.services.google.GoogleMailService;
-import com.bruno.misgastos.services.google.GoogleTaskService;
+import com.bruno.misgastos.services.google.GoogleTasksService;
 import com.bruno.misgastos.tasks.AbstractTask;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -58,7 +58,7 @@ public class TaskConfig {
 
   @Bean
   public TaskScheduler taskScheduler(
-      GoogleTaskService googleTaskService,
+      GoogleTasksService googleTaskService,
       GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository,
@@ -82,7 +82,7 @@ public class TaskConfig {
   private void initializeTasks(
       ThreadPoolTaskScheduler taskScheduler,
       ThreadPoolTaskExecutor taskExecutor,
-      GoogleTaskService googleTaskService,
+      GoogleTasksService googleTaskService,
       GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository,
@@ -122,7 +122,7 @@ public class TaskConfig {
       String className,
       String googleTaskListId,
       com.bruno.misgastos.entities.TaskConfig config,
-      GoogleTaskService googleTaskService,
+      GoogleTasksService googleTaskService,
       GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository) {
@@ -134,7 +134,7 @@ public class TaskConfig {
               .getConstructor(
                   String.class,
                   com.bruno.misgastos.entities.TaskConfig.class,
-                  GoogleTaskService.class,
+                  GoogleTasksService.class,
                   GoogleMailService.class,
                   SpendSpringDataRepository.class,
                   TaskSpringDataRepository.class)
