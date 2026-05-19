@@ -1,0 +1,1584 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 7,
+  "links": [],
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 18,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"display: flex; justify-content: center; align-items: center;\">\n  <h1 style=\"margin: 0;\">Main dashboard</h1>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "11.6.0",
+      "title": " ",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'value'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": " ",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 18,
+        "x": 0,
+        "y": 3
+      },
+      "id": 12,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "- Reimbursements are recorded on the same date as the original spend. For example, if you spend $10 in category A on 01/01/2026 and later receive a $1 reimbursement on 01/02/2026, that $1 will be reflected in **January**, not February.",
+        "mode": "markdown"
+      },
+      "pluginVersion": "11.6.0",
+      "title": " ",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 14,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false,
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS value,\n  aa.name AS metric\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY aa.name",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by account",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m') AS 'Month',\n  aa.name AS 'Name',\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'Amount'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, aa.name\nORDER BY 1, aa.name",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by account",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 8,
+        "x": 0,
+        "y": 20
+      },
+      "id": 15,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false,
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS value,\n  cc.name AS metric\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY cc.name",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by category",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 8,
+        "x": 8,
+        "y": 20
+      },
+      "id": 16,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false,
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS value,\n  COALESCE(ss.name, 'No subcategory') AS metric\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY COALESCE(ss.name, 'No subcategory')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by subcategory",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 8,
+        "x": 16,
+        "y": 20
+      },
+      "id": 17,
+      "options": {
+        "displayLabels": [
+          "percent"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": false,
+          "values": [
+            "percent",
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^value$/",
+          "values": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "hide": false,
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(s.value - COALESCE(i.total_income, 0)) AS value,\n  COALESCE(gg.name, 'No group') AS metric\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY COALESCE(gg.name, 'No group')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by group",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 1,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "asd",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date, '1M'),\n  cc.name AS name,\n  SUM(s.value - COALESCE(i.total_income, 0)) AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, cc.name\nORDER BY 1, cc.name",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "created_at",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by category",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "string",
+                "targetField": "subcategory_id"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 44
+      },
+      "id": 10,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "asd",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date, '1M'),\n  COALESCE(ss.name, 'No subcategory'),\n  SUM(s.value - COALESCE(i.total_income, 0))  AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, COALESCE(ss.name, 'No subcategory')\nORDER BY 1, COALESCE(ss.name, 'No subcategory')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "created_at",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by subcategory",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "string",
+                "targetField": "subcategory_id"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 56
+      },
+      "id": 7,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "asd",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(s.date, '1M'),\n  COALESCE(gg.name, 'No group'),\n  SUM(s.value - COALESCE(i.total_income, 0)) AS ''\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, COALESCE(gg.name, 'No group')\nORDER BY 1, COALESCE(gg.name, 'No group')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "created_at",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by group",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "string",
+                "targetField": "subcategory_id"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 24,
+        "w": 8,
+        "x": 0,
+        "y": 68
+      },
+      "id": 18,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m') AS 'Month',\n  cc.name AS 'Name',\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'Amount'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, cc.name\nORDER BY 1, cc.name",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by category",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 24,
+        "w": 8,
+        "x": 8,
+        "y": 68
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m') AS 'Month',\n  cc.name AS 'Category',\n  COALESCE(ss.name, '-') AS 'Subcategory',\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'Amount'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, cc.name, COALESCE(ss.name, '-')\nORDER BY 1, cc.name, COALESCE(ss.name, '-')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by subcategory",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 24,
+        "w": 8,
+        "x": 16,
+        "y": 68
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%Y-%m') AS 'Month',\n  cc.name AS 'Category',\n  COALESCE(ss.name, '-') AS 'Subcategory',\n  COALESCE(gg.name, '-') AS 'Group',\n  SUM(s.value - COALESCE(i.total_income, 0)) AS 'Amount'\nFROM spend s\nLEFT JOIN (\n  SELECT\n    spend_id,\n    SUM(value) AS total_income\n  FROM income\n  GROUP BY spend_id\n) i ON s.id = i.spend_id\nJOIN account aa ON aa.id = s.account_id\nJOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(s.date)\n  AND aa.name IN (${Account})\n  AND cc.name IN (${Category})\n  AND (\n    s.subcategory_id IS NULL\n    OR '${Subcategory:regex}' IN ('', '()')\n    OR (\n      ss.name REGEXP '^(${Subcategory:regex})$'\n      AND (\n        s.group_id IS NULL\n        OR '${Group:regex}' IN ('', '()') \n        OR gg.name REGEXP '^(${Group:regex})$'\n      )\n    )\n  )\nGROUP BY 1, cc.name, COALESCE(ss.name, '-'), COALESCE(gg.name, '-') \nORDER BY 1, cc.name, COALESCE(ss.name, '-'), COALESCE(gg.name, '-')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by group",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "ffjwtjbqvpy4ge"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 92
+      },
+      "id": 19,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.6.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "ffjwtjbqvpy4ge"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(i.date, \"%Y-%m-%d\") AS 'Date',\n  it.name AS 'Income type',\n  i.description AS 'Description',\n  i.value AS 'Amount'\nFROM income i\nINNER JOIN income_type it ON i.income_type_id = it.id\nINNER JOIN account aa ON aa.id = i.account_id\nLEFT JOIN spend s ON i.spend_id = s.id\nLEFT JOIN category cc ON cc.id = s.category_id\nLEFT JOIN subcategory ss ON ss.id = s.subcategory_id\nLEFT JOIN `group` gg ON gg.id = s.group_id\nWHERE\n  $__timeFilter(i.date)\n  AND aa.name IN (${Account})\n  AND (\n    cc.name IS NULL \n    OR ( \n      cc.name IN (${Category})\n      AND (\n        s.subcategory_id IS NULL\n        OR '${Subcategory:regex}' IN ('', '()')\n        OR (\n          ss.name REGEXP '^(${Subcategory:regex})$'\n          AND (\n            s.group_id IS NULL\n            OR '${Group:regex}' IN ('', '()') \n            OR gg.name REGEXP '^(${Group:regex})$'\n          )\n        )\n      )\n    )\n  )\nORDER BY 1",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Incomes",
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 41,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": [
+            "My bank 1",
+            "My bank 2",
+            "Cash"
+          ],
+          "value": [
+            "My bank 1",
+            "My bank 2",
+            "Cash"
+          ]
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "ffjwtjbqvpy4ge"
+        },
+        "definition": "SELECT a.name FROM account a",
+        "label": "Account",
+        "multi": true,
+        "name": "Account",
+        "options": [],
+        "query": "SELECT a.name FROM account a",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": [
+            "Entertainment",
+            "Health care",
+            "Services"
+          ],
+          "value": [
+            "Entertainment",
+            "Health care",
+            "Services"
+          ]
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "ffjwtjbqvpy4ge"
+        },
+        "definition": "SELECT name FROM category",
+        "includeAll": false,
+        "multi": true,
+        "name": "Category",
+        "options": [],
+        "query": "SELECT name FROM category",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": [
+            "Basic",
+            "Internet",
+            "Medicine"
+          ],
+          "value": [
+            "Basic",
+            "Internet",
+            "Medicine"
+          ]
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "ffjwtjbqvpy4ge"
+        },
+        "definition": "SELECT s.name FROM subcategory s JOIN category c ON c.id = s.category_id WHERE c.name IN (${Category})",
+        "description": "",
+        "multi": true,
+        "name": "Subcategory",
+        "options": [],
+        "query": "SELECT s.name FROM subcategory s JOIN category c ON c.id = s.category_id WHERE c.name IN (${Category})",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {
+          "text": [
+            "Gas",
+            "Electricity"
+          ],
+          "value": [
+            "Gas",
+            "Electricity"
+          ]
+        },
+        "datasource": {
+          "type": "mysql",
+          "uid": "ffjwtjbqvpy4ge"
+        },
+        "definition": "SELECT g.name FROM `group` g  LEFT JOIN subcategory s ON s.id = g.subcategory_id WHERE s.id IS NOT NULL AND s.name IN (${Subcategory})",
+        "label": "Group",
+        "multi": true,
+        "name": "Group",
+        "options": [],
+        "query": "SELECT g.name FROM `group` g  LEFT JOIN subcategory s ON s.id = g.subcategory_id WHERE s.id IS NOT NULL AND s.name IN (${Subcategory})",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2y",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Mis gastos - Main dashboard",
+  "uid": "cfjww7pzeg6psf",
+  "version": 166
+}
