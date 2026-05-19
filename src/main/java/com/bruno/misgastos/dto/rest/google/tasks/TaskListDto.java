@@ -1,7 +1,6 @@
 package com.bruno.misgastos.dto.rest.google.tasks;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.time.OffsetDateTime;
 
 public record TaskListDto(
