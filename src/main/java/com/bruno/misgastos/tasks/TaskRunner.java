@@ -1,17 +1,7 @@
 package com.bruno.misgastos.tasks;
 
-import com.bruno.misgastos.entities.Task;
-import com.bruno.misgastos.entities.TaskConfig;
-import com.bruno.misgastos.respositories.SpendSpringDataRepository;
-import com.bruno.misgastos.respositories.TaskSpringDataRepository;
-import com.bruno.misgastos.services.google.GoogleMailService;
-import com.bruno.misgastos.services.google.GoogleTasksService;
+import com.bruno.misgastos.dto.tasks.TaskContextDto;
 import jakarta.transaction.Transactional;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 // TODO: create a task to process completed google tasks
 
@@ -20,11 +10,15 @@ import org.slf4j.LoggerFactory;
  * Implementations of this class <strong>must</strong> define a constructor with the same parameters as the main
  * constructor of this class.
  */
-public abstract class AbstractTask implements Runnable {
+public interface TaskRunner {
 
-  private final Logger LOGGER = LoggerFactory.getLogger(AbstractTask.class);
+  /*private final Logger LOGGER = LoggerFactory.getLogger(Task.class);
+
+  protected final OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager;
 
   protected final GoogleTasksService googleTaskService;
+
+  protected final GoogleMailService googleMailService;
 
   protected final TaskSpringDataRepository taskRepository;
 
@@ -32,29 +26,28 @@ public abstract class AbstractTask implements Runnable {
 
   protected final TaskConfig taskConfig;
 
-  protected final String googleTaskListId;
-
-  protected AbstractTask(
-      String googleTaskListId,
+  protected Task(
+      OAuth2AuthorizedClientManager oAuth2AuthorizedClientManager,
       TaskConfig taskConfig,
       GoogleTasksService googleTaskService,
       GoogleMailService googleMailService,
       SpendSpringDataRepository spendRepository,
       TaskSpringDataRepository taskRepository) {
-    this.googleTaskListId = googleTaskListId;
+    this.oAuth2AuthorizedClientManager = oAuth2AuthorizedClientManager;
     this.taskConfig = taskConfig;
     this.googleTaskService = googleTaskService;
+    this.googleMailService = googleMailService;
     this.taskRepository = taskRepository;
     this.spendRepository = spendRepository;
-  }
+  }*/
 
-  public abstract void doWork(Task taskDbEntry);
+  //public abstract void doWork(com.bruno.misgastos.entities.Task taskDbEntry);
 
-  @Override
+  /*@Override
   @Transactional
   public void run() {
     try {
-      Task taskDbEntry = new Task(taskConfig);
+      com.bruno.misgastos.entities.Task taskDbEntry = new com.bruno.misgastos.entities.Task(taskConfig);
       taskDbEntry = taskRepository.save(taskDbEntry);
 
       LOGGER.info("Starting task (task_name={}, task_id={})", taskConfig.getTaskName(), taskDbEntry.getId());
@@ -79,5 +72,8 @@ public abstract class AbstractTask implements Runnable {
     } catch (Exception ex) {
       LOGGER.error("Error executing task (task_name={})", taskConfig.getTaskName(), ex);
     }
-  }
+  }*/
+
+  @Transactional
+  void execute(TaskContextDto taskContext);
 }

@@ -5,7 +5,7 @@ import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
 import com.bruno.misgastos.services.google.GoogleMailService;
 import com.bruno.misgastos.services.google.GoogleTasksService;
-import com.bruno.misgastos.tasks.AbstractTask;
+import com.bruno.misgastos.tasks.TaskRunner;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -93,7 +93,7 @@ public class TaskConfig {
     List<com.bruno.misgastos.entities.TaskConfig> taskConfigList = taskConfigRepository.findAll();
     for (com.bruno.misgastos.entities.TaskConfig taskConfig : taskConfigList) {
       String className = taskConfig.getClassName();
-      AbstractTask task =
+      TaskRunner task =
           getTaskInstance(
               className,
               GOOGLE_TASK_LIST_ID,
@@ -117,8 +117,18 @@ public class TaskConfig {
     }
   }
 
-  // TODO: improvement avoid adding all parameters for all AbstractTask implementation
-  private AbstractTask getTaskInstance(
+  /**
+   * Used as {@code AbstractTask} factory
+   * @param className .
+   * @param googleTaskListId .
+   * @param config .
+   * @param googleTaskService .
+   * @param googleMailService .
+   * @param spendRepository .
+   * @param taskRepository .
+   * @return .
+   */
+  private TaskRunner getTaskInstance(
       String className,
       String googleTaskListId,
       com.bruno.misgastos.entities.TaskConfig config,
@@ -129,7 +139,7 @@ public class TaskConfig {
     try {
       String fullClassName = String.format("com.bruno.misgastos.tasks.%s", className);
       Class<?> clazz = Class.forName(fullClassName);
-      return (AbstractTask)
+      return (TaskRunner)
           clazz
               .getConstructor(
                   String.class,
