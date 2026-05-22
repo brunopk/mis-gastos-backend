@@ -48,7 +48,7 @@ public class GoogleTasksServiceImpl implements GoogleTasksService {
   }
 
   @Override
-  public Task createTask(Task task, String taskList) {
+  public void createTask(Task task, String taskList) {
     // TODO: Investigate how to obtain tokens from already logged users. Try to use Spring libraries for Google.
     /*Credential credential = getUserCredentials(googleAuthTokenRepository);
     Tasks.TasksOperations tasksOperations =
@@ -72,7 +72,6 @@ public class GoogleTasksServiceImpl implements GoogleTasksService {
     } catch (IOException ex) {
       throw new GoogleApiException(ex);
     }*/
-    return null;
   }
 
   private Credential getUserCredentials(

@@ -36,7 +36,7 @@ import org.thymeleaf.context.Context;
  * - The due date for the Google Tasks will be the current date (when this handler is running).<br>
  * <br>
  */
-@Component
+@Component("RecurrentSpendTask")
 public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RecurrentSpendTaskRunnerImpl.class);
@@ -50,7 +50,6 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
 
   private final TemplateEngine templateEngine;
 
-
   @Autowired
   public RecurrentSpendTaskRunnerImpl(GoogleTasksService googleTaskService, SpendSpringDataRepository spendRepository) {
     this.googleTasksService = googleTaskService;
@@ -61,7 +60,6 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
   @Override
   public void execute(TaskContextDto taskContext) {
     TaskConfig taskConfig = taskContext.task().getTaskConfig();
-    validateTaskConfig(taskConfig);
 
     switch (taskConfig.getTaskType()) {
       case AUTOMATIC ->
@@ -76,7 +74,10 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
     }
   }
 
-  private void validateTaskConfig(TaskConfig config) {
+  @Override
+  public void validate(TaskContextDto taskContextDto) throws ApiException {
+    TaskConfig config = taskContextDto.task().getTaskConfig();
+
     if (config.getTaskType().equals(TaskType.AUTOMATIC) && config.getCreateGoogleTask()) {
       throw new ApiException(
           ErrorCode.INVALID_TASK_CONFIG,
@@ -132,7 +133,7 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
     boolean createGoogleTask = taskConfig.getCreateGoogleTask();
     if (createGoogleTask) {
       com.bruno.misgastos.dto.google.Task googleTask = buildGoogleTask(task);
-      LOGGER.info("Creating task in Google (task_config={}, task_id={})", taskConfig.getTaskName(), task.getId());
+      LOGGER.info("Creating task in Google Tasks (task_config={}, task_id={})", taskConfig.getTaskName(), task.getId());
       googleTasksService.createTask(googleTask, taskContext.googleTaskList());
     }
   }

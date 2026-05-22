@@ -2,6 +2,8 @@ package com.bruno.misgastos.services.google;
 
 public interface GoogleMailService {
 
+  // TODO: consider using push notifications instead of this class
+
   /**
    * Sends a mail using the account of the current user.
    * @param toEmailAddress To which email address send the email

@@ -1,22 +1,18 @@
 package com.bruno.misgastos.config;
 
-import com.bruno.misgastos.respositories.SpendSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
 import com.bruno.misgastos.respositories.TaskSpringDataRepository;
-import com.bruno.misgastos.services.google.GoogleMailService;
-import com.bruno.misgastos.services.google.GoogleTasksService;
-import com.bruno.misgastos.tasks.TaskRunner;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
+import com.bruno.misgastos.utils.TaskDispatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.support.CronTrigger;
 
 @Configuration
 public class TaskConfig {
@@ -36,7 +32,7 @@ public class TaskConfig {
   private Integer TASK_SCHEDULER_POOL_SIZE;
 
   @Value("{google.task-list-id}")
-  private String GOOGLE_TASK_LIST_ID;
+  private String GOOGLE_TASKS_TASK_LIST_ID;
 
   @Bean
   public ThreadPoolTaskExecutor taskExecutor() {
@@ -58,109 +54,22 @@ public class TaskConfig {
 
   @Bean
   public TaskScheduler taskScheduler(
-      GoogleTasksService googleTaskService,
-      GoogleMailService googleMailService,
-      SpendSpringDataRepository spendRepository,
-      TaskSpringDataRepository taskRepository,
-      TaskConfigSpringDataRepository taskConfigRepository) {
+      ApplicationContext applicationContext,
+      TaskExecutor taskExecutor,
+      TaskConfigSpringDataRepository taskConfigRepository,
+      TaskSpringDataRepository taskRepository) {
     ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
     taskScheduler.setPoolSize(1);
     taskScheduler.initialize();
 
-    initializeTasks(
+    TaskDispatcher.initializeTasks(
+        applicationContext,
         taskScheduler,
-        taskExecutor(),
-        googleTaskService,
-        googleMailService,
-        spendRepository,
-        taskRepository,
-        taskConfigRepository);
+        taskExecutor,
+        GOOGLE_TASKS_TASK_LIST_ID,
+        taskConfigRepository,
+        taskRepository);
 
     return taskScheduler;
-  }
-
-  private void initializeTasks(
-      ThreadPoolTaskScheduler taskScheduler,
-      ThreadPoolTaskExecutor taskExecutor,
-      GoogleTasksService googleTaskService,
-      GoogleMailService googleMailService,
-      SpendSpringDataRepository spendRepository,
-      TaskSpringDataRepository taskRepository,
-      TaskConfigSpringDataRepository taskConfigRepository) {
-
-    LOGGER.info("Initializing scheduled tasks");
-
-    List<com.bruno.misgastos.entities.TaskConfig> taskConfigList = taskConfigRepository.findAll();
-    for (com.bruno.misgastos.entities.TaskConfig taskConfig : taskConfigList) {
-      String className = taskConfig.getClassName();
-      TaskRunner task =
-          getTaskInstance(
-              className,
-              GOOGLE_TASK_LIST_ID,
-              taskConfig,
-              googleTaskService,
-              googleMailService,
-              spendRepository,
-              taskRepository);
-
-      LOGGER.info(
-          "Scheduling {} with CRON expression {}",
-          taskConfig.getTaskName(),
-          taskConfig.getCronExpression());
-
-      CronTrigger cronTrigger = new CronTrigger(taskConfig.getCronExpression());
-      taskScheduler.schedule(
-          () -> {
-            taskExecutor.execute(task);
-          },
-          cronTrigger);
-    }
-  }
-
-  /**
-   * Used as {@code AbstractTask} factory
-   * @param className .
-   * @param googleTaskListId .
-   * @param config .
-   * @param googleTaskService .
-   * @param googleMailService .
-   * @param spendRepository .
-   * @param taskRepository .
-   * @return .
-   */
-  private TaskRunner getTaskInstance(
-      String className,
-      String googleTaskListId,
-      com.bruno.misgastos.entities.TaskConfig config,
-      GoogleTasksService googleTaskService,
-      GoogleMailService googleMailService,
-      SpendSpringDataRepository spendRepository,
-      TaskSpringDataRepository taskRepository) {
-    try {
-      String fullClassName = String.format("com.bruno.misgastos.tasks.%s", className);
-      Class<?> clazz = Class.forName(fullClassName);
-      return (TaskRunner)
-          clazz
-              .getConstructor(
-                  String.class,
-                  com.bruno.misgastos.entities.TaskConfig.class,
-                  GoogleTasksService.class,
-                  GoogleMailService.class,
-                  SpendSpringDataRepository.class,
-                  TaskSpringDataRepository.class)
-              .newInstance(
-                  googleTaskListId,
-                  config,
-                  googleTaskService,
-                  googleMailService,
-                  spendRepository,
-                  taskRepository);
-    } catch (ClassNotFoundException
-        | NoSuchMethodException
-        | InstantiationException
-        | IllegalAccessException
-        | InvocationTargetException ex) {
-      throw new RuntimeException(String.format("Error initializing %s", config.getTaskName()), ex);
-    }
   }
 }

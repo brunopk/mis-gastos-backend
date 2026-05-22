@@ -37,5 +37,5 @@ mis-gastos:
       client-secret: ${MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET}
     jwt:
       ttl-in-hours: 1
-    google:
-      task-list-id: ${MIS_GASTOS_GOOGLE_TASK_LIST_ID}
+  google:
+    task-list-id: ${MIS_GASTOS_GOOGLE_TASK_LIST_ID}
