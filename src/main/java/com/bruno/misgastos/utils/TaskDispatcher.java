@@ -1,6 +1,5 @@
 package com.bruno.misgastos.utils;
 
-import com.bruno.misgastos.dto.tasks.TaskContextDto;
 import com.bruno.misgastos.entities.Task;
 import com.bruno.misgastos.entities.TaskConfig;
 import com.bruno.misgastos.respositories.TaskConfigSpringDataRepository;
@@ -17,25 +16,23 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 
-/**
- * Schedules all tasks defined by their corresponding {@code TaskConfig} instances, in the Spring
- * {@code TaskScheduler}. {@code TaskConfig} instances are retrieved through the
- * {@code TaskConfigSpringDataRepository}. The execution schedule, among other important
- * configurations, is defined in each instance.
- * <br><br>
- * Scheduled tasks are also dispatched to the available threads provided by the
- * {@code TaskExecutor} at the corresponding execution time.
- */
 public interface TaskDispatcher {
 
   Logger LOGGER = LoggerFactory.getLogger(TaskDispatcher.class);
 
   /**
-   * Schedule each of them with the corresponding time configuration (e.g. CRON expression).
+   * Schedules all tasks defined by their corresponding {@code TaskConfig} instances, in the Spring
+   * {@code TaskScheduler}. {@code TaskConfig} instances are retrieved through the {@code
+   * TaskConfigSpringDataRepository}. The execution schedule, among other important configurations,
+   * is defined in each instance. <br>
+   * <br>
+   * Scheduled tasks are also dispatched to the available threads provided by the {@code
+   * TaskExecutor} at the corresponding execution time. <br>
+   * <br>
+   *
    * @param applicationContext Used to obtain Spring beans.
    * @param taskScheduler Used to schedule tasks.
    * @param taskExecutor Used to run tasks (at the corresponding time).
-   * @param googleTasksTaskListId Required for some particular tasks.
    * @param taskConfigRepository Used to obtain all defined tasks.
    * @param taskRepository Used to store task execution information.
    */
@@ -43,7 +40,6 @@ public interface TaskDispatcher {
       ApplicationContext applicationContext,
       TaskScheduler taskScheduler,
       TaskExecutor taskExecutor,
-      String googleTasksTaskListId,
       TaskConfigSpringDataRepository taskConfigRepository,
       TaskSpringDataRepository taskRepository) {
     LOGGER.info("Initializing scheduled tasks");
@@ -62,28 +58,21 @@ public interface TaskDispatcher {
       CronTrigger cronTrigger = new CronTrigger(taskConfig.getCronExpression());
 
       taskScheduler.schedule(
-          () ->
-              taskExecutor.execute(
-                  () -> executeTask(taskRunner, taskConfig, googleTasksTaskListId, taskRepository)),
+          () -> taskExecutor.execute(() -> executeTask(taskRunner, taskRepository, taskConfig)),
           cronTrigger);
     }
   }
 
   private static void executeTask(
-      TaskRunner taskRunner,
-      TaskConfig taskConfig,
-      String googleTasksTaskListId,
-      TaskSpringDataRepository taskRepository) {
+      TaskRunner taskRunner, TaskSpringDataRepository taskRepository, TaskConfig taskConfig) {
     try {
 
       Task task = new Task(taskConfig);
       task = taskRepository.save(task);
 
-      TaskContextDto context = new TaskContextDto(task, googleTasksTaskListId);
-
       try {
         LOGGER.info("Validating task (task_name={}, task_id={})", taskConfig.getTaskName(), task.getId());
-        taskRunner.validate(context);
+        taskRunner.validate(task);
       } catch (Exception ex) {
         LOGGER.error("Error validating task (task_name={})", taskConfig.getTaskName(), ex);
         return;
@@ -97,7 +86,7 @@ public interface TaskDispatcher {
 
       Instant start = Instant.now();
 
-      taskRunner.execute(context);
+      taskRunner.execute(task);
 
       Instant end = Instant.now();
       Duration duration = Duration.between(start, end);

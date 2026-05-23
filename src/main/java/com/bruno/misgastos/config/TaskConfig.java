@@ -31,9 +31,6 @@ public class TaskConfig {
   @Value("${mis-gastos.scheduling.task-scheduler.pool-size}")
   private Integer TASK_SCHEDULER_POOL_SIZE;
 
-  @Value("{google.task-list-id}")
-  private String GOOGLE_TASKS_TASK_LIST_ID;
-
   @Bean
   public ThreadPoolTaskExecutor taskExecutor() {
     ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -66,7 +63,6 @@ public class TaskConfig {
         applicationContext,
         taskScheduler,
         taskExecutor,
-        GOOGLE_TASKS_TASK_LIST_ID,
         taskConfigRepository,
         taskRepository);
 

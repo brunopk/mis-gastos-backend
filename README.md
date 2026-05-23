@@ -28,6 +28,8 @@
     DB_PASS=root
     GOOGLE_CLIENT_ID=123456-xxx.apps.googleusercontent.com
     GOOGLE_CLIENT_SECRET=xxx
+    GOOGLE_AUTHORIZED_ACCOUNT=your_mail@gmail.com
+    GOOGLE_TASKS_TASK_LIST_ID=xxx
     MIS_GASTOS_ADMIN_JWT_CLIENT_ID=admin
     MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET=admin
     ```
@@ -68,6 +70,8 @@ Additionally, some properties reference **environment variables** that must be d
 - `DB_PASS`: MariaDB password
 - `GOOGLE_CLIENT_ID`: used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user.
 - `GOOGLE_CLIENT_SECRET`: used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user.
+- `GOOGLE_AUTHORIZED_ACCOUNT`: defines the Google user authorized to perform actions on Mis Gastos Backend
+- `GOOGLE_TASKS_TASK_LIST_ID`: Used for scheduled tasks.
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: Used for [scripts](scripts).
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: Used for [scripts](scripts).
 

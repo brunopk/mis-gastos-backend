@@ -5,6 +5,8 @@ Mis Gastos Backend supports two OAuth 2.0 flows:
 - [Authorization Code flow](#authorization-code-flow): used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user.
 - [Client Credentials flow](#client-credentials-flow): used to execute [scripts](/scripts).
 
+Enabling `trace` logging level for `org.springframework.security` and `springframework.web.client` packages may be particularly useful to troubleshoot security issues. Refer to the [Logging](/doc/spring.md#logging) section in [`(/doc/spring.md`](/doc/spring.md) for more information about how to configure logging in Spring.
+
 ## Authorization Code flow
 
 This flow can be initiated by sending a GET request to `http://localhost:8080/oauth2/authorization/google`, replacing `localhost` with the hostname or domain where Mis Gastos Backend is running. This is the default endpoint provided by the `spring-boot-starter-oauth2-client` library.

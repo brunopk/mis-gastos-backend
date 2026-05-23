@@ -4,7 +4,6 @@ import com.bruno.misgastos.dto.ErrorDto;
 import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.exceptions.RestClientException;
-import com.bruno.misgastos.exceptions.UnauthorizedException;
 import com.bruno.misgastos.utils.ErrorMessages;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -96,14 +95,6 @@ public class CustomExceptionHandler {
     ErrorDto body = new ErrorDto(ErrorCode.BAD_REQUEST.name(), errorMessage);
     LOGGER.debug(GENERIC_ERROR_LOG_MESSAGE, ex);
     return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-  }
-
-  // Unauthorized
-
-  @ExceptionHandler(UnauthorizedException.class)
-  public ResponseEntity<ErrorDto> handleUnauthorizedException(UnauthorizedException ex) {
-    ErrorDto body = new ErrorDto(ex.getErrorCode().name(), ex.getMessage());
-    return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
   }
 
   private String extractErrorMessage(MethodArgumentNotValidException ex) {

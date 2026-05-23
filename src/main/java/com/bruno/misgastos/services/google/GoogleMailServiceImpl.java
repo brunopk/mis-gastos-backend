@@ -1,12 +1,6 @@
 package com.bruno.misgastos.services.google;
 
-import com.bruno.misgastos.entities.GoogleAuthToken;
-import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.exceptions.ApiException;
-import com.bruno.misgastos.exceptions.UnauthorizedException;
-import com.bruno.misgastos.respositories.GoogleAuthTokenSpringDataRepository;
-import com.bruno.misgastos.utils.ErrorMessages;
-import com.bruno.misgastos.utils.GoogleUtils;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -33,20 +27,16 @@ public class GoogleMailServiceImpl implements GoogleMailService {
   private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
   private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-
-  private final GoogleAuthTokenSpringDataRepository googleAuthTokenRepository;
-
+  
   @Autowired
-  public GoogleMailServiceImpl(GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
-    this.googleAuthTokenRepository = googleAuthTokenRepository;
+  public GoogleMailServiceImpl() {
   }
 
   @Override
   public void sendMail(String toEmailAddress, String subject, String htmlBody) {
     try {
       // Based in https://developers.google.com/workspace/gmail/api/guides/sending
-      // TODO: Investigate how to obtain tokens from already logged users. Try to use Spring libraries for Google.
-      Credential credential = getUserCredentials(googleAuthTokenRepository);
+      Credential credential = null;
       Gmail service = new Gmail.Builder(HTTP_TRANSPORT,
         JSON_FACTORY,
         credential)
@@ -73,16 +63,5 @@ public class GoogleMailServiceImpl implements GoogleMailService {
       throw new ApiException(ex);
     }
   }
-
-  private Credential getUserCredentials(
-    GoogleAuthTokenSpringDataRepository googleAuthTokenRepository) {
-    GoogleAuthToken token =
-      googleAuthTokenRepository
-        .getLastActiveToken()
-        .orElseThrow(
-          () ->
-            new UnauthorizedException(
-              ErrorCode.UNAUTHORIZED, ErrorMessages.NO_VALID_TOKEN_FOUND));
-    return GoogleUtils.getUserCredentials(token, null);
-  }
+  
 }

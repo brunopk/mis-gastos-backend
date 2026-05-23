@@ -1,5 +1,6 @@
 package com.bruno.misgastos.config;
 
+import com.bruno.misgastos.OAuth2LoginSuccessHandler;
 import java.time.Duration;
 import java.util.UUID;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.*;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.server.authorization.client.InMemoryRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
@@ -23,16 +26,18 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @Configuration
 public class SecurityConfig {
 
-
   /**
    * Among other things, {@code oauth2Login} configuration provides an implementation for the GET /login endpoint.
-   * @param http {@code SecurityFilterChain} bean provided by Spring
+   *
+   * @param http Provided by Spring
+   * @param oAuth2LoginSuccessHandler Used to map email to principal name (Google)
    * @return generated {@code SecurityFilterChain} bean
    * @throws Exception .
    */
   @Bean
   @Profile({"default", "local"})
-  public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain defaultSecurityFilterChain(
+      HttpSecurity http, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) throws Exception {
     return http.csrf(AbstractHttpConfigurer::disable)
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
         .authorizeHttpRequests(
@@ -42,39 +47,37 @@ public class SecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .oauth2Login(Customizer.withDefaults())
+        .oauth2Login(oauth2LoginCustomizer -> oauth2LoginCustomizer.successHandler(oAuth2LoginSuccessHandler))
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
         .build();
   }
 
   /**
    * Among other things, {@code oauth2Login} configuration provides an implementation for the GET /login endpoint.
-   * @param http {@code SecurityFilterChain} bean provided by Spring
+   *
+   * @param http Provided by Spring
+   * @param oAuth2LoginSuccessHandler Used to map email to principal name (Google)
    * @return generated {@code SecurityFilterChain} bean
    * @throws Exception .
    */
   @Bean
   @Profile({"prod"})
-  public SecurityFilterChain prodSecurityFilterChain(HttpSecurity http) throws Exception {
+  public SecurityFilterChain prodSecurityFilterChain(HttpSecurity http, OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler) throws Exception {
     return http.csrf(
-        csrf ->
-          csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            .ignoringRequestMatchers("/oauth2/token"))
-      .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
-      .authorizeHttpRequests(
-        (authorizationManagerRequestMatcherRegistry) ->
-          authorizationManagerRequestMatcherRegistry
-            .requestMatchers("/oauth2/**")
-            .permitAll()
-            .anyRequest()
-            .authenticated())
-      .oauth2Login(
-        Customizer
-          .withDefaults())
-      .oauth2ResourceServer(
-        oauth2 ->
-          oauth2.jwt(Customizer.withDefaults()))
-      .build();
+            csrf ->
+                csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                    .ignoringRequestMatchers("/oauth2/token"))
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.NEVER))
+        .authorizeHttpRequests(
+            (authorizationManagerRequestMatcherRegistry) ->
+                authorizationManagerRequestMatcherRegistry
+                    .requestMatchers("/oauth2/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .oauth2Login(oauth2LoginCustomizer -> oauth2LoginCustomizer.successHandler(oAuth2LoginSuccessHandler))
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
+        .build();
   }
 
   /**
@@ -125,4 +128,24 @@ public class SecurityConfig {
     return new InMemoryRegisteredClientRepository(backendClient);
   }
 
+  /**
+   * Required for Spring to automatically obtain refresh tokens using the current OAuth2 provider (Google).
+   * @param registrations .
+   * @param clientService .
+   * @return .
+   */
+  @Bean
+  OAuth2AuthorizedClientManager authorizedClientManager(
+      ClientRegistrationRepository registrations, OAuth2AuthorizedClientService clientService) {
+
+    OAuth2AuthorizedClientProvider provider =
+        OAuth2AuthorizedClientProviderBuilder.builder().refreshToken().build();
+
+    AuthorizedClientServiceOAuth2AuthorizedClientManager manager =
+        new AuthorizedClientServiceOAuth2AuthorizedClientManager(registrations, clientService);
+
+    manager.setAuthorizedClientProvider(provider);
+
+    return manager;
+  }
 }

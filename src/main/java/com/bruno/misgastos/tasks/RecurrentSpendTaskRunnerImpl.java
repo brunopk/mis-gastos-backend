@@ -1,6 +1,6 @@
 package com.bruno.misgastos.tasks;
 
-import com.bruno.misgastos.dto.tasks.TaskContextDto;
+import com.bruno.misgastos.dto.rest.google.tasks.TaskDto;
 import com.bruno.misgastos.entities.Spend;
 import com.bruno.misgastos.entities.Task;
 import com.bruno.misgastos.entities.TaskConfig;
@@ -8,19 +8,18 @@ import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.enums.TaskType;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
+import com.bruno.misgastos.services.google.GoogleAuthService;
 import com.bruno.misgastos.services.google.GoogleTasksService;
+import com.bruno.misgastos.utils.GoogleUtils;
 import com.bruno.misgastos.utils.ThymeleafUtils;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 // TODO: create a function like this ...
 // https://github.com/brunopk/mis-gastos/blob/90a9be15182955c033a31ff73db2aaa4298b4593/src/Utils.ts#L301C27-L301C61
@@ -41,8 +40,13 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(RecurrentSpendTaskRunnerImpl.class);
 
-  private static final DateTimeFormatter DATE_TIME_FORMATTER =
-    DateTimeFormatter.ofPattern("MMMM yyyy", Locale.forLanguageTag("es"));
+  @Value("${mis-gastos.google.task-list-id}")
+  private String GOOGLE_TASKS_TASK_LIST_ID;
+
+  @Value("${mis-gastos.security.google.authorized-account}")
+  private String AUTHORIZED_GOOGLE_ACCOUNT;
+
+  private final GoogleAuthService googleAuthService;
 
   private final GoogleTasksService googleTasksService;
 
@@ -51,20 +55,23 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
   private final TemplateEngine templateEngine;
 
   @Autowired
-  public RecurrentSpendTaskRunnerImpl(GoogleTasksService googleTaskService, SpendSpringDataRepository spendRepository) {
+  public RecurrentSpendTaskRunnerImpl(
+      GoogleAuthService googleAuthService,
+      GoogleTasksService googleTaskService,
+      SpendSpringDataRepository spendRepository) {
+    this.googleAuthService = googleAuthService;
     this.googleTasksService = googleTaskService;
     this.spendRepository = spendRepository;
     this.templateEngine = ThymeleafUtils.buildTemplateEngine();
   }
 
   @Override
-  public void execute(TaskContextDto taskContext) {
-    TaskConfig taskConfig = taskContext.task().getTaskConfig();
+  public void execute(Task task) {
+    TaskConfig taskConfig = task.getTaskConfig();
 
     switch (taskConfig.getTaskType()) {
-      case AUTOMATIC ->
-        processAutomaticTask(taskContext);
-      case MANUAL -> processManualTask(taskContext);
+      case AUTOMATIC -> processAutomaticTask(task);
+      case MANUAL -> processManualTask(task);
     }
 
     boolean sendMail = taskConfig.getSendMail();
@@ -75,8 +82,8 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
   }
 
   @Override
-  public void validate(TaskContextDto taskContextDto) throws ApiException {
-    TaskConfig config = taskContextDto.task().getTaskConfig();
+  public void validate(Task task) throws ApiException {
+    TaskConfig config = task.getTaskConfig();
 
     if (config.getTaskType().equals(TaskType.AUTOMATIC) && config.getCreateGoogleTask()) {
       throw new ApiException(
@@ -119,30 +126,41 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
     }
   }
 
-  private void processAutomaticTask(TaskContextDto context) {
-    Task task = context.task();
+  private void processAutomaticTask(Task task) {
     TaskConfig taskConfig = task.getTaskConfig();
     Spend spend = buildSpend(task);
     spendRepository.save(spend);
+
+    // TODO: remove this (just for test)
+    TaskDto googleTask = buildGoogleTasksTask(task);
+    String principalName = googleAuthService.getPrincipalByEmail(AUTHORIZED_GOOGLE_ACCOUNT);
+    LOGGER.info("Creating task in Google Tasks (task_config={}, task_id={})", taskConfig.getTaskName(), task.getId());
+    googleTasksService.createTask(principalName, GOOGLE_TASKS_TASK_LIST_ID, googleTask);
+
     LOGGER.info("Spend created: {} (task_config_name={}, task_id={})", spend, taskConfig.getTaskName(), task.getId());
   }
 
-  private void processManualTask(TaskContextDto taskContext) {
-    Task task = taskContext.task();
+  private void processManualTask(Task task) {
     TaskConfig taskConfig = task.getTaskConfig();
     boolean createGoogleTask = taskConfig.getCreateGoogleTask();
     if (createGoogleTask) {
-      com.bruno.misgastos.dto.google.Task googleTask = buildGoogleTask(task);
+      TaskDto googleTask = buildGoogleTasksTask(task);
+      String principalName = googleAuthService.getPrincipalByEmail(AUTHORIZED_GOOGLE_ACCOUNT);
+
       LOGGER.info("Creating task in Google Tasks (task_config={}, task_id={})", taskConfig.getTaskName(), task.getId());
-      googleTasksService.createTask(googleTask, taskContext.googleTaskList());
+
+      googleTasksService.createTask(principalName, GOOGLE_TASKS_TASK_LIST_ID, googleTask);
     }
   }
 
-  private com.bruno.misgastos.dto.google.Task buildGoogleTask(Task task) {
+  private TaskDto buildGoogleTasksTask(Task task) {
     TaskConfig taskConfig = task.getTaskConfig();
     // TODO: confirm if it's necessary to send due date in UTC
-    return new com.bruno.misgastos.dto.google.Task(
-        OffsetDateTime.now(), generateTaskTitle(taskConfig), generateTaskNotes(taskConfig));
+    return TaskDto.builder()
+        .due(OffsetDateTime.now())
+        .title(GoogleUtils.generateGoogleTasksTaskTitle(taskConfig))
+        .notes(GoogleUtils.generateGoogleTasksTaskNotes(templateEngine, taskConfig))
+        .build();
   }
 
   private Spend buildSpend(Task task) {
@@ -156,28 +174,5 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
       taskConfig.getSpendDescription(),
       task.getId(),
       taskConfig.getSpendValue());
-  }
-
-  private String generateTaskTitle(TaskConfig taskConfig) {
-    // TODO: move this method to a new GoogleTaskHelper
-    String taskTitlePrefix = taskConfig.getGoogleTaskTitle();
-    String formattedDate = StringUtils.capitalize(OffsetDateTime.now().format(DATE_TIME_FORMATTER));
-    return String.format(
-      "%s %s",
-      taskTitlePrefix,
-      formattedDate);
-  }
-
-  private String generateTaskNotes(TaskConfig taskConfig) {
-    Context context = new Context();
-
-    // TODO: check if server is in correct timezone (if not set it on Docker image)
-
-    OffsetDateTime now = OffsetDateTime.now();
-    context.setVariable("date", now.format((DateTimeFormatter.ISO_LOCAL_DATE)));
-    context.setVariable("amount", taskConfig.getSpendValue());
-
-    String template = taskConfig.getGoogleTaskDescriptionTemplate();
-    return templateEngine.process(template, context);
   }
 }

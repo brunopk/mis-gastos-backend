@@ -13,5 +13,3 @@ spring:
 logging:
   level:
     com.bruno.misgastos: debug
-    org.springframework.security: debug
-    springframework.web.client: debug

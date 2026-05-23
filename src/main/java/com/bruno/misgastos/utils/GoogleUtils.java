@@ -1,46 +1,40 @@
 package com.bruno.misgastos.utils;
 
-import com.bruno.misgastos.entities.GoogleAuthToken;
-import com.bruno.misgastos.enums.ErrorCode;
-import com.bruno.misgastos.exceptions.ApiException;
-import com.google.api.client.auth.oauth2.BearerToken;
-import com.google.api.client.auth.oauth2.Credential;
+import com.bruno.misgastos.entities.TaskConfig;
 import java.time.OffsetDateTime;
-import javax.crypto.SecretKey;
-import org.springframework.http.HttpStatus;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import org.apache.commons.lang3.StringUtils;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 public interface GoogleUtils {
 
-  /**
-   * Obtain credentials required to interact with Google APIs.
-   * @param token Token obtained from DB (encrypted tokens)
-   * @param encryptionSecret Required to decrypt tokens
-   * @return Returns a {@code Credential} instance
-   * @throws ApiException Throws ApiException
-   */
-  static Credential getUserCredentials(GoogleAuthToken token, SecretKey encryptionSecret) {
-    if (token.getAccessToken().isEmpty() || isExpired(token))
-      throw new ApiException(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          ErrorCode.GOOGLE_AUTH_ERROR,
-          ErrorMessages.NO_VALID_TOKEN_FOUND);
+  DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.forLanguageTag("es"));
 
-    try {
-      String decryptedToken =
-          EncryptionUtils.decryptString(encryptionSecret, token.getAccessToken());
-      return new Credential(BearerToken.authorizationHeaderAccessMethod())
-          .setAccessToken(decryptedToken);
-    } catch (Exception ex) {
-      throw new ApiException(
-          HttpStatus.INTERNAL_SERVER_ERROR,
-          ErrorCode.GOOGLE_AUTH_ERROR,
-          ErrorMessages.GENERIC_GOOGLE_AUTH_ERROR);
-    }
+  static String generateGoogleTasksTaskTitle(TaskConfig taskConfig) {
+    String taskTitlePrefix = taskConfig.getGoogleTaskTitle();
+    String formattedDate = StringUtils.capitalize(OffsetDateTime.now().format(DATE_TIME_FORMATTER));
+    return String.format(
+      "%s %s",
+      taskTitlePrefix,
+      formattedDate);
   }
 
-  private static boolean isExpired(GoogleAuthToken token) {
-    OffsetDateTime expirationTime = token.getCreatedAt().plusSeconds(token.getExpiresIn());
+  static String generateGoogleTasksTaskNotes(TemplateEngine templateEngine, TaskConfig taskConfig) {
+    Context context = new Context();
+
+    // TODO: check if server is in correct timezone (if not set it on Docker image)
+
     OffsetDateTime now = OffsetDateTime.now();
-    return now.isAfter(expirationTime) || now.isEqual(expirationTime);
+    context.setVariable("date", now.format((DateTimeFormatter.ISO_LOCAL_DATE)));
+    context.setVariable("amount", taskConfig.getSpendValue());
+
+    // String template = taskConfig.getGoogleTaskDescriptionTemplate();
+    // return templateEngine.process(template, context);
+
+    // TODO: remove this (just for test)
+
+    return "Test description";
   }
 }

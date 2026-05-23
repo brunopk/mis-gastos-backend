@@ -14,6 +14,7 @@ spring:
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:
               - openid
+              - email
               - https://www.googleapis.com/auth/tasks.readonly
         provider:
           google:
@@ -31,11 +32,12 @@ mis-gastos:
       max-pool-size: 5
       queue-capacity: 5
   security:
-    authorized-google-accounts: ${MIS_GASTOS_GOOGLE_ACCOUNTS}
     admin:
       client-id: ${MIS_GASTOS_ADMIN_JWT_CLIENT_ID}
       client-secret: ${MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET}
     jwt:
       ttl-in-hours: 1
+    google:
+      authorized-account: ${GOOGLE_AUTHORIZED_ACCOUNT}
   google:
-    task-list-id: ${MIS_GASTOS_GOOGLE_TASK_LIST_ID}
+    task-list-id: ${GOOGLE_TASKS_TASK_LIST_ID}
