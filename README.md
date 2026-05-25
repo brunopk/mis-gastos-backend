@@ -58,9 +58,7 @@
 ## Configuration
 
 
-Configuration is split across three property files: [`application.yaml`](src/main/resources/application.yaml), [`application-local.yaml`](src/main/resources/application-local.yaml), and [`application-prod.yaml`](src/main/resources/application-prod.yaml).
-
-The base configuration is defined in `application.yaml`, while environment-specific properties are overridden through Spring profiles:
+Configuration is split across three property files: [`application.yaml`](src/main/resources/application.yaml), [`application-local.yaml`](src/main/resources/application-local.yaml), and [`application-prod.yaml`](src/main/resources/application-prod.yaml). The base configuration is defined in `application.yaml`, while environment-specific properties are overridden through Spring profiles:
 
 - `local` → `application-local.yaml`
 - `prod` → `application-prod.yaml`
