@@ -1,0 +1,1219 @@
+{
+  "__inputs": [
+    {
+      "name": "DS_MISGASTOS",
+      "label": "misgastos",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "mysql",
+      "pluginName": "MySQL"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "barchart",
+      "name": "Bar chart",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "12.3.0"
+    },
+    {
+      "type": "datasource",
+      "id": "mysql",
+      "name": "MySQL",
+      "version": "12.3.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "table",
+      "name": "Table",
+      "version": ""
+    }
+  ],
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 16,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(date, '%m/%Y') AS 'Month/Year',\n  category_name AS 'Category',\n  SUM(value) AS 'Total'\n FROM (\n  SELECT\n    s.date,\n    sc.name AS category_name,\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON sc.id = s.category_id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s\n GROUP BY s.category_name, DATE_FORMAT(s.date, '%m/%Y')\n ORDER BY DATE_FORMAT(s.date, '%m/%Y') ASC, s.category_name ASC\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          }
+        }
+      ],
+      "title": "Spends by category",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(value) AS 'Total'\nFROM (\n  SELECT\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON sc.id = s.category_id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          }
+        }
+      ],
+      "title": "Total",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 16,
+        "x": 0,
+        "y": 7
+      },
+      "id": 4,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "Subcategory"
+          }
+        ]
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(date, '%m/%Y') AS 'Month/Year',\n  subcategory_name AS 'Subcategory',\n  SUM(value) AS 'Total'\n FROM (\n  SELECT\n    s.date,\n    ss.name AS subcategory_name,\n    CASE\n      WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s\n GROUP BY s.subcategory_name, DATE_FORMAT(s.date, '%m/%Y')\n ORDER BY DATE_FORMAT(s.date, '%m/%Y') ASC, s.subcategory_name ASC\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          }
+        }
+      ],
+      "title": "Spends by subcategory",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 7
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(value) AS 'Total'\nFROM (\n  SELECT\n    CASE\n      WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value)\n      ELSE AVG(s.value)\n    END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          }
+        }
+      ],
+      "title": "Total",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 16,
+        "x": 0,
+        "y": 14
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(date, '%m/%Y') AS 'Month/Year',\n  group_name AS 'Group',\n  SUM(value) AS 'Total'\n FROM (\n  SELECT\n    s.date,\n    sg.name AS group_name,\n    CASE\n      WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value)\n      ELSE AVG(s.value)\n    END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON s.subcategory_id = ss.id\n    LEFT JOIN `group` sg ON s.group_id = sg.id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s\n GROUP BY s.group_name, DATE_FORMAT(s.date, '%m/%Y')\n ORDER BY DATE_FORMAT(s.date, '%m/%Y') ASC, s.group_name ASC\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "date",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              },
+              {
+                "parameters": [
+                  {
+                    "name": "category_id",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50,
+            "whereJsonTree": {
+              "children1": [],
+              "id": "998ba98b-0123-4456-b89a-b196a8084c9a",
+              "type": "group"
+            }
+          },
+          "table": "spend",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          }
+        }
+      ],
+      "title": "Spends by group",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 14
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  SUM(value) AS 'Total'\nFROM (\n  SELECT\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value)\n    END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON s.subcategory_id = ss.id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id ) s",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          }
+        }
+      ],
+      "title": "Total",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 1,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "asd",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%m/%Y') AS 'Month/Year',\n  SUM(CASE WHEN s.category_id = 1 THEN s.value ELSE 0 END) AS 'Services',\n  SUM(CASE WHEN s.category_id = 2 THEN s.value ELSE 0 END) AS 'Health',\n  SUM(CASE WHEN s.category_id = 3 THEN s.value ELSE 0 END) AS 'Entertainment'\n FROM (\n  SELECT\n    s.date,\n    s.category_id,\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON ss.id = s.subcategory_id\n    JOIN category sc ON sc.id = s.category_id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id) s\n GROUP BY DATE_FORMAT(s.date, '%m/%Y')\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "created_at",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by category",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "string",
+                "targetField": "subcategory_id"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 5,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "asd",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%m/%Y') AS 'Month/Year',\n  SUM(CASE WHEN s.subcategory_id = 1 THEN s.value ELSE 0 END) AS 'Basic',\n  SUM(CASE WHEN s.subcategory_id = 2 THEN s.value ELSE 0 END) AS 'Internet',\n  SUM(CASE WHEN s.subcategory_id = 3 THEN s.value ELSE 0 END) AS 'Medicine',\n  SUM(CASE WHEN s.subcategory_id IS NULL THEN s.value ELSE 0 END) AS 'Sin definir'\n FROM (\n  SELECT\n    s.date,\n    s.subcategory_id,\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON s.subcategory_id = ss.id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\n    GROUP BY s.id) s\n GROUP BY DATE_FORMAT(s.date, '%m/%Y')",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "created_at",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by subcategory (using SUM-CASE)",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "string",
+                "targetField": "subcategory_id"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 10,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "asd",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__timeGroupAlias(date,'1M'),\n  ss.name,\n  SUM(s.value) AS ''\nFROM spend s\nLEFT JOIN subcategory ss ON s.subcategory_id = ss.id\nJOIN category sc ON s.category_id = sc.id\nWHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory}))\nGROUP BY 1, ss.id\nORDER BY 1\n\n/*asdas */",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "created_at",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by subcategory",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "string",
+                "targetField": "subcategory_id"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_MISGASTOS}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 45
+      },
+      "id": 7,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xField": "asd",
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.3.0",
+      "targets": [
+        {
+          "dataset": "misgastos",
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_MISGASTOS}"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  DATE_FORMAT(s.date, '%m/%Y') AS 'Month/Year',\n  SUM(CASE WHEN s.group_id = 1 THEN s.value ELSE 0 END) AS 'Gas',\n  SUM(CASE WHEN s.group_id = 2 THEN s.value ELSE 0 END) AS 'Electricity',\n  SUM(CASE WHEN s.group_id IS NULL THEN s.value ELSE 0 END) AS 'Sin definir'\n FROM (\n  SELECT\n    s.date,\n    s.group_id,\n    CASE WHEN i.value IS NOT NULL THEN AVG(s.value) - SUM(i.value) ELSE AVG(s.value) END AS value\n    FROM spend s\n    LEFT JOIN income i ON s.id = i.spend_id\n    LEFT JOIN subcategory ss ON s.subcategory_id = ss.id\n    LEFT JOIN `group` sg ON s.group_id = sg.id\n    JOIN category sc ON s.category_id = sc.id\n    WHERE $__timeFilter(s.date) AND sc.name IN (${Category}) AND (s.subcategory_id IS NULL OR ss.name IN (${Subcategory})) \n    GROUP BY s.id) s\n GROUP BY DATE_FORMAT(s.date, '%m/%Y')\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [
+                  {
+                    "name": "created_at",
+                    "type": "functionParameter"
+                  }
+                ],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "spend"
+        }
+      ],
+      "title": "Spends by group",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "string",
+                "targetField": "subcategory_id"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "barchart"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allowCustomValue": false,
+        "current": {},
+        "definition": "SELECT name FROM category",
+        "includeAll": false,
+        "multi": true,
+        "name": "Category",
+        "options": [],
+        "query": "SELECT name FROM category",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allowCustomValue": false,
+        "current": {},
+        "definition": "SELECT s.name FROM subcategory s JOIN category c ON c.id = s.category_id WHERE c.name IN (${Category})",
+        "description": "",
+        "multi": true,
+        "name": "Subcategory",
+        "options": [],
+        "query": "SELECT s.name FROM subcategory s JOIN category c ON c.id = s.category_id WHERE c.name IN (${Category})",
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1y",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Mis gastos (monthly)",
+  "uid": "eefre0sccf7k0c",
+  "version": 116,
+  "weekStart": ""
+}
