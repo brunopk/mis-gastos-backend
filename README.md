@@ -52,7 +52,7 @@
     WantedBy=multi-user.target
     ```
     
-    **Replace `ExecStart=java -jar /root/mis-gastos-backend-0.0.1.jar` with the corresponding JAR version.**
+    **Replace `mis-gastos-backend-0.0.1.jar` with the corresponding JAR.**
 
 ## Configuration
 
