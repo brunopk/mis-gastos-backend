@@ -78,6 +78,8 @@ Some properties reference **environment variables** that must be defined before 
 | `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`       | Client ID for the *admin* user used by [scripts](/scripts). Uses the [Client Credentials flow](/doc/security.md#client-credentials-flow).                                                                                 |
 | `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`   | Client secret associated with `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`. Uses the [Client Credentials flow](/doc/security.md#client-credentials-flow).                                                                             |
 
+</br>
+
 > Refer to [`/doc/security.md`](/doc/security.md) for more information about the authentication flows used by Mis Gastos Backend.
 
 ## Development
