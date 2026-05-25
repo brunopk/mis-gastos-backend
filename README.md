@@ -34,7 +34,7 @@
       MIS_GASTOS_ADMIN_JWT_CLIENT_ID=admin
       MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET=admin
       ```
-      </br>
+   
       > Replace each variable with the corresponding value, refer to the [Configuration](#configuration) section below.
 3. Create the `/etc/systemd/system/mis-gastos-backend.service` unit file for the Linux service : 
       ```unit
@@ -52,7 +52,7 @@
       [Install]
       WantedBy=multi-user.target
       ```
-      </br>
+   
       > Replace `mis-gastos-backend-0.0.1.jar` with the corresponding JAR.
 
 ## Configuration
