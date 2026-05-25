@@ -34,7 +34,7 @@
     MIS_GASTOS_ADMIN_JWT_CLIENT_ID=admin
     MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET=admin
     ```
-    **Replace each variable with the corresponding value**, refer to the [Configuration](#configuration) section below.
+    > Replace each variable with the corresponding value, refer to the [Configuration](#configuration) section below.
 3. Create the `/etc/systemd/system/mis-gastos-backend.service` unit file for the Linux service : 
     ```unit
     [Unit]
@@ -66,11 +66,11 @@ The base configuration is defined in `application.yaml`, while environment-speci
 
 Some properties reference **environment variables** that must be defined before starting the application :
 
-- `DB_USER` and `DB_PASS` should be set with the credentials of a new dedicated MariaDB user. The value for `DB_JDBC_URL` must follow this pattern: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`. **For local development, `DB_JDBC_URL`, `DB_USER`, and `DB_PASS`, **must not** be defined, since these values are already specified in `application-local.yaml`.** Refer to [`/doc/db.md`](/doc/db.md) for more information about database configuration.
+- `DB_USER` and `DB_PASS` should be set with the credentials for a new dedicated MariaDB user. The value for `DB_JDBC_URL` must follow this pattern: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`. Refer to [`/doc/db.md`](/doc/db.md) for more information about database configuration.
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set with the corresponding values that can be obtained following instructions in the [Google credentials configuration](/doc/google.md#google-credentials-configuration) section from [`/doc/google.md`](/doc/google.md). Refer also to the [Authorization Code flow](/doc/security.md#authorization-code-flow) section in [`/doc/security.md`](/doc/security.md) for more information about Google.
 - `GOOGLE_AUTHORIZED_ACCOUNT` is the Google email account authorized to perform actions on Mis Gastos Backend. 
 - `GOOGLE_FIREBASE_SERVICE_ACCOUNT_JSON` is the path to the JSON file with service account credentials for Firebase. Refer to the [Push notifications with Firebase](/doc/google.md#push-notifications-with-firebase) section in [`/doc/google.md`](/doc/google.md) for more information about how to obtain this file.
-- `GOOGLE_TASKS_TASK_LIST_ID` is used for [scheduled tasks](/doc/tasks.md). This ID can be obtained by navigating to http://localhost:8080/google/tasks/task-lists, replacing *localhost* with the corresponding hostname where Mis Gastos Backend is running.
+- `GOOGLE_TASKS_TASK_LIST_ID` is used for [scheduled tasks](/doc/tasks.md). This ID can be obtained by navigating to http://localhost:8080/google/tasks/task-lists (replacing *localhost* with the corresponding hostname where Mis Gastos Backend is running).
 - `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` are the credentials ([Client Credentials flow](/doc/security.md#client-credentials-flow)) for the *admin* user of Mis Gastos Backend. These credentials are used to execute [scripts](/scripts), currently only **one** user can be configured. Refer to the [Client Credentials flow](/doc/security.md#client-credentials-flow) section in [`/doc/security.md`](/doc/security.md) for more information about these environment variables.
 
 
@@ -109,7 +109,7 @@ For more development tips, follow `doc/development.md`.
 
 For **development**, the configuration file is [`application-local.yaml`](/src/main/resources/application-local.yaml).
 
-> Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
+> For local development, `DB_JDBC_URL`, `DB_USER`, and `DB_PASS`, **must not** be defined, since these values are already specified in `application-local.yaml`.
 
 ## Documentation
 
