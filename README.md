@@ -19,7 +19,7 @@
       ```bash
       mvn package   
       ```
-      By default, the JAR file is generated in the `target/` folder.
+      > By default, the JAR file is generated in the `target/` folder.
 2. Create the `/root/mis-gastos-backend.env` file for environment variables : 
       ```dotenv
       SPRING_PROFILES_ACTIVE=prod
@@ -67,7 +67,7 @@ The base configuration is defined in `application.yaml`, while environment-speci
 
 Some properties reference **environment variables** that must be defined before starting the application :
 
-- `DB_USER` and `DB_PASS` should be set with the credentials for a new dedicated MariaDB user. The value for `DB_JDBC_URL` must follow this pattern: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`. Refer to [`/doc/db.md`](/doc/db.md) for more information about database configuration.
+- `DB_USER` and `DB_PASS` should be set with the credentials for a new dedicated MariaDB user. The value for `DB_JDBC_URL` must follow this pattern: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`. For local development, `DB_JDBC_URL`, `DB_USER`, and `DB_PASS`, **must not** be defined, since these values are already specified in `application-local.yaml`. Refer to [`/doc/db.md`](/doc/db.md) for more information about database configuration.
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set with the corresponding values that can be obtained following instructions in the [Google credentials configuration](/doc/google.md#google-credentials-configuration) section from [`/doc/google.md`](/doc/google.md). Refer also to the [Authorization Code flow](/doc/security.md#authorization-code-flow) section in [`/doc/security.md`](/doc/security.md) for more information about Google.
 - `GOOGLE_AUTHORIZED_ACCOUNT` is the Google email account authorized to perform actions on Mis Gastos Backend. 
 - `GOOGLE_FIREBASE_SERVICE_ACCOUNT_JSON` is the path to the JSON file with service account credentials for Firebase. Refer to the [Push notifications with Firebase](/doc/google.md#push-notifications-with-firebase) section in [`/doc/google.md`](/doc/google.md) for more information about how to obtain this file.
