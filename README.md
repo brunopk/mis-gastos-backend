@@ -82,7 +82,9 @@ Some properties reference **environment variables** that must be defined before 
 
 > Refer to [`/doc/security.md`](/doc/security.md) for more information about the authentication flows used by Mis Gastos Backend.
 
-## Development
+</br>
+
+# Development
 
 ### Requirements
 
