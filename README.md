@@ -29,6 +29,7 @@
     GOOGLE_CLIENT_ID=123456-xxx.apps.googleusercontent.com
     GOOGLE_CLIENT_SECRET=xxx
     GOOGLE_AUTHORIZED_ACCOUNT=your_mail@gmail.com
+    GOOGLE_FIREBASE_SERVICE_ACCOUNT_JSON=/path/to/json
     GOOGLE_TASKS_TASK_LIST_ID=xxx
     MIS_GASTOS_ADMIN_JWT_CLIENT_ID=admin
     MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET=admin
@@ -65,25 +66,13 @@ The base configuration is defined in `application.yaml`, while environment-speci
 
 Additionally, some properties reference **environment variables** that must be defined before starting the application :
 
-- `DB_JDBC_URL`: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`
-- `DB_USER`: MariaDB username
-- `DB_PASS`: MariaDB password
-- `GOOGLE_CLIENT_ID`: used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user.
-- `GOOGLE_CLIENT_SECRET`: used to access Google APIs, such as Google Tasks and Gmail, on behalf of the user.
-- `GOOGLE_AUTHORIZED_ACCOUNT`: defines the Google user authorized to perform actions on Mis Gastos Backend
-- `GOOGLE_TASKS_TASK_LIST_ID`: Used for scheduled tasks.
-- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`: Used for [scripts](scripts).
-- `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`: Used for [scripts](scripts).
+- `DB_USER` and `DB_PASS` should be set with the credentials of a new dedicated MariaDB user. The value for `DB_JDBC_URL` must follow this pattern: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`. **For local development, `DB_JDBC_URL`, `DB_USER`, and `DB_PASS`, **must not** be defined, since these values are already specified in `application-local.yaml`.** Refer to [`/doc/db.md`](/doc/db.md) for more information about database configuration.
+- `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are set with the corresponding values that can be obtained following instructions in the [Google credentials configuration](/doc/google.md#google-credentials-configuration) section from [`/doc/google.md`](/doc/google.md). Refer also to the [Authorization Code flow](/doc/security.md#authorization-code-flow) section in [`/doc/security.md`](/doc/security.md) for more information about Google.
+- `GOOGLE_AUTHORIZED_ACCOUNT` is the Google email account authorized to perform actions on Mis Gastos Backend. 
+- `GOOGLE_FIREBASE_SERVICE_ACCOUNT_JSON` is the path to the JSON file with service account credentials for Firebase. Refer to the [Push notifications with Firebase](/doc/google.md#push-notifications-with-firebase) section in [`/doc/google.md`](/doc/google.md) for more information about how to obtain this file.
+- `GOOGLE_TASKS_TASK_LIST_ID` is used for [scheduled tasks](/doc/tasks.md). This ID can be obtained by navigating to http://localhost:8080/google/tasks/task-lists, replacing *localhost* with the corresponding hostname where Mis Gastos Backend is running.
+- `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` are the credentials ([Client Credentials flow](/doc/security.md#client-credentials-flow)) for the *admin* user of Mis Gastos Backend. These credentials are used to execute [scripts](/scripts), currently only **one** user can be configured. Refer to the [Client Credentials flow](/doc/security.md#client-credentials-flow) section in [`/doc/security.md`](/doc/security.md) for more information about these environment variables.
 
-<br>
-
-> For local development, `DB_JDBC_URL`, `DB_USER`, and `DB_PASS`, **must not** be defined, since these values are already specified in `application-local.yaml`.
-
-### Additional information 
-
-- Currently only **one** user can be configured with the `MIS_GASTOS_ADMIN_JWT_CLIENT_ID` and `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET` environment variables, this is the "Admin" user. Refer to the [Client Credentials flow](/doc/security.md#client-credentials-flow) section in [`/doc/security.md`](/doc/security.md) for more information about these environment variables.
-- Refer to [`/doc/spring.md`](/doc/spring.md) for details on the Spring configuration used in Mis Gastos Backend, including OAuth2, logging, and session management.
-- Refer to the [Authorization Code flow](/doc/security.md#authorization-code-flow) section in [`/doc/security.md`](/doc/security.md) for more information about `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` environment variables.
 
 ## Development
 

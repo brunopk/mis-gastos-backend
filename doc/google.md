@@ -38,7 +38,19 @@ In order to use Google Tasks and Gmail APIs on behalf of the user (Oauth2 author
 
 > **Save downloaded credentials (JSON file) in a secure place as it will be used later (refer to [Steps to run Mis Gastos Backend](/README.md#steps-to-run-mis-gastos-backend) and [Configurations](/README.md#configuration) sections within the [Steps to run Mis Gastos Backend](/README.md#running-mis-gastos-backend) section in [`README.md`](/README.md)).**
 
-<br>
+## Push notifications with Firebase
+
+Before Mis Gastos Backend can send anything, it needs permission to talk to Firebase. That permission comes from a **service account JSON file** you generate in the Firebase console. This file holds a private key and project ID, and it gives your backend authenticated access to Firebase services.
+
+Here’s how to get that file:
+
+1. Go to https://console.firebase.google.com
+2. Choose or create a project
+3. Click the gear icon next to **Project Overview** and go to **Project settings**
+4. Switch to the **Service accounts** tab
+5. Click **Generate new private key**
+
+> This will download a `.json` file that contains all the credentials your app needs. You’ll want to store it somewhere private and not commit it to version control.
 
 ## Additional information
 
@@ -50,4 +62,4 @@ In order to use Google Tasks and Gmail APIs on behalf of the user (Oauth2 author
 - [OAuth 2.0 and the Google OAuth Client Library for Java](https://developers.google.com/api-client-library/java/google-oauth-java-client/oauth2)
 - [Google Tasks Java Quickstart](https://developers.google.com/workspace/tasks/quickstart/java)
 - [Google API Client Libraries for Java](https://developers.google.com/api-client-library/java)
-
+- [Sending Push Notifications Using Spring Boot and Firebase](https://medium.com/@AlexanderObregon/sending-push-notifications-using-spring-boot-and-firebase-e1227a7eea99)

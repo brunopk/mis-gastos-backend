@@ -28,3 +28,5 @@ To invoke endpoints that requires authentication through Home Assistant public a
 ## Spring properties
 
 It's recommended to install [Spring Boot Assistant](https://plugins.jetbrains.com/plugin/17747-spring-boot-assistant) plugin on Intellij IDEA for YAML autocompletion.
+
+## Push notifications
