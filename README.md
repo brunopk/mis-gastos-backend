@@ -11,7 +11,7 @@
 
 <br>
 
-> Maven can be installed with [SdkMan!](https://sdkman.io/) and the JRE with SdkMan! or the APT package manager.
+> Maven and the JRE can be installed with [SdkMan!](https://sdkman.io/). Also the APT package manager can be used to install the JRE.
 
 ## Installation
 
