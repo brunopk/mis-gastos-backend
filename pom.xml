@@ -114,6 +114,11 @@
             <artifactId>google-api-services-gmail</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+        </dependency>
+
         <!-- Other -->
 
         <dependency>
@@ -221,6 +226,12 @@
                 <groupId>com.google.apis</groupId>
                 <artifactId>google-api-services-gmail</artifactId>
                 <version>v1-rev20250616-2.0.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.firebase</groupId>
+                <artifactId>firebase-admin</artifactId>
+                <version>9.4.3</version>
             </dependency>
 
             <!-- Other -->

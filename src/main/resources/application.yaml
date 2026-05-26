@@ -37,7 +37,8 @@ mis-gastos:
       client-secret: ${MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET}
     jwt:
       ttl-in-hours: 1
-    google:
-      authorized-account: ${GOOGLE_AUTHORIZED_ACCOUNT}
   google:
+    authorized-account: ${GOOGLE_AUTHORIZED_ACCOUNT}
+    firebase-service-account: ${GOOGLE_FIREBASE_SERVICE_ACCOUNT_JSON}
     task-list-id: ${GOOGLE_TASKS_TASK_LIST_ID}
+

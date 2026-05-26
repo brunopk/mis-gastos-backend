@@ -19,6 +19,7 @@
       ```bash
       mvn package   
       ```
+   
       > By default, the JAR file is generated in the `target/` folder.
 2. Create the `/root/mis-gastos-backend.env` file for environment variables : 
       ```dotenv
@@ -65,24 +66,18 @@ Configuration is split across three property files: [`application.yaml`](src/mai
 
 Some properties reference **environment variables** that must be defined before starting the application :
 
-| Variable                               | Description                                                                                                                                                                                                               |
-|----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `DB_JDBC_URL`                          | MariaDB JDBC URL. Must follow: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`. For local development, this variable **must not** be defined because it is already configured in `application-local.yaml`. |
-| `DB_USER`                              | MariaDB username. Should use a **new dedicated** MariaDB user. Refer to [`/doc/db.md`](/doc/db.md). For local development, this variable **must not** be defined.                                                         |
-| `DB_PASS`                              | MariaDB password for `DB_USER`. For local development, this variable **must not** be defined.                                                                                                                             |
-| `GOOGLE_CLIENT_ID`                     | Google OAuth client ID used to access Google APIs (for example Google Tasks and Gmail) on behalf of the user. See [Google credentials configuration](/doc/google.md#google-credentials-configuration).                    |
-| `GOOGLE_CLIENT_SECRET`                 | Google OAuth client secret associated with `GOOGLE_CLIENT_ID`. See [Google credentials configuration](/doc/google.md#google-credentials-configuration).                                                                   |
-| `GOOGLE_AUTHORIZED_ACCOUNT`            | Google email account authorized to perform actions on Mis Gastos Backend.                                                                                                                                                 |
-| `GOOGLE_FIREBASE_SERVICE_ACCOUNT_JSON` | Path to the Firebase service account JSON file used for push notifications. Refer to [Push notifications with Firebase](/doc/google.md#push-notifications-with-firebase).                                                 |
-| `GOOGLE_TASKS_TASK_LIST_ID`            | Google Tasks task list ID used for [scheduled tasks](/doc/tasks.md). It can be obtained from `http://localhost:8080/google/tasks/task-lists` (replace `localhost` with the corresponding hostname).                       |
-| `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`       | Client ID for the *admin* user used by [scripts](/scripts). Uses the [Client Credentials flow](/doc/security.md#client-credentials-flow).                                                                                 |
-| `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`   | Client secret associated with `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`. Uses the [Client Credentials flow](/doc/security.md#client-credentials-flow).                                                                             |
-
-</br>
-
-> Refer to [`/doc/security.md`](/doc/security.md) for more information about the authentication flows used by Mis Gastos Backend.
-
-</br>
+| Variable                               | Description                                                                                                                                                                                                                                              |
+|----------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `DB_JDBC_URL`                          | MariaDB JDBC URL. Must follow: `jdbc:mariadb://<HOSTNAME>:3306/<DATABASE>?serverTimezone=UTC`. For local development, this variable **must not** be defined because it is already configured in `application-local.yaml`.                                |
+| `DB_USER`                              | MariaDB username. Should use a **new dedicated** MariaDB user. Refer to [`/doc/db.md`](/doc/db.md). For local development, this variable **must not** be defined.                                                                                        |
+| `DB_PASS`                              | MariaDB password for `DB_USER`. For local development, this variable **must not** be defined.                                                                                                                                                            |
+| `GOOGLE_CLIENT_ID`                     | Google OAuth client ID used to access Google APIs (for example Google Tasks and Gmail) on behalf of the user. See [Google credentials configuration](/doc/google.md#google-credentials-configuration).                                                   |
+| `GOOGLE_CLIENT_SECRET`                 | Google OAuth client secret associated with `GOOGLE_CLIENT_ID`. See [Google credentials configuration](/doc/google.md#google-credentials-configuration).                                                                                                  |
+| `GOOGLE_AUTHORIZED_ACCOUNT`            | Google email account authorized to perform actions on Mis Gastos Backend.                                                                                                                                                                                |
+| `GOOGLE_FIREBASE_SERVICE_ACCOUNT_JSON` | Path to the Firebase service account JSON file used for push notifications. Refer to [Push notifications with Firebase](/doc/google.md#push-notifications-with-firebase).                                                                                |
+| `GOOGLE_TASKS_TASK_LIST_ID`            | Used in [`RecurrentSpendTaskRunnerImpl.java`](src/main/java/com/bruno/misgastos/tasks/RecurrentSpendTaskRunnerImpl.java). It can be obtained from `http://localhost:8080/google/tasks/task-lists` (replace `localhost` with the corresponding hostname). |
+| `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`       | Client ID for the *admin* user used by [scripts](/scripts). Uses the [Client Credentials flow](/doc/security.md#client-credentials-flow).                                                                                                                |
+| `MIS_GASTOS_ADMIN_JWT_CLIENT_SECRET`   | Client secret associated with `MIS_GASTOS_ADMIN_JWT_CLIENT_ID`. Uses the [Client Credentials flow](/doc/security.md#client-credentials-flow).                                                                                                            |
 
 # Development
 
@@ -121,9 +116,10 @@ For **development**, the configuration file is [`application-local.yaml`](/src/m
 
 > For local development, `DB_JDBC_URL`, `DB_USER`, and `DB_PASS`, **must not** be defined, since these values are already specified in `application-local.yaml`.
 
-## Documentation
+## Additional information
 
-> Documentation about different topics related or used by Mis Gastos Backend can be found in the [`/doc`](/doc) folder.
+- Refer to [`/doc/security.md`](/doc/security.md) for more information about the authentication flows used by Mis Gastos Backend.
+- Refer to [`/doc/tasks.md`](/doc/tasks.md) for more information about scheduled tasks.
 
 ## Links
 

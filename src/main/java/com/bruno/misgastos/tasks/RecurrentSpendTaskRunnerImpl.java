@@ -8,6 +8,7 @@ import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.enums.TaskType;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
+import com.bruno.misgastos.services.google.FcmService;
 import com.bruno.misgastos.services.google.GoogleAuthService;
 import com.bruno.misgastos.services.google.GoogleTasksService;
 import com.bruno.misgastos.utils.GoogleUtils;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
+
+// TODO: create another task to collect all pending task and sent them into an email
 
 // TODO: create a function like this ...
 // https://github.com/brunopk/mis-gastos/blob/90a9be15182955c033a31ff73db2aaa4298b4593/src/Utils.ts#L301C27-L301C61
@@ -43,12 +46,14 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
   @Value("${mis-gastos.google.task-list-id}")
   private String GOOGLE_TASKS_TASK_LIST_ID;
 
-  @Value("${mis-gastos.security.google.authorized-account}")
+  @Value("${mis-gastos.google.authorized-account}")
   private String AUTHORIZED_GOOGLE_ACCOUNT;
 
   private final GoogleAuthService googleAuthService;
 
   private final GoogleTasksService googleTasksService;
+
+  private final FcmService fcmService;
 
   private final SpendSpringDataRepository spendRepository;
 
@@ -58,9 +63,11 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
   public RecurrentSpendTaskRunnerImpl(
       GoogleAuthService googleAuthService,
       GoogleTasksService googleTaskService,
+      FcmService fcmService,
       SpendSpringDataRepository spendRepository) {
     this.googleAuthService = googleAuthService;
     this.googleTasksService = googleTaskService;
+    this.fcmService = fcmService;
     this.spendRepository = spendRepository;
     this.templateEngine = ThymeleafUtils.buildTemplateEngine();
   }
@@ -150,6 +157,8 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
       LOGGER.info("Creating task in Google Tasks (task_config={}, task_id={})", taskConfig.getTaskName(), task.getId());
 
       googleTasksService.createTask(principalName, GOOGLE_TASKS_TASK_LIST_ID, googleTask);
+
+      // TODO: send push notification
     }
   }
 

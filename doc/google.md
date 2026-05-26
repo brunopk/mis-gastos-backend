@@ -52,6 +52,10 @@ Here’s how to get that file:
 
 > This will download a `.json` file that contains all the credentials your app needs. You’ll want to store it somewhere private and not commit it to version control.
 
+Then create the **Web** application for the frontend through **Project Settings** > **General** > **Your apps** > **Add app**, type **Web** (**Your apps** is at the bottom).
+
+> Copy the generated values in the JavaScript code snippet. This will be used by the frontend.
+
 ## Additional information
 
 - Steps in [Google credentials configuration](#google-credentials-configuration) are based on the [Scenario 2: You do not have credentials set up yet](https://www.home-assistant.io/integrations/google_tasks/#scenario-2-you-do-not-have-credentials-set-up-yet) from the [Home Assistant Google Tasks integration](https://www.home-assistant.io/integrations/google_tasks/).
