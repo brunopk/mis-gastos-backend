@@ -1,4 +1,4 @@
-# Google credentials configuration
+# Google credentials
 
 In order to use Google Tasks and Gmail APIs on behalf of the user (Oauth2 authorization code flow), follow these steps:
 
@@ -38,7 +38,7 @@ In order to use Google Tasks and Gmail APIs on behalf of the user (Oauth2 author
 
 > **Save downloaded credentials (JSON file) in a secure place as it will be used later (refer to [Steps to run Mis Gastos Backend](/README.md#steps-to-run-mis-gastos-backend) and [Configurations](/README.md#configuration) sections within the [Steps to run Mis Gastos Backend](/README.md#running-mis-gastos-backend) section in [`README.md`](/README.md)).**
 
-## Push notifications with Firebase
+# Push notifications with Firebase
 
 Before Mis Gastos Backend can send anything, it needs permission to talk to Firebase. That permission comes from a **service account JSON file** you generate in the Firebase console. This file holds a private key and project ID, and it gives your backend authenticated access to Firebase services.
 
