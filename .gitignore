@@ -29,3 +29,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Google ###
+/src/main/resources/mis-gastos-firebase-service-account-keys.json
