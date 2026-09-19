@@ -6,7 +6,7 @@ import com.bruno.misgastos.exceptions.ApiException;
  * <p>Service for interacting with Firebase Cloud Messaging (FCM).</p>
  * <p>Used mainly for sending push notifications.</p>
  */
-public interface FcmService {
+public interface FirebaseService {
 
   /**
    * Send push notifications using FCM

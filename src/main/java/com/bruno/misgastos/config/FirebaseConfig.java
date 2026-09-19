@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class FirebaseConfig {
 
-  @Value("${mis-gastos.google.firebase-service-account}")
+  @Value("${mis-gastos.google.firebase-service-account-json}")
   private String FIREBASE_SERVICE_ACCOUNT_JSON;
 
   @PostConstruct

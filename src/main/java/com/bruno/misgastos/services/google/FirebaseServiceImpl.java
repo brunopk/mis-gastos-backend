@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FcmServiceImpl implements FcmService {
-  private static final Logger LOGGER = LoggerFactory.getLogger(FcmServiceImpl.class);
+public class FirebaseServiceImpl implements FirebaseService {
+  private static final Logger LOGGER = LoggerFactory.getLogger(FirebaseServiceImpl.class);
 
   @Override
   public void sendPushNotification(String deviceToken, String title, String body) {
