@@ -8,7 +8,7 @@ import com.bruno.misgastos.enums.ErrorCode;
 import com.bruno.misgastos.enums.TaskType;
 import com.bruno.misgastos.exceptions.ApiException;
 import com.bruno.misgastos.respositories.SpendSpringDataRepository;
-import com.bruno.misgastos.services.google.FcmService;
+import com.bruno.misgastos.services.google.FirebaseService;
 import com.bruno.misgastos.services.google.GoogleAuthService;
 import com.bruno.misgastos.services.google.GoogleTasksService;
 import com.bruno.misgastos.utils.GoogleUtils;
@@ -53,7 +53,7 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
 
   private final GoogleTasksService googleTasksService;
 
-  private final FcmService fcmService;
+  private final FirebaseService fcmService;
 
   private final SpendSpringDataRepository spendRepository;
 
@@ -63,7 +63,7 @@ public class RecurrentSpendTaskRunnerImpl implements TaskRunner {
   public RecurrentSpendTaskRunnerImpl(
       GoogleAuthService googleAuthService,
       GoogleTasksService googleTaskService,
-      FcmService fcmService,
+      FirebaseService fcmService,
       SpendSpringDataRepository spendRepository) {
     this.googleAuthService = googleAuthService;
     this.googleTasksService = googleTaskService;
