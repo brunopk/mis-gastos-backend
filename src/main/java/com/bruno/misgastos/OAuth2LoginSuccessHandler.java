@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
+// TODO: CONTINUE Modify to redirect to http://localhost:5173 (configurable through properties) it may be the frontend or another URL
+
 /**
  * In production-grade systems, applications commonly persist this data in a database so background jobs and scheduled
  * tasks can later invoke * Google APIs on behalf of the user without requiring an active session.
