@@ -25,6 +25,7 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
 
   public OAuth2LoginSuccessHandler(GoogleAuthService googleAuthService) {
     this.googleAuthService = googleAuthService;
+    setDefaultTargetUrl("http://localhost:5173/");
   }
 
   @Override
