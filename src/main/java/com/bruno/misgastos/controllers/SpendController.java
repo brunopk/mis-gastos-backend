@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// TODO: create an endpoint to return tasks, task JSON should contain associated task config and spend (if there's an associated spend) information
+
+// TODO: when creating a spend, task should be checked in order to find the corresponding task, if it exists (with the same category, subcategory, and group) or return 409 if more than one tasks exist
+
 @RestController
 @RequestMapping("/spends")
 public class SpendController {
